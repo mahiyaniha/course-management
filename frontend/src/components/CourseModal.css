@@ -1,0 +1,80 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 27, 42, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-box {
+  width: 75%;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #1b263b;
+  border-radius: 14px;
+  padding: 20px;
+  color: #e0e1dd;
+}
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #e0e1dd;
+  cursor: pointer;
+}
+
+/* CARD */
+.modal-card {
+  background: #0d1b2a;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-info h3 {
+  margin: 0 0 8px 0;
+}
+
+.modal-info p {
+  margin: 4px 0;
+  color: #778da9;
+}
+
+/* BUTTON */
+.modal-btn {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #415a77;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.modal-btn:hover {
+  background: #778da9;
+}
+
+.modal-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+}

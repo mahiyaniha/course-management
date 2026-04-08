@@ -1,0 +1,79 @@
+.navbar {
+  background-color: #0d1b2a;
+  padding: 15px 30px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 🔥 LOGO */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  font-size: 22px;
+  color: #415a77;
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 800;
+
+  background: linear-gradient(90deg, #0d1b2a, #415a77, #778da9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  letter-spacing: 0.5px;
+}
+
+/* 🔗 NAV LINKS CONTAINER */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Individual links */
+.nav-links a, .logout-btn {
+  text-decoration: none;
+  color: #e0e1dd;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s;
+  margin: 0;
+  padding: 0;
+}
+
+/* Hover */
+.nav-links a:hover, .logout-btn:hover {
+  color: #778da9;
+}
+
+/* Active Page Highlight */
+.nav-links a.active {
+  color: #778da9;
+  font-weight: 600;
+  border-bottom: 2px solid #778da9;
+  padding-bottom: 3px;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-icon {
+  font-size: 14px;
+}

@@ -1,0 +1,131 @@
+.requests-container {
+  padding: 30px;
+  min-height: 100vh;
+  font-family: "Outfit", sans-serif;
+}
+
+/* 🔥 HEADER (same as others) */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header-icon {
+  font-size: 60px;
+  margin-bottom: 12px;
+  color: #415a77; 
+  display: block;
+}
+
+.header-title {
+  font-size: 36px;
+  font-weight: 800;
+
+  background: linear-gradient(90deg, #0d1b2a, #415a77, #778da9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  letter-spacing: 0.5px;
+}
+
+/* 📊 TABLE */
+.table-container {
+  overflow-x: auto;
+}
+
+.request-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1b263b;
+  color: #e0e1dd;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.request-table thead {
+  background-color: #0d1b2a;
+}
+
+.request-table th {
+  padding: 16px;
+  text-align: left;
+  color: #778da9;
+}
+
+.request-table td {
+  padding: 16px;
+  border-bottom: 1px solid #415a77;
+  vertical-align: middle;
+}
+
+.request-table tbody tr:hover {
+  background-color: #415a77;
+}
+
+/* Inline items */
+.cell-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Course name */
+.course-name {
+  font-weight: 600;
+}
+
+/* Comment icon */
+.comment-icon {
+  color: #778da9;
+}
+
+/* 🎯 STATUS BADGES */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Pending */
+.status-pending {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+/* Approved */
+.status-approved {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+/* Rejected */
+.status-rejected {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* Buttons */
+.cancel-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #415a77;
+  color: white;
+  cursor: pointer;
+}
+
+.retry-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #778da9;
+  color: #0d1b2a;
+  cursor: pointer;
+}
+

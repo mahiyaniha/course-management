@@ -1,0 +1,97 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d1b2a, #1b263b);
+  padding: 20px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.register-card {
+  background: #1b263b;
+  color: #e0e1dd;
+  padding: 2.5rem;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  border: 1px solid #415a77;
+
+  width: 100%;
+  max-width: 420px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.register-card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #778da9;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  background: #0d1b2a;
+  border: 1px solid #415a77;
+  border-radius: 8px;
+  color: #e0e1dd;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #778da9;
+}
+
+.register-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #778da9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.register-btn:hover {
+  background: #415a77;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.login-link span {
+  color: #778da9;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.login-link span:hover {
+  text-decoration: underline;
+}
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  background: #0d1b2a;
+  border: 1px solid #415a77;
+  border-radius: 8px;
+  color: #e0e1dd;
+  box-sizing: border-box;
+}

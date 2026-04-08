@@ -1,0 +1,8 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #e0e1dd;
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}

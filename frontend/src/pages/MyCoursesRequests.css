@@ -1,0 +1,172 @@
+.combined-container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 1.5rem; /* slightly tighter */
+  margin: 0 35px 10px 10px; /* small bottom margin only */
+  padding: 20px; /* reduce from 30px */
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .combined-container {
+    margin: 0 25px 0 18px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .combined-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin: 0 25px 0 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .combined-container {
+    margin: 0 20px 0 15px;
+    padding: 20px;
+  }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  margin-bottom: 10px; /* Reduced for tighter fit to table */
+  padding: 15px 0 10px 0; /* Reduced top/bottom padding */
+  flex-wrap: wrap;
+}
+
+.section-header .header-icon {
+  font-size: 40px;
+  color: #415a77;
+  flex-shrink: 0;
+}
+
+.section-header .header-title {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #0d1b2a, #415a77, #778da9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.table-container {
+  overflow-x: auto;
+  background-color: #1b263b;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 0; /* Ensures tight connection */
+}
+
+.course-table,
+.request-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #e0e1dd;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.88rem;
+}
+
+.course-table thead,
+.request-table thead {
+  background-color: #0d1b2a;
+}
+
+.course-table th,
+.request-table th {
+  padding: 12px 10px;
+  text-align: left;
+  color: #778da9;
+  font-weight: 500;
+  font-size: 0.82rem;
+}
+
+.course-table td,
+.request-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #415a77;
+  vertical-align: middle;
+}
+
+.course-table tbody tr:hover,
+.request-table tbody tr:hover {
+  background-color: #415a77;
+}
+
+.course-name {
+  font-weight: 600;
+}
+
+.cell-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon {
+  font-size: 13px;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 18px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-enrolled,
+.status-approved {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.status-requested,
+.status-pending {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.status-rejected {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.drop-btn, .cancel-btn, .retry-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.drop-btn {
+  background-color: #415a77;
+  color: white;
+}
+
+.drop-btn:hover:not(:disabled) {
+  background-color: #778da9;
+}
+
+.drop-btn:disabled {
+  background-color: #6b7280;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: #dc2626;
+  color: white;
+}
+
+.retry-btn {
+  background-color: #3b82f6;
+  color: white;
+}
