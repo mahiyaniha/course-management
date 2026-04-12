@@ -1,91 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from 'react-hot-toast';
-import './Login.css';
+import toast from "react-hot-toast";
+import "./Login.css";
 
 const Login = () => {
-  const navigate = useNavigate()
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const redirectUserByRole = (userRole) => {
-    switch(userRole) {
-      case "admin":
-        navigate("/dashboard/admin")
-        break;
-      case "advisor":
-        navigate("/dashboard/advisor")
-        break;
-      case "student":
-        navigate("/dashboard/student")
-        break;
-      default:
-        break;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const redirectUser = (role) => {
+    if (role === "student") {
+      navigate("/dashboard");
+    } else if (role === "advisor") {
+      navigate("/advisor-dashboard");
+    } else if (role === "admin") {
+      navigate("/admin");
     }
+  };
 
-  }
+  const resolveUserId = (data) => {
+    const candidates = [
+      data?.userId,
+    ];
 
-  const handleLogin = async (e) => {
+    const matchedValue = candidates.find(
+      (value) => value !== undefined && value !== null && String(value).trim() !== ""
+    );
+
+    return matchedValue ? String(matchedValue) : "";
+  };
+
+  const handleLogin = async () => {
     try {
-      if (username === "" || password === "") {
-        throw new Error("Login failed. Please try again.")
+      if (!email || !password) {
+        throw new Error("Please fill all fields");
       }
 
-      console.log("login calling...")
-      const loginAPI = await fetch("http://localhost:8080/api/login", {
+      const res = await fetch("http://localhost:8080/api/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: username,
-          password: password
-        })
+          email,
+          password,
+        }),
       });
-      const resp = await loginAPI.json();
-      if (resp.error) {
-        console.error(resp)
-        throw new Error(resp.error)
-      }
-      toast.success(resp.message)
-      localStorage.setItem("role", resp.role)
-      redirectUserByRole(resp.role)
 
-    } catch (e) {
-      toast.error(e.message)
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      toast.success(data.message || "Login successful");
+
+      localStorage.setItem("role", data.role || "");
+      localStorage.setItem("authEmail", email);
+
+      const userId = resolveUserId(data);
+      if (userId) {
+        localStorage.setItem("userId", userId);
+      } else {
+        localStorage.removeItem("userId");
+      }
+
+      redirectUser(data.role);
+    } catch (err) {
+      toast.error(err.message);
     }
-  }
+  };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2 style={{ color: '#e0e1dd', textAlign: 'center', marginBottom: '1.5rem', fontWeight: '800', fontSize: '1.8rem' }}>Login to Smart Course Registration System</h2>
-        <form>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="button" onClick={handleLogin} className="login-btn">Login</button>
-        </form>
-        <p className="register-link">
-          No account? <a href="/register">Register here</a>
-        </p>
+        <h2>Login to Smart Course System</h2>
+
+        <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button onClick={handleLogin}>Login</button>
       </div>
     </div>
   );

@@ -9,4 +9,5 @@ public class AuthResponse {
     private String message;
     private String role;
     private String redirect;
+    private Integer userId;
 }

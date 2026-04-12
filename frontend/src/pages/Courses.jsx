@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Courses.css";
+import "./CoursesMain.css";
 
 import CourseModal from "../components/CourseModal";
 
@@ -48,7 +49,6 @@ const Courses = () => {
     return acc;
   }, {});
 
-
   const fetchCourse = async () => {
     try {
       console.log("getting courses...")
@@ -76,78 +76,79 @@ const Courses = () => {
   },[])
 
   return (
-    <div className="course-container">
+    <div className="courses-main">
+      <div className="course-container">
 
-      {/* HEADER */}
-      <div className="header">
-        <FontAwesomeIcon icon={faChalkboardUser} className="header-icon" />
-        <h1 className="header-title">Available Course Sections</h1>
-        <p>Browse and explore all active course schedules</p>
-      </div>
+        {/* HEADER */}
+        <div className="header">
+          <FontAwesomeIcon icon={faChalkboardUser} className="header-icon" />
+          <h1 className="header-title">Available Course Sections</h1>
+          <p>Browse and explore all active course schedules</p>
+        </div>
 
-      {/* BUTTON */}
-      <div className="action-area">
-        <button className="open-modal-btn" onClick={() => setOpen(true)}>
-          View & Request Courses
-        </button>
-      </div>
+        {/* BUTTON */}
+        <div className="action-area">
+          <button className="open-modal-btn" onClick={() => setOpen(true)}>
+            View & Request Courses
+          </button>
+        </div>
 
-      {/* GRID */}
-      <div className="grid">
-        {Object.entries(grouped).map(([courseId, data]) => (
-          <div className="card" key={courseId}>
+        {/* GRID */}
+        <div className="grid">
+          {Object.entries(grouped).map(([courseId, data]) => (
+            <div className="card" key={courseId}>
 
-            <div className="card-header">
-              {data.courseName}
-            </div>
-
-            {data.sections.map((c) => (
-              <div className="section" key={c.id}>
-
-                <div className="row">
-                  <FaCalendarAlt />
-                  {c.day}
-                </div>
-
-                <div className="row">
-                  <FaClock />
-                  {c.startTime} - {c.endTime}
-                </div>
-
-                <div className="row">
-                  <FaChalkboardTeacher />
-                  {c.instructor}
-                </div>
-
-                <div className="row">
-                  <FaUsers />
-                  {c.seatTaken}/{c.seatLimit} seats
-                </div>
-
-                <div className="bar">
-                  <div
-                    className="fill"
-                    style={{
-                      width: `${(c.seatTaken / c.seatLimit) * 100}%`,
-                    }}
-                  />
-                </div>
-
+              <div className="card-header">
+                {data.courseName}
               </div>
-            ))}
 
-          </div>
-        ))}
+              {data.sections.map((c) => (
+                <div className="section" key={c.id}>
+
+                  <div className="row">
+                    <FaCalendarAlt />
+                    {c.day}
+                  </div>
+
+                  <div className="row">
+                    <FaClock />
+                    {c.startTime} - {c.endTime}
+                  </div>
+
+                  <div className="row">
+                    <FaChalkboardTeacher />
+                    {c.instructor}
+                  </div>
+
+                  <div className="row">
+                    <FaUsers />
+                    {c.seatTaken}/{c.seatLimit} seats
+                  </div>
+
+                  <div className="bar">
+                    <div
+                      className="fill"
+                      style={{
+                        width: `${(c.seatTaken / c.seatLimit) * 100}%`,
+                      }}
+                    />
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
+          ))}
+        </div>
+
+        {/* MODAL */}
+        <CourseModal
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          sections={courses}
+          studentId={8}
+        />
       </div>
-
-      {/* MODAL */}
-      <CourseModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        sections={courses}
-        studentId={8}
-      />
-
     </div>
   );
 };

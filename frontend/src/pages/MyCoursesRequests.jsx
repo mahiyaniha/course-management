@@ -1,5 +1,6 @@
 import React from "react";
 import "./MyCoursesRequests.css";
+import "./MyCoursesRequestsMain.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookOpenReader,
@@ -92,98 +93,100 @@ const MyCoursesRequests = () => {
   };
 
   return (
-    <div className="combined-container">
-      {/* LEFT: My Courses (60%) */}
-      <div className="my-courses-section">
-        <div className="section-header">
-          <FontAwesomeIcon icon={faBookOpenReader} className="header-icon" />
-          <div className="header-title">My Courses</div>
-        </div>
-        <div className="table-container">
-          <table className="course-table">
-            <thead>
-              <tr>
-                <th>Course</th>
-                <th>Instructor</th>
-                <th>Schedule</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course) => (
-                <tr key={course.id}>
-                  <td className="course-name">{course.courseName}</td>
-                  <td>
-                    <div className="cell-inline">
-                      <FontAwesomeIcon icon={faUser} className="icon" />
-                      {course.instructor}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="cell-inline">
-                      <FontAwesomeIcon icon={faClock} className="icon" />
-                      {course.time}
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`status-badge ${getStatusClass(course.status, 'course')}`}>
-                      {course.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button className="drop-btn" disabled={course.status === "Requested"}>
-                      Drop
-                    </button>
-                  </td>
+    <div className="requests-main">
+      <div className="combined-container">
+        {/* LEFT: My Courses (60%) */}
+        <div className="my-courses-section">
+          <div className="section-header">
+            <FontAwesomeIcon icon={faBookOpenReader} className="header-icon" />
+            <div className="header-title">My Courses</div>
+          </div>
+          <div className="table-container">
+            <table className="course-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Instructor</th>
+                  <th>Schedule</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {courses.map((course) => (
+                  <tr key={course.id}>
+                    <td className="course-name">{course.courseName}</td>
+                    <td>
+                      <div className="cell-inline">
+                        <FontAwesomeIcon icon={faUser} className="icon" />
+                        {course.instructor}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="cell-inline">
+                        <FontAwesomeIcon icon={faClock} className="icon" />
+                        {course.time}
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${getStatusClass(course.status, 'course')}`}>
+                        {course.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button className="drop-btn" disabled={course.status === "Requested"}>
+                        Drop
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      {/* RIGHT: My Requests (40%) */}
-      <div className="requests-section">
-        <div className="section-header">
-          <FontAwesomeIcon icon={faSpinner} className="header-icon" />
-          <div className="header-title">My Requests</div>
-        </div>
-        <div className="table-container">
-          <table className="request-table">
-            <thead>
-              <tr>
-                <th>Course</th>
-                <th>Section</th>
-                <th>Status</th>
-                <th>Comment</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((req) => (
-                <tr key={req.id}>
-                  <td className="course-name">{req.courseName}</td>
-                  <td>{req.section}</td>
-                  <td>
-                    <span className={`status-badge ${getStatusClass(req.status, 'request')}`}>
-                      {req.status}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="cell-inline">
-                      <FontAwesomeIcon icon={faComment} className="icon" />
-                      {req.advisorComment || "No comment"}
-                    </div>
-                  </td>
-                  <td>
-                    {req.status === "Pending" && <button className="cancel-btn">Cancel</button>}
-                    {req.status === "Rejected" && <button className="retry-btn">Retry</button>}
-                  </td>
+        {/* RIGHT: My Requests (40%) */}
+        <div className="requests-section">
+          <div className="section-header">
+            <FontAwesomeIcon icon={faSpinner} className="header-icon" />
+            <div className="header-title">My Requests</div>
+          </div>
+          <div className="table-container">
+            <table className="request-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Section</th>
+                  <th>Status</th>
+                  <th>Comment</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {requests.map((req) => (
+                  <tr key={req.id}>
+                    <td className="course-name">{req.courseName}</td>
+                    <td>{req.section}</td>
+                    <td>
+                      <span className={`status-badge ${getStatusClass(req.status, 'request')}`}>
+                        {req.status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="cell-inline">
+                        <FontAwesomeIcon icon={faComment} className="icon" />
+                        {req.advisorComment || "No comment"}
+                      </div>
+                    </td>
+                    <td>
+                      {req.status === "Pending" && <button className="cancel-btn">Cancel</button>}
+                      {req.status === "Rejected" && <button className="retry-btn">Retry</button>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

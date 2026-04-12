@@ -1,95 +1,86 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
-
-import Navbar from "./components/Navbar";
-
-// Pages
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-
-import DashboardLayout from "./pages/dashboard/student";
-import AdvisorDashboard from "./pages/dashboard/advisor";
+import Dashboard from "./pages/dashboard/student/Dashboard";
+import Courses from "./pages/Courses";
+import MyCoursesRequests from "./pages/MyCoursesRequests";
+import Schedule from "./pages/Schedule";
+import AdvisorDashboard from "./pages/dashboard/advisor/index";
 import { useEffect } from "react";
 
+// 🔐 Protected Route
 function ProtectedRoute({ children, allowedRole }) {
   const role = localStorage.getItem("role");
 
   if (!role) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
   if (allowedRole && role !== allowedRole) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
 }
 
+// 🚀 App Content
 function AppContent() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  // Hide navbar on auth pages only
-  const hideNavbar =
-    location.pathname === "/" ||
-    location.pathname === "/login" ||
-    location.pathname === "/register";
-
   useEffect(() => {
-
     const role = localStorage.getItem("role");
-    if (role !== "") {
+
+    if (window.location.pathname === "/") {
       if (role === "student") {
-        navigate("/dashboard/student")
-      }
-      else if (role === "advisor") {
-        navigate("/dashboard/advisor")
-      }
-      else if (role === "admin") {
-        navigate("/dashboard/admin")
+        navigate("/dashboard", { replace: true });
+      } else if (role === "advisor") {
+        navigate("/advisor-dashboard", { replace: true });
+      } else if (role === "admin") {
+        navigate("/admin", { replace: true });
       }
     }
-
-  }, [])
+  }, [navigate]);
 
   return (
-    <>
-      {!hideNavbar && <Navbar />}
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-      <Routes>
+      {/* ✅ STUDENT DASHBOARD */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute allowedRole="student">
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="courses" element={<Courses />} />
+        <Route path="requests" element={<MyCoursesRequests />} />
+        <Route path="schedule" element={<Schedule />} />
+      </Route>
 
-        {/* ================= HOME ================= */}
-        <Route path="/" element={<Home />} />
+      {/* ADVISOR */}
+      <Route
+        path="/advisor-dashboard"
+        element={
+          <ProtectedRoute allowedRole="advisor">
+            <AdvisorDashboard />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* ================= AUTH ================= */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* ================= STUDENT DASHBOARD ================= */}
-        <Route
-          path="/dashboard/student"
-          element={
-            <ProtectedRoute allowedRole="student">
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ================= ADVISOR DASHBOARD ================= */}
-        <Route
-          path="/dashboard/advisor"
-          element={
-            <ProtectedRoute allowedRole="advisor">
-              <AdvisorDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-      </Routes>
-    </>
+      {/* fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
+// Root App
 function App() {
   return (
     <Router>

@@ -30,11 +30,12 @@ public class AuthService {
         return AuthResponse.builder()
                 .message("Login successful")
                 .role(user.getRole().name())
-                .redirect("/" + user.getRole().name() + "/dashboard")
+                .userId(user.getId())
+                .redirect("/dashboard/" + user.getRole().name().toLowerCase())
                 .build();
     }
 
-    // 🧑‍🎓 REGISTER STUDENT ONLY
+    // 🧑‍🎓 REGISTER
     public AuthResponse register(RegisterRequest request) {
 
         if (userRepo.findByEmail(request.getEmail()) != null) {
@@ -48,14 +49,14 @@ public class AuthService {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
-        user.setRole(User.Role.valueOf(request.getRole()));
+        user.setRole(User.Role.valueOf(request.getRole().toUpperCase()));
 
         userRepo.save(user);
 
         return AuthResponse.builder()
                 .message("User registered successfully")
-                .role(request.getRole())
-                .redirect("/dashboard/" + request.getRole())
+                .role(request.getRole().toLowerCase())
+                .redirect("/dashboard/" + request.getRole().toLowerCase())
                 .build();
     }
 }

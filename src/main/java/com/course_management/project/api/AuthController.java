@@ -7,21 +7,21 @@ import com.course_management.project.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class AuthController {
 
     @Autowired
     private AuthService authService;
 
-    // LOGIN
+    // 🔐 LOGIN
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
-    // REGISTER STUDENT
+    // 🧑‍🎓 REGISTER
     @PostMapping("/register")
     public AuthResponse register(@RequestBody RegisterRequest request) {
         return authService.register(request);

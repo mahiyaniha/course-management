@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Schedule.css";
+import "./ScheduleMain.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faCalendarCheck, 
@@ -61,68 +62,70 @@ const Schedule = () => {
   };
 
   return (
-    <div className="schedule-container">
-      {/* 🔘 Compact Toggle Button */}
-      <button 
-        className="schedule-toggle-btn"
-        onClick={toggleSchedule}
-      >
-        <FontAwesomeIcon 
-          icon={faCalendarCheck} 
-          className="header-icon" 
-        />
-        <div className="btn-content">
-          <div className="header-title">My Schedule</div>
-          <div className="subtitle">Click to see your schedule for this week</div>
-        </div>
-        <FontAwesomeIcon 
-          icon={showSchedule ? faChevronUp : faChevronDown} 
-          className="toggle-icon" 
-        />
-      </button>
+    <div className="schedule-main">
+      <div className="schedule-container">
+        {/* 🔘 Compact Toggle Button */}
+        <button 
+          className="schedule-toggle-btn"
+          onClick={toggleSchedule}
+        >
+          <FontAwesomeIcon 
+            icon={faCalendarCheck} 
+            className="header-icon" 
+          />
+          <div className="btn-content">
+            <div className="header-title">My Schedule</div>
+            <div className="subtitle">Click to see your schedule for this week</div>
+          </div>
+          <FontAwesomeIcon 
+            icon={showSchedule ? faChevronUp : faChevronDown} 
+            className="toggle-icon" 
+          />
+        </button>
 
-      {/* 📅 Timetable - Conditional */}
-      {showSchedule && (
-        <div className="timetable">
-          {/* Header Row */}
-          <div className="row header-row">
-            <div className="cell time-cell">Time</div>
-            {days.map((day) => (
-              <div key={day} className="cell">
-                {day}
+        {/* 📅 Timetable - Conditional */}
+        {showSchedule && (
+          <div className="timetable">
+            {/* Header Row */}
+            <div className="row header-row">
+              <div className="cell time-cell">Time</div>
+              {days.map((day) => (
+                <div key={day} className="cell">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            {/* Time Rows */}
+            {times.map((time) => (
+              <div className="row" key={time}>
+                <div className="cell time-cell">{time}</div>
+
+                {days.map((day) => {
+                  const course = getCourse(day, time);
+
+                  return (
+                    <div className="cell" key={day}>
+                      {course ? (
+                        <div className="course-box">
+                          <div className="course-title">
+                            {course.course}
+                          </div>
+                          <div className="course-instructor">
+                            {course.instructor}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="empty">—</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </div>
-
-          {/* Time Rows */}
-          {times.map((time) => (
-            <div className="row" key={time}>
-              <div className="cell time-cell">{time}</div>
-
-              {days.map((day) => {
-                const course = getCourse(day, time);
-
-                return (
-                  <div className="cell" key={day}>
-                    {course ? (
-                      <div className="course-box">
-                        <div className="course-title">
-                          {course.course}
-                        </div>
-                        <div className="course-instructor">
-                          {course.instructor}
-                        </div>
-                      </div>
-                    ) : (
-                      <span className="empty">—</span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
