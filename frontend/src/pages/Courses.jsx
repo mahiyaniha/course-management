@@ -13,7 +13,7 @@ import {
   FaChalkboardTeacher,
   FaUsers,
 } from "react-icons/fa";
-import toast from "react-hot-toast";
+
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -49,31 +49,7 @@ const Courses = () => {
     return acc;
   }, {});
 
-  const fetchCourse = async () => {
-    try {
-      console.log("getting courses...")
-      const coursesAPI = await fetch("http://localhost:8080/admin/courses", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-      });
-      const resp = await coursesAPI.json();
-      if (resp.error) {
-        console.error(resp)
-        throw new Error(resp.error)
-      }
-      console.info(resp)
-      // setCourses(resp)
-    } catch (e) {
-        console.error(e.message)
-        toast.error("Failed to load courses.")
-    }
-  }
 
-  useEffect(() => {
-    fetchCourse()
-  },[])
 
   return (
     <div className="courses-main">
@@ -142,12 +118,13 @@ const Courses = () => {
         </div>
 
         {/* MODAL */}
+        {open ? 
         <CourseModal
           isOpen={open}
           onClose={() => setOpen(false)}
           sections={courses}
           studentId={8}
-        />
+        /> : null}
       </div>
     </div>
   );

@@ -18,4 +18,11 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id") // column in courses table
     private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "advisor_id")
+    private Advisor advisor;
+
+    private String availableSeat;
+    private String totalSeat;
 }

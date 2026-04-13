@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "enrollments")
+@Table(name = "enrollments_request")
 @Data
-public class Enrollment {
+public class EnrollmentRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Integer studentId;
-    private Integer sectionId;
     private Integer courseId;
     private Integer advisorId;
+    private String status;
 }

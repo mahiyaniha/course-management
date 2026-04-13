@@ -1,10 +1,8 @@
 package com.course_management.project.api;
 
-import com.course_management.project.dto.AddRequestDTO;
-import com.course_management.project.dto.DashboardDTO;
-import com.course_management.project.dto.GradeDistributionDTO;
-import com.course_management.project.dto.MyCourseDTO;
+import com.course_management.project.dto.*;
 import com.course_management.project.modal.CourseSection;
+import com.course_management.project.modal.EnrollmentRequest;
 import com.course_management.project.modal.RegistrationRequest;
 import com.course_management.project.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +32,7 @@ public class StudentController {
 
     // 🔥 ADD COURSE REQUEST
     @PostMapping("/add_request")
-    public String add(@RequestBody AddRequestDTO dto) {
+    public String add(@RequestBody EnrollmentRequestDTO dto) {
         return studentService.addCourse(dto);
     }
 

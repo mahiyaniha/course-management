@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CourseModal.css";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const CourseModal = ({
   isOpen,
@@ -11,6 +12,35 @@ const CourseModal = ({
 }) => {
   const [loadingId, setLoadingId] = useState(null);
   const [localRequests, setLocalRequests] = useState(existingRequests);
+  const [availableCourses, setAvailableCourses] = useState([])
+
+  const fetchCourse = async () => {
+    try {
+      console.log("getting courses...")
+      const coursesAPI = await fetch("http://localhost:8080/admin/courses", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      });
+      const resp = await coursesAPI.json();
+      if (resp.error) {
+        console.error(resp)
+        throw new Error(resp.error)
+      }
+      console.info(resp)
+      setAvailableCourses(resp)
+    } catch (e) {
+      console.error(e.message)
+      toast.error("Failed to load courses.")
+    }
+  }
+
+  useEffect(() => {
+    fetchCourse()
+  }, [])
+
+
 
   if (!isOpen) return null;
 
@@ -42,6 +72,7 @@ const CourseModal = ({
     }
   };
 
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
@@ -56,16 +87,16 @@ const CourseModal = ({
 
         {/* CONTENT */}
         <div className="modal-content">
-          {sections.map((c) => (
+          {availableCourses && availableCourses.map((c) => (
             <div className="modal-card" key={c.id}>
 
               <div className="modal-info">
-                <h3>{c.courseName || `Course ${c.courseId}`}</h3>
+                <h3>Title: {c.title}</h3>
 
-                <p>👨‍🏫 {c.instructor}</p>
-                <p>📅 {c.day}</p>
-                <p>⏰ {c.startTime} - {c.endTime}</p>
-                <p>🪑 {c.seatTaken}/{c.seatLimit}</p>
+                <p>👨‍🏫 {c.advisor.name}</p>
+                <p>📅 {`Course Code: ${c.code}`}</p>
+                <p>⏰ {`Dept Name: ${c.department.name}`}</p>
+                <p>🪑 {c.availableSeat}/{c.totalSeat}</p>
               </div>
 
               <button
@@ -80,10 +111,10 @@ const CourseModal = ({
                 {loadingId === c.id
                   ? "Sending..."
                   : isRequested(c.id)
-                  ? "Pending"
-                  : c.seatTaken >= c.seatLimit
-                  ? "Full"
-                  : "Add Course"}
+                    ? "Pending"
+                    : c.seatTaken >= c.seatLimit
+                      ? "Full"
+                      : "Add Course"}
               </button>
 
             </div>

@@ -32,6 +32,9 @@ public class StudentService {
     @Autowired
     private SemesterRepository semesterRepo;
 
+    @Autowired
+    private EnrollmentRequestRepository enrollmentRequestRepository;
+
     // 📊 DASHBOARD (FINAL)
     public DashboardDTO getDashboard(Integer studentId) {
 
@@ -78,52 +81,12 @@ public class StudentService {
     }
 
     // 🔥 ADD COURSE REQUEST
-    public String addCourse(AddRequestDTO dto) {
-
-        CourseSection section = sectionRepo.findById(dto.getSectionId())
-                .orElseThrow(() -> new RuntimeException("Section not found"));
-
-        if (section.getSeatTaken() >= section.getSeatLimit()) {
-            throw new RuntimeException("No seats available");
-        }
-
-        List<Enrollment> enrollments = enrollRepo.findByStudentId(dto.getStudentId());
-
-        for (Enrollment e : enrollments) {
-
-            CourseSection s = sectionRepo.findById(e.getSectionId())
-                    .orElseThrow();
-
-            boolean clash =
-                    s.getDay().equals(section.getDay()) &&
-                            !(section.getEndTime().isBefore(s.getStartTime())
-                                    || section.getStartTime().isAfter(s.getEndTime()));
-
-            if (clash) {
-                throw new RuntimeException("Time clash detected");
-            }
-        }
-
-        Integer currentCredits = enrollRepo.getTotalCredits(dto.getStudentId());
-        int safeCurrentCredits = (currentCredits == null) ? 0 : currentCredits;
-
-        int newCredits = courseRepo.findById(section.getCourseId())
-                .orElseThrow()
-                .getCredit();
-
-        if (safeCurrentCredits + newCredits > 18) {
-            throw new RuntimeException("Credit limit exceeded");
-        }
-
-        RegistrationRequest req = new RegistrationRequest();
-        req.setStudentId(dto.getStudentId());
-        req.setStatus("pending");
-        requestRepo.save(req);
-
-        RegistrationRequestItem item = new RegistrationRequestItem();
-        item.setRequestId(req.getId());
-        item.setSectionId(section.getId());
-        itemRepo.save(item);
+    public String addCourse(EnrollmentRequestDTO dto) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest();
+        enrollmentRequest.setStudentId(dto.getStudentId());
+        enrollmentRequest.setCourseId(dto.getCourseId());
+        enrollmentRequest.setAdvisorId(dto.getAdvisorId());
+        enrollmentRequestRepository.save(enrollmentRequest);
 
         return "Request submitted";
     }
