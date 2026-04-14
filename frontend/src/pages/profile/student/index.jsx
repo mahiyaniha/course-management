@@ -59,7 +59,10 @@ const StudentProfile = () => {
       );
 
       const data = await res.text();
+      if (data) {
       console.log(data);
+        fetchStudent()
+      }
 
     } catch (err) {
       console.error(err);
