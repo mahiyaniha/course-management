@@ -27,7 +27,7 @@ export default function Register() {
 
   const getDepartment = async () => {
     try {
-      const loginAPI = await fetch("http://localhost:8080/admin/departments", {
+      const loginAPI = await fetch("http://localhost:8080/api/admin/departments", {
         method: "GET",
         headers: {
           "Content-Type": "application/json"

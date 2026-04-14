@@ -179,9 +179,9 @@ const Dashboard = () => {
       }
 
       const results = await Promise.allSettled([
-        axios.get(`${API_BASE_URL}/student/dashboard/${studentId}`),
-        axios.get(`${API_BASE_URL}/student/completed_courses/${studentId}`),
-        axios.get(`${API_BASE_URL}/student/grades/distribution/${studentId}`),
+        axios.get(`${API_BASE_URL}/api/student/dashboard/${studentId}`),
+        axios.get(`${API_BASE_URL}/api/student/completed_courses/${studentId}`),
+        axios.get(`${API_BASE_URL}/api/student/grades/distribution/${studentId}`),
       ]);
 
       if (!isMounted) {

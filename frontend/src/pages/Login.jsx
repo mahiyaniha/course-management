@@ -15,7 +15,7 @@ const Login = () => {
     } else if (role === "advisor") {
       navigate("/advisor-dashboard");
     } else if (role === "admin") {
-      navigate("/admin");
+      navigate("/admin-dashboard");
     }
   };
 

@@ -8,6 +8,7 @@ const Sidebar = () => {
     { label: 'Courses', path: '/dashboard/courses' },
     { label: 'My Courses & Requests', path: '/dashboard/requests' },
     { label: 'Schedule', path: '/dashboard/schedule' },
+    { label: 'Profile', path: '/dashboard/profile' },
   ];
 
   const handleLogout = () => {

@@ -17,7 +17,7 @@ const CourseModal = ({
   const fetchCourse = async () => {
     try {
       console.log("getting courses...")
-      const coursesAPI = await fetch("http://localhost:8080/admin/courses", {
+      const coursesAPI = await fetch("http://localhost:8080/api/admin/courses", {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
@@ -53,7 +53,7 @@ const CourseModal = ({
     try {
       setLoadingId(sectionId);
 
-      await axios.post("http://localhost:8080/student/add_request", {
+      await axios.post("http://localhost:8080/api/student/add_request", {
         studentId,
         sectionId,
       });

@@ -5,7 +5,9 @@ import com.course_management.project.modal.*;
 import com.course_management.project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -34,6 +36,42 @@ public class StudentService {
 
     @Autowired
     private EnrollmentRequestRepository enrollmentRequestRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
+    }
+
+
+    public Student getStudentById(Integer id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+    }
+
+    public String updateStudentProfile(StudentDTO dto, MultipartFile photo) throws IOException {
+        Student student = studentRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        // update fields from DTO
+        student.setEmail(dto.getEmail());
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setName(dto.getName());
+        student.setDescription(dto.getDescription());
+        student.setAddress(dto.getAddress());
+        student.setPhone(dto.getPhone());
+        student.setDepartment(dto.getDepartment());
+
+        // convert image → BLOB
+        if (photo != null && !photo.isEmpty()) {
+            student.setPicture(photo.getBytes());
+        }
+        studentRepository.save(student);
+        return "Profile updated successfully";
+    }
 
     // 📊 DASHBOARD (FINAL)
     public DashboardDTO getDashboard(Integer studentId) {

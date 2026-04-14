@@ -9,6 +9,8 @@ import MyCoursesRequests from "./pages/MyCoursesRequests";
 import Schedule from "./pages/Schedule";
 import AdvisorDashboard from "./pages/dashboard/advisor/index";
 import { useEffect } from "react";
+import AdminDashboard from "./pages/dashboard/admin";
+import StudentProfile from "./pages/profile/student";
 
 // 🔐 Protected Route
 function ProtectedRoute({ children, allowedRole }) {
@@ -36,9 +38,9 @@ function AppContent() {
       if (role === "student") {
         navigate("/dashboard", { replace: true });
       } else if (role === "advisor") {
-        navigate("/advisor-dashboard", { replace: true });
+        navigate("/dashboard", { replace: true });
       } else if (role === "admin") {
-        navigate("/admin", { replace: true });
+        navigate("/dashboard", { replace: true });
       }
     }
   }, [navigate]);
@@ -48,6 +50,17 @@ function AppContent() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+
+      {/* ADMIN */}
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute allowedRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* ✅ STUDENT DASHBOARD */}
       <Route
@@ -62,6 +75,7 @@ function AppContent() {
         <Route path="courses" element={<Courses />} />
         <Route path="requests" element={<MyCoursesRequests />} />
         <Route path="schedule" element={<Schedule />} />
+        <Route path="profile" element={ <StudentProfile /> } />
       </Route>
 
       {/* ADVISOR */}

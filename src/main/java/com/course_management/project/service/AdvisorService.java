@@ -2,11 +2,7 @@ package com.course_management.project.service;
 
 import com.course_management.project.dto.AdvisorDecisionDTO;
 import com.course_management.project.modal.*;
-import com.course_management.project.repository.CourseSectionRepository;
-import com.course_management.project.repository.EnrollmentRepository;
-import com.course_management.project.repository.RequestItemRepository;
-import com.course_management.project.repository.NotificationRepository;
-import com.course_management.project.repository.RequestRepository;
+import com.course_management.project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +25,14 @@ public class AdvisorService {
 
     @Autowired
     private NotificationRepository notificationRepo;
+
+    @Autowired
+    private AdvisorRepository advisorRepository;
+
+
+    public List<Advisor> getAllAdvisors() {
+        return advisorRepository.findAll();
+    }
 
     // Get all pending requests
     public List<RegistrationRequest> getPendingRequests() {

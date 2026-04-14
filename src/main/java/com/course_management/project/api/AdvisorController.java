@@ -1,6 +1,7 @@
 package com.course_management.project.api;
 
 import com.course_management.project.dto.AdvisorDecisionDTO;
+import com.course_management.project.modal.Advisor;
 import com.course_management.project.modal.RegistrationRequest;
 import com.course_management.project.service.AdvisorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,17 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/advisor")
+@RequestMapping("/api/advisor")
 public class AdvisorController {
 
     @Autowired
     private AdvisorService advisorService;
+
+    @GetMapping("/all")
+    public List<Advisor> getAllAdvisors() {
+        return advisorService.getAllAdvisors();
+    }
+
 
     // View pending requests
     @GetMapping("/requests")
