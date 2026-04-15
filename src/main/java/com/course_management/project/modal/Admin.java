@@ -31,5 +31,6 @@ public class Admin {
     private String address;
     private String phone;
 
+    @Column(name = "unique_id", unique = true, nullable = false)
     private String uniqueId;
 }

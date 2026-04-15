@@ -20,7 +20,7 @@ public class Course {
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advisor_id")
+    @JoinColumn(name = "advisor_id", referencedColumnName = "unique_id")
     private Advisor advisor;
 
     private String availableSeat;

@@ -11,7 +11,7 @@ const AdvisorProfile = () => {
     description: "",
     address: "",
     phone: "",
-    department: ""
+    level: ""
   });
 
   const [photo, setPhoto] = useState(null);   // ✅ ONLY for display
@@ -91,7 +91,7 @@ const AdvisorProfile = () => {
           description: data.description || "",
           address: data.address || "",
           phone: data.phone || "",
-          department: data.department || ""
+          level: data.level || ""
         });
 
         // ✅ PHOTO STORED SEPARATELY
@@ -138,7 +138,9 @@ const AdvisorProfile = () => {
       <input name="description" value={form.description} onChange={handleChange} placeholder="Description" /><br />
       <input name="address" value={form.address} onChange={handleChange} placeholder="Address" /><br />
       <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" /><br />
-      <input name="department" value={form.department} onChange={handleChange} placeholder="Department" /><br />
+
+      <p>Level</p>
+      <input readOnly disabled name="title" value={form.level} onChange={handleChange} placeholder="Title" /><br /><br />
 
       <button onClick={handleSubmit}>
         Update Profile

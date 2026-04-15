@@ -12,8 +12,8 @@ public class Enrollment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer studentId;
+    private String studentId;
     private Integer sectionId;
     private Integer courseId;
-    private Integer advisorId;
+    private String advisorId;
 }

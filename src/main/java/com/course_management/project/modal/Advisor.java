@@ -33,5 +33,6 @@ public class Advisor {
     private String phone;
     private String level;
 
+    @Column(name = "unique_id", unique = true, nullable = false)
     private String uniqueId;
 }

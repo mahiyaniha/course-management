@@ -128,6 +128,7 @@ public class StudentService {
         enrollmentRequest.setStudentId(dto.getStudentId());
         enrollmentRequest.setCourseId(dto.getCourseId());
         enrollmentRequest.setAdvisorId(dto.getAdvisorId());
+        enrollmentRequest.setStatus(dto.getStatus());
         enrollmentRequestRepository.save(enrollmentRequest);
 
         return "Request submitted";

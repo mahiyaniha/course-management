@@ -33,6 +33,7 @@ public class Student {
     private String phone;
     private String department;
 
+    @Column(name = "unique_id", unique = true, nullable = false)
     private String uniqueId;
 }
 

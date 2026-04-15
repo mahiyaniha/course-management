@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -61,8 +63,11 @@ public class StudentController {
 
     // 🔥 ADD COURSE REQUEST
     @PostMapping("/add_request")
-    public String add(@RequestBody EnrollmentRequestDTO dto) {
-        return studentService.addCourse(dto);
+    public ResponseEntity<?> add(@RequestBody EnrollmentRequestDTO dto) {
+        String resp = studentService.addCourse(dto);
+        Map<String, String> respMap = new HashMap<>();
+        respMap.put("message", resp);
+        return ResponseEntity.ok(respMap);
     }
 
     // 📘 MY COURSES

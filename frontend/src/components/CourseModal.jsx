@@ -49,19 +49,29 @@ const CourseModal = ({
     return localRequests.some((r) => r.sectionId === sectionId);
   };
 
-  const handleRequest = async (sectionId) => {
+  const handleRequest = async (curr_course) => {
     try {
-      setLoadingId(sectionId);
+      console.log("curr course: ", curr_course)
+      setLoadingId(curr_course.id);
 
-      await axios.post("http://localhost:8080/api/student/add_request", {
-        studentId,
-        sectionId,
+      const resp = await fetch("http://localhost:8080/api/student/add_request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "studentId": localStorage.getItem("uniqueId"),
+          "courseId": curr_course.id,
+          "advisorId": curr_course.advisor.uniqueId,
+          "status": "pending"
+        })
       });
+      const respData = await resp.json();
 
       // update UI instantly (important for UX)
       setLocalRequests((prev) => [
         ...prev,
-        { sectionId, status: "pending" },
+        { "sectionId": curr_course.id, status: "pending" },
       ]);
 
     } catch (err) {
@@ -106,7 +116,7 @@ const CourseModal = ({
                   loadingId === c.id ||
                   c.seatTaken >= c.seatLimit
                 }
-                onClick={() => handleRequest(c.id)}
+                onClick={() => handleRequest(c)}
               >
                 {loadingId === c.id
                   ? "Sending..."

@@ -12,7 +12,7 @@ public class RegistrationRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer studentId;
+    private String studentId;
     private String status; // pending/approved/rejected
     private String advisorComment;
 }

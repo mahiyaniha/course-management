@@ -23,7 +23,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-text">Course Portal</span>
+          <span className="logo-text">Student Portal</span>
         </div>
       </div>
 
