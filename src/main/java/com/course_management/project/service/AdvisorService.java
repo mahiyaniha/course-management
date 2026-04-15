@@ -1,11 +1,15 @@
 package com.course_management.project.service;
 
+import com.course_management.project.dto.AdminDTO;
+import com.course_management.project.dto.AdvisorDTO;
 import com.course_management.project.dto.AdvisorDecisionDTO;
 import com.course_management.project.modal.*;
 import com.course_management.project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -29,10 +33,37 @@ public class AdvisorService {
     @Autowired
     private AdvisorRepository advisorRepository;
 
-
     public List<Advisor> getAllAdvisors() {
         return advisorRepository.findAll();
     }
+
+    public  Advisor getAdvisorDetails(String uniqueId) {
+        Advisor advisor = advisorRepository
+                .findByUniqueId(uniqueId).orElseThrow(() -> new RuntimeException("Advisor not found"));
+        return advisor;
+    }
+
+    public String updateAdvisorProfile(AdvisorDTO dto, MultipartFile photo) throws IOException {
+        Advisor advisor = advisorRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Advisor not found"));
+
+        // update fields from DTO
+        advisor.setEmail(dto.getEmail());
+        advisor.setFirstName(dto.getFirstName());
+        advisor.setLastName(dto.getLastName());
+        advisor.setName(dto.getName());
+        advisor.setDescription(dto.getDescription());
+        advisor.setAddress(dto.getAddress());
+        advisor.setPhone(dto.getPhone());
+
+        // convert image → BLOB
+        if (photo != null && !photo.isEmpty()) {
+            advisor.setPicture(photo.getBytes());
+        }
+        advisorRepository.save(advisor);
+        return "Profile updated successfully";
+    }
+
 
     // Get all pending requests
     public List<RegistrationRequest> getPendingRequests() {

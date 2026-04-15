@@ -1,13 +1,15 @@
 package com.course_management.project.api;
 
+import com.course_management.project.dto.AdminDTO;
 import com.course_management.project.dto.CourseSectionDTO;
-import com.course_management.project.modal.Course;
-import com.course_management.project.modal.CourseSection;
-import com.course_management.project.modal.Department;
-import com.course_management.project.modal.User;
+import com.course_management.project.dto.StudentDTO;
+import com.course_management.project.modal.*;
 import com.course_management.project.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,26 @@ public class AdminController {
         return adminService.getAllUsers();
     }
 
+    @GetMapping("/{uniqueId}")
+    public Admin getAdminById(@PathVariable String uniqueId) {
+        return adminService.getAdminDetails(uniqueId);
+    }
+
+    @PostMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateProfile(
+            @RequestPart("data") AdminDTO dto,
+            @RequestPart(value = "photo", required = false) MultipartFile photo
+    ) {
+        try {
+            String api_resp = adminService.updateAdminProfile(dto, photo);
+            return ResponseEntity.ok("Admin Profile updated successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error updating profile");
+        }
+    }
+
     @PostMapping("/users")
     public User createUser(@RequestBody User user) {
         return adminService.createUser(user);
@@ -38,9 +60,9 @@ public class AdminController {
         return adminService.getAllDepartments();
     }
 
-    @DeleteMapping("/users/{id}")
-    public String deleteUser(@PathVariable Integer id) {
-        adminService.deleteUser(id);
+    @DeleteMapping("/users/{uniqueId}")
+    public String deleteUser(@PathVariable String uniqueId) {
+        adminService.deleteUser(uniqueId);
         return "User deleted";
     }
 

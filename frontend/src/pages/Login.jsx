@@ -21,7 +21,7 @@ const Login = () => {
 
   const resolveUserId = (data) => {
     const candidates = [
-      data?.userId,
+      data?.uniqueId,
     ];
 
     const matchedValue = candidates.find(
@@ -59,11 +59,11 @@ const Login = () => {
       localStorage.setItem("role", data.role || "");
       localStorage.setItem("authEmail", email);
 
-      const userId = resolveUserId(data);
-      if (userId) {
-        localStorage.setItem("userId", userId);
+      const uniqueId = resolveUserId(data);
+      if (uniqueId) {
+        localStorage.setItem("uniqueId", uniqueId);
       } else {
-        localStorage.removeItem("userId");
+        localStorage.removeItem("uniqueId");
       }
 
       redirectUser(data.role);

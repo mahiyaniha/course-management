@@ -1,23 +1,22 @@
 package com.course_management.project.service;
 
+import com.course_management.project.dto.AdminDTO;
 import com.course_management.project.dto.CourseSectionDTO;
-import com.course_management.project.modal.Course;
-import com.course_management.project.modal.CourseSection;
-import com.course_management.project.modal.Department;
-import com.course_management.project.modal.User;
-import com.course_management.project.repository.CourseRepository;
-import com.course_management.project.repository.CourseSectionRepository;
-import com.course_management.project.repository.DepartmentRepository;
-import com.course_management.project.repository.UserRepository;
+import com.course_management.project.dto.StudentDTO;
+import com.course_management.project.modal.*;
+import com.course_management.project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
 
 @Service
 public class AdminService {
 
+    @Autowired private AdminRepository adminRepository;
     @Autowired private UserRepository userRepo;
     @Autowired private DepartmentRepository departmentRepository;
     @Autowired private CourseRepository courseRepo;
@@ -30,6 +29,33 @@ public class AdminService {
         return userRepo.findAll();
     }
 
+    public Admin getAdminDetails(String uniqueId) {
+        Admin admin = adminRepository.findByUniqueId(uniqueId).orElseThrow(() -> new RuntimeException("Admin not found"));
+        return admin;
+    }
+
+    public String updateAdminProfile(AdminDTO dto, MultipartFile photo) throws IOException {
+        Admin admin = adminRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // update fields from DTO
+        admin.setEmail(dto.getEmail());
+        admin.setFirstName(dto.getFirstName());
+        admin.setLastName(dto.getLastName());
+        admin.setName(dto.getName());
+        admin.setDescription(dto.getDescription());
+        admin.setAddress(dto.getAddress());
+        admin.setPhone(dto.getPhone());
+
+        // convert image → BLOB
+        if (photo != null && !photo.isEmpty()) {
+            admin.setPicture(photo.getBytes());
+        }
+        adminRepository.save(admin);
+        return "Profile updated successfully";
+    }
+
+
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll();
     }
@@ -41,8 +67,8 @@ public class AdminService {
         return userRepo.save(user);
     }
 
-    public void deleteUser(Integer userId) {
-        userRepo.deleteById(userId);
+    public void deleteUser(String uniqueId) {
+        userRepo.deleteByUniqueId(uniqueId);
     }
 
     // -------------------------

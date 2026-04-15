@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -46,8 +47,8 @@ public class StudentService {
     }
 
 
-    public Student getStudentById(Integer id) {
-        return studentRepository.findById(id)
+    public Student getStudentById(String uniqueId) {
+        return studentRepository.findByUniqueId(uniqueId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
@@ -74,15 +75,18 @@ public class StudentService {
     }
 
     // 📊 DASHBOARD (FINAL)
-    public DashboardDTO getDashboard(Integer studentId) {
+    public DashboardDTO getDashboard(String studentId) {
 
-        int totalCourses = enrollRepo.findByStudentId(studentId).size();
+        Student student = getStudentById(studentId);
+        Integer student_id = student.getId();
 
-        Integer totalCredits = enrollRepo.getTotalCredits(studentId);
+        int totalCourses = enrollRepo.findByStudentId(student_id).size();
+
+        Integer totalCredits = enrollRepo.getTotalCredits(student_id);
         int safeCredits = (totalCredits == null) ? 0 : totalCredits;
 
         List<CompletedCourse> completedList =
-                completedCourseRepo.findByIdStudentId(studentId);
+                completedCourseRepo.findByIdStudentId(student.getId());
 
         int completedCourses = completedList.size();
 
@@ -98,7 +102,7 @@ public class StudentService {
 
         Semester activeSemester = semesterRepo.findByActive(1);
 
-        double cgpa = getCGPA(studentId);
+        double cgpa = getCGPA(student_id);
 
         return DashboardDTO.builder()
                 .totalCourses(totalCourses)
@@ -106,8 +110,8 @@ public class StudentService {
                 .completedCourses(completedCourses)
                 .completedCredits(completedCredits)
                 .completionRate(completionRate)
-                .pending(requestRepo.countByStudentIdAndStatus(studentId, "pending"))
-                .approved(requestRepo.countByStudentIdAndStatus(studentId, "approved"))
+                .pending(requestRepo.countByStudentIdAndStatus(student_id, "pending"))
+                .approved(requestRepo.countByStudentIdAndStatus(student_id, "approved"))
                 .activeSemester(activeSemester != null ? activeSemester.getName() : null)
                 .cgpa(cgpa)
                 .build();
@@ -130,9 +134,10 @@ public class StudentService {
     }
 
     // 📘 MY COURSES
-    public List<MyCourseDTO> myCourses(Integer studentId) {
+    public List<MyCourseDTO> myCourses(String studentId) {
+        Integer student_id = getStudentById(studentId).getId();
 
-        return enrollRepo.findByStudentId(studentId)
+        return enrollRepo.findByStudentId(student_id)
                 .stream()
                 .map(e -> {
 
@@ -154,9 +159,10 @@ public class StudentService {
     }
 
     // 🆕 COMPLETED COURSES
-    public List<MyCourseDTO> getCompletedCourses(Integer studentId) {
+    public List<MyCourseDTO> getCompletedCourses(String studentId) {
+        Integer student_id = getStudentById(studentId).getId();
 
-        return completedCourseRepo.findByIdStudentId(studentId)
+        return completedCourseRepo.findByIdStudentId(student_id)
                 .stream()
                 .map(c -> {
 
@@ -181,8 +187,9 @@ public class StudentService {
     }
 
     // 🗓️ SCHEDULE
-    public List<CourseSection> getSchedule(Integer studentId) {
-        return enrollRepo.findByStudentId(studentId)
+    public List<CourseSection> getSchedule(String studentId) {
+        Integer student_id = getStudentById(studentId).getId();
+        return enrollRepo.findByStudentId(student_id)
                 .stream()
                 .map(e -> sectionRepo.findById(e.getSectionId())
                         .orElseThrow())
@@ -190,15 +197,16 @@ public class StudentService {
     }
 
     // 📜 REQUEST HISTORY
-    public List<RegistrationRequest> getRequests(Integer studentId) {
-        return requestRepo.findByStudentId(studentId);
+    public List<RegistrationRequest> getRequests(String studentId) {
+        Integer student_id = getStudentById(studentId).getId();
+        return requestRepo.findByStudentId(student_id);
     }
 
     // 📊 GRADE DISTRIBUTION
-    public GradeDistributionDTO getGradeDistribution(Integer studentId) {
-
+    public GradeDistributionDTO getGradeDistribution(String studentId) {
+        Integer student_id = getStudentById(studentId).getId();
         List<CompletedCourse> list =
-                completedCourseRepo.findByIdStudentId(studentId);
+                completedCourseRepo.findByIdStudentId(student_id);
 
         int aPlus = 0, a = 0, aMinus = 0, bPlus = 0, b = 0, c = 0, d = 0;
 
@@ -247,7 +255,6 @@ public class StudentService {
     }
 
     public double getCGPA(Integer studentId) {
-
         List<CompletedCourse> list =
                 completedCourseRepo.findByIdStudentId(studentId);
 

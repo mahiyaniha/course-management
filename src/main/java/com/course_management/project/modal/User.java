@@ -28,4 +28,6 @@ public class User {
         advisor,
         admin
     }
+
+    private String uniqueId;
 }

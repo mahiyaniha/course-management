@@ -32,5 +32,7 @@ public class Student {
     private String address;
     private String phone;
     private String department;
+
+    private String uniqueId;
 }
 

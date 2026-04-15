@@ -4,16 +4,12 @@ import './Sidebar.css';
 
 const Sidebar = () => {
   const menuItems = [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Courses', path: '/dashboard/courses' },
-    { label: 'My Courses & Requests', path: '/dashboard/requests' },
-    { label: 'Schedule', path: '/dashboard/schedule' },
-    { label: 'Profile', path: '/dashboard/profile' },
+    { label: 'Dashboard', path: '/admin-dashboard' },
+    { label: 'Profile', path: '/admin-dashboard/profile' },
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("studentId");
+    localStorage.removeItem("uniqueId");
     localStorage.removeItem("authEmail");
     localStorage.removeItem("role");
     window.location.href = '/';
@@ -24,7 +20,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-text">Course Portal</span>
+          <span className="logo-text">Admin Portal</span>
         </div>
       </div>
 

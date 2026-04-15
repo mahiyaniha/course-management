@@ -27,9 +27,9 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
-    @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Integer id) {
-        return studentService.getStudentById(id);
+    @GetMapping("/{uniqueId}")
+    public Student getStudentById(@PathVariable String uniqueId) {
+        return studentService.getStudentById(uniqueId);
     }
 
     @PostMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -49,7 +49,7 @@ public class StudentController {
 
         // 📊 DASHBOARD
     @GetMapping("/dashboard/{id}")
-    public DashboardDTO dashboard(@PathVariable Integer id) {
+    public DashboardDTO dashboard(@PathVariable String id) {
         return studentService.getDashboard(id);
     }
 
@@ -67,29 +67,29 @@ public class StudentController {
 
     // 📘 MY COURSES
     @GetMapping("/my_courses/{id}")
-    public List<MyCourseDTO> myCourses(@PathVariable Integer id) {
+    public List<MyCourseDTO> myCourses(@PathVariable String id) {
         return studentService.myCourses(id);
     }
 
     // 🆕 COMPLETED COURSES
     @GetMapping("/completed_courses/{id}")
-    public List<MyCourseDTO> completedCourses(@PathVariable Integer id) {
+    public List<MyCourseDTO> completedCourses(@PathVariable String id) {
         return studentService.getCompletedCourses(id);
     }
 
     // 🗓️ SCHEDULE
     @GetMapping("/schedule/{id}")
-    public List<CourseSection> schedule(@PathVariable Integer id) {
+    public List<CourseSection> schedule(@PathVariable String id) {
         return studentService.getSchedule(id);
     }
 
     // 📜 REQUEST HISTORY
     @GetMapping("/requests/{id}")
-    public List<RegistrationRequest> requests(@PathVariable Integer id) {
+    public List<RegistrationRequest> requests(@PathVariable String id) {
         return studentService.getRequests(id);
     }
     @GetMapping("/grades/distribution/{id}")
-    public GradeDistributionDTO gradeDistribution(@PathVariable Integer id) {
+    public GradeDistributionDTO gradeDistribution(@PathVariable String id) {
         return studentService.getGradeDistribution(id);
     }
 }

@@ -72,10 +72,10 @@ const StudentProfile = () => {
   // ---------------- FETCH STUDENT ----------------
   const fetchStudent = async () => {
     try {
-      const userId = localStorage.getItem("userId");
+      const uniqueId = localStorage.getItem("uniqueId");
 
       const resp = await fetch(
-        "http://localhost:8080/api/student/" + userId
+        "http://localhost:8080/api/student/" + uniqueId
       );
 
       const data = await resp.json();

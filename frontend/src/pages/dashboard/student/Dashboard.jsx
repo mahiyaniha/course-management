@@ -47,7 +47,7 @@ const defaultDistribution = {
 
 const resolveStoredStudentId = () => {
   const candidates = [
-    localStorage.getItem("userId"),
+    localStorage.getItem("uniqueId"),
   ];
 
   const matchedValue = candidates.find((value) => {

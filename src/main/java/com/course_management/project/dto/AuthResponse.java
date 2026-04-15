@@ -10,4 +10,5 @@ public class AuthResponse {
     private String role;
     private String redirect;
     private Integer userId;
+    private String uniqueId;
 }

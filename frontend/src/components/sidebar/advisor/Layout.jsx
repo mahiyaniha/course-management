@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import './Layout.css';
 
-const Layout = () => {
+const AdvisorLayout = () => {
   return (
     <div className="layout">
       <Sidebar />
@@ -14,4 +14,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default AdvisorLayout;

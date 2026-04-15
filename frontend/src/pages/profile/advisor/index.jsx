@@ -51,7 +51,7 @@ const AdvisorProfile = () => {
 
     try {
       const res = await fetch(
-        "http://localhost:8080/api/admin/update-profile",
+        "http://localhost:8080/api/advisor/update-profile",
         {
           method: "POST",
           body: formData
@@ -61,7 +61,7 @@ const AdvisorProfile = () => {
       const data = await res.text();
       if (data) {
       console.log(data);
-        fetchAdmin()
+        fetchStudent()
       }
 
     } catch (err) {
@@ -70,12 +70,12 @@ const AdvisorProfile = () => {
   };
 
   // ---------------- FETCH STUDENT ----------------
-  const fetchAdmin = async () => {
+  const fetchStudent = async () => {
     try {
       const uniqueId = localStorage.getItem("uniqueId");
 
       const resp = await fetch(
-        "http://localhost:8080/api/admin/" + uniqueId
+        "http://localhost:8080/api/advisor/" + uniqueId
       );
 
       const data = await resp.json();
@@ -91,6 +91,7 @@ const AdvisorProfile = () => {
           description: data.description || "",
           address: data.address || "",
           phone: data.phone || "",
+          department: data.department || ""
         });
 
         // ✅ PHOTO STORED SEPARATELY
@@ -103,12 +104,12 @@ const AdvisorProfile = () => {
   };
 
   useEffect(() => {
-    fetchAdmin();
+    fetchStudent();
   }, []);
 
   return (
     <div>
-      <h2>Admin Profile</h2>
+      <h2>Advisor Profile</h2>
 
       {/* ---------------- IMAGE DISPLAY ---------------- */}
       {photo && (
@@ -137,6 +138,7 @@ const AdvisorProfile = () => {
       <input name="description" value={form.description} onChange={handleChange} placeholder="Description" /><br />
       <input name="address" value={form.address} onChange={handleChange} placeholder="Address" /><br />
       <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" /><br />
+      <input name="department" value={form.department} onChange={handleChange} placeholder="Department" /><br />
 
       <button onClick={handleSubmit}>
         Update Profile

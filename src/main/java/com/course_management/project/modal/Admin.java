@@ -24,7 +24,12 @@ public class Admin {
     private String lastName;
     private String name;
     private String description;
-    private String picture;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] picture;
+
     private String address;
     private String phone;
+
+    private String uniqueId;
 }

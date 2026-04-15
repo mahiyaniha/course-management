@@ -30,7 +30,7 @@ public class AuthService {
         return AuthResponse.builder()
                 .message("Login successful")
                 .role(user.getRole().name())
-                .userId(user.getId())
+                .uniqueId(user.getUniqueId())
                 .redirect("/dashboard/" + user.getRole().name().toLowerCase())
                 .build();
     }

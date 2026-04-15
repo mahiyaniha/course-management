@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/dashboard/student/Dashboard";
+import StudentLayout from "./components/sidebar/student/Layout";
 import Courses from "./pages/Courses";
 import MyCoursesRequests from "./pages/MyCoursesRequests";
 import Schedule from "./pages/Schedule";
@@ -11,6 +11,12 @@ import AdvisorDashboard from "./pages/dashboard/advisor/index";
 import { useEffect } from "react";
 import AdminDashboard from "./pages/dashboard/admin";
 import StudentProfile from "./pages/profile/student";
+
+import AdminLayout from "./components/sidebar/admin/Layout";
+import AdminProfile from "./pages/profile/admin";
+
+import AdvisorLayout from "./components/sidebar/advisor/Layout";
+import AdvisorProfile from "./pages/profile/advisor";
 
 // 🔐 Protected Route
 function ProtectedRoute({ children, allowedRole }) {
@@ -38,9 +44,9 @@ function AppContent() {
       if (role === "student") {
         navigate("/dashboard", { replace: true });
       } else if (role === "advisor") {
-        navigate("/dashboard", { replace: true });
+        navigate("/advisor-dashboard", { replace: true });
       } else if (role === "admin") {
-        navigate("/dashboard", { replace: true });
+        navigate("/admin-dashboard", { replace: true });
       }
     }
   }, [navigate]);
@@ -56,10 +62,13 @@ function AppContent() {
         path="/admin-dashboard"
         element={
           <ProtectedRoute allowedRole="admin">
-            <AdminDashboard />
+            <AdminLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="profile" element={ <AdminProfile /> } />
+      </Route>
 
 
       {/* ✅ STUDENT DASHBOARD */}
@@ -67,7 +76,7 @@ function AppContent() {
         path="/dashboard"
         element={
           <ProtectedRoute allowedRole="student">
-            <Layout />
+            <StudentLayout />
           </ProtectedRoute>
         }
       >
@@ -75,7 +84,7 @@ function AppContent() {
         <Route path="courses" element={<Courses />} />
         <Route path="requests" element={<MyCoursesRequests />} />
         <Route path="schedule" element={<Schedule />} />
-        <Route path="profile" element={ <StudentProfile /> } />
+        <Route path="profile" element={<StudentProfile />} />
       </Route>
 
       {/* ADVISOR */}
@@ -83,10 +92,13 @@ function AppContent() {
         path="/advisor-dashboard"
         element={
           <ProtectedRoute allowedRole="advisor">
-            <AdvisorDashboard />
+            <AdvisorLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<AdvisorDashboard />} />
+        <Route path="profile" element={<AdvisorProfile />} />
+      </Route>
 
       {/* fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
