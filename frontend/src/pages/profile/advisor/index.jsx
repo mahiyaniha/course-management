@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import useUserDetails from "../../../hooks/useUserDetails";
 
 const AdvisorProfile = () => {
+  const { setUserDetails } = useUserDetails()
 
   const [form, setForm] = useState({
     id: 1,
@@ -61,7 +63,7 @@ const AdvisorProfile = () => {
       const data = await res.text();
       if (data) {
       console.log(data);
-        fetchStudent()
+        fetchAdvisor()
       }
 
     } catch (err) {
@@ -70,7 +72,7 @@ const AdvisorProfile = () => {
   };
 
   // ---------------- FETCH STUDENT ----------------
-  const fetchStudent = async () => {
+  const fetchAdvisor = useCallback(async () => {
     try {
       const uniqueId = localStorage.getItem("uniqueId");
 
@@ -94,6 +96,13 @@ const AdvisorProfile = () => {
           level: data.level || ""
         });
 
+        setUserDetails(prev => ({
+          ...prev,
+          picture: data?.picture,
+          name: data?.name
+        }))
+        localStorage.setItem("picture", data?.picture)
+        localStorage.setItem("name", data?.name)
         // ✅ PHOTO STORED SEPARATELY
         setPhoto(data.picture || null);
       }
@@ -101,11 +110,11 @@ const AdvisorProfile = () => {
     } catch (e) {
       console.error(e.message);
     }
-  };
+  }, [setUserDetails]);
 
   useEffect(() => {
-    fetchStudent();
-  }, []);
+    fetchAdvisor();
+  }, [fetchAdvisor]);
 
   return (
     <div>
@@ -132,9 +141,9 @@ const AdvisorProfile = () => {
 
       {/* ---------------- FORM FIELDS ---------------- */}
       <input name="email" value={form.email} onChange={handleChange} placeholder="Email" /><br />
+      <input readOnly disabled name="name" value={form.name} placeholder="Full Name" /><br />
       <input name="firstName" value={form.firstName} onChange={handleChange} placeholder="First Name" /><br />
       <input name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last Name" /><br />
-      <input name="name" value={form.name} onChange={handleChange} placeholder="Full Name" /><br />
       <input name="description" value={form.description} onChange={handleChange} placeholder="Description" /><br />
       <input name="address" value={form.address} onChange={handleChange} placeholder="Address" /><br />
       <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" /><br />

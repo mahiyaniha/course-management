@@ -39,8 +39,12 @@ public class AdvisorService {
 
     public  Advisor getAdvisorDetails(String uniqueId) {
         Advisor advisor = advisorRepository
-                .findByUniqueId(uniqueId).orElseThrow(() -> new RuntimeException("Advisor not found"));
+                .findByUserUniqueId(uniqueId).orElseThrow(() -> new RuntimeException("Advisor not found"));
         return advisor;
+    }
+
+    public  List<Enrollment> getEnrollments(String uniqueId) {
+        return enrollRepo.findByAdvisor_User_UniqueId(uniqueId);
     }
 
     public String updateAdvisorProfile(AdvisorDTO dto, MultipartFile photo) throws IOException {
@@ -82,8 +86,8 @@ public class AdvisorService {
 
             // Auto-enroll student
             Enrollment e = new Enrollment();
-            e.setStudentId(req.getStudentId());
-            e.setSectionId(item.getSectionId());
+            e.getStudent().getUser().setUniqueId(req.getStudentId());
+            e.getSection().setId(item.getSectionId());
             enrollRepo.save(e);
 
             // Increment seat taken

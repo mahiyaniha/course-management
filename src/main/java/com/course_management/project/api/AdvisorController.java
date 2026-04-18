@@ -5,6 +5,7 @@ import com.course_management.project.dto.AdvisorDTO;
 import com.course_management.project.dto.AdvisorDecisionDTO;
 import com.course_management.project.modal.Admin;
 import com.course_management.project.modal.Advisor;
+import com.course_management.project.modal.Enrollment;
 import com.course_management.project.modal.RegistrationRequest;
 import com.course_management.project.service.AdvisorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +65,13 @@ public class AdvisorController {
     @PostMapping("/reject")
     public String reject(@RequestBody AdvisorDecisionDTO dto) {
         return advisorService.rejectRequest(dto);
+    }
+
+    // -------------------------
+    // Enrollments
+    // -------------------------
+    @GetMapping("/enrollments/{uniqueId}")
+    public List<Enrollment> getEnrollments(@PathVariable String uniqueId) {
+        return advisorService.getEnrollments(uniqueId);
     }
 }

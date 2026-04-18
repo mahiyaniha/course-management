@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/student/Dashboard";
-import StudentLayout from "./components/sidebar/student/Layout";
+import StudentLayout from "./pages/sidebar/student/Layout";
 import Courses from "./pages/Courses";
 import MyCoursesRequests from "./pages/MyCoursesRequests";
 import Schedule from "./pages/Schedule";
@@ -12,11 +12,15 @@ import { useEffect } from "react";
 import AdminDashboard from "./pages/dashboard/admin";
 import StudentProfile from "./pages/profile/student";
 
-import AdminLayout from "./components/sidebar/admin/Layout";
+import AdminLayout from "./pages/sidebar/admin/Layout";
 import AdminProfile from "./pages/profile/admin";
+import ManageCourse from "./pages/course/admin/ManageCourse"
+import ManageSection from "./pages/section/admin/ManageSection"
+import ManageEnrollment from "./pages/enrollment/advisor/ManageEnrollment"
 
-import AdvisorLayout from "./components/sidebar/advisor/Layout";
+import AdvisorLayout from "./pages/sidebar/advisor/Layout";
 import AdvisorProfile from "./pages/profile/advisor";
+import useUserDetails from "./hooks/useUserDetails";
 
 // 🔐 Protected Route
 function ProtectedRoute({ children, allowedRole }) {
@@ -67,7 +71,9 @@ function AppContent() {
         }
       >
         <Route index element={<AdminDashboard />} />
-        <Route path="profile" element={ <AdminProfile /> } />
+        <Route path="profile" element={<AdminProfile />} />
+        <Route path="manage-course" element={<ManageCourse />} />
+        <Route path="manage-section" element={<ManageSection />} />
       </Route>
 
 
@@ -98,6 +104,8 @@ function AppContent() {
       >
         <Route index element={<AdvisorDashboard />} />
         <Route path="profile" element={<AdvisorProfile />} />
+        <Route path="manage-enrollment" element={<ManageEnrollment />} />
+
       </Route>
 
       {/* fallback */}
@@ -108,6 +116,19 @@ function AppContent() {
 
 // Root App
 function App() {
+  const { setUserDetails } = useUserDetails();
+
+
+  useEffect(() => {
+    setUserDetails({
+      name: localStorage.getItem("name") ?? "",
+      role: localStorage.getItem("role") ?? "",
+      picture: localStorage.getItem("picture") ?? "",
+      uniqueId: localStorage.getItem("uniqueId")
+    })
+
+  }, [setUserDetails])
+
   return (
     <Router>
       <AppContent />

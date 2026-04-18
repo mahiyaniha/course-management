@@ -7,13 +7,19 @@ import lombok.Data;
 @Table(name = "enrollments")
 @Data
 public class Enrollment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String studentId;
-    private Integer sectionId;
-    private Integer courseId;
-    private String advisorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", referencedColumnName = "unique_id", nullable = false)
+    private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "section_id", nullable = false)
+    private CourseSection section;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "advisor_id", referencedColumnName = "unique_id", nullable = false)
+    private Advisor advisor;
 }

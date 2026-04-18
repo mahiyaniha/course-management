@@ -29,6 +29,6 @@ public class User {
         admin
     }
 
-    @Column(name = "unique_id", unique = true, nullable = false)
+    @Column(name = "unique_id", nullable = false)
     private String uniqueId;
 }

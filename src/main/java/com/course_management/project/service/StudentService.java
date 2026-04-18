@@ -48,7 +48,7 @@ public class StudentService {
 
 
     public Student getStudentById(String uniqueId) {
-        return studentRepository.findByUniqueId(uniqueId)
+        return studentRepository.findByUserUniqueId(uniqueId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
@@ -134,6 +134,9 @@ public class StudentService {
         return "Request submitted";
     }
 
+    public  List<Enrollment> getEnrollments(String uniqueId) {
+        return enrollRepo.findByStudent_User_UniqueId(uniqueId);
+    }
     // 📘 MY COURSES
     public List<MyCourseDTO> myCourses(String studentId) {
         Integer student_id = getStudentById(studentId).getId();
@@ -142,15 +145,15 @@ public class StudentService {
                 .stream()
                 .map(e -> {
 
-                    CourseSection section = sectionRepo.findById(e.getSectionId())
+                    CourseSection section = sectionRepo.findById(e.getSection().getId())
                             .orElseThrow();
 
                     MyCourseDTO dto = new MyCourseDTO();
 
                     dto.setSectionId(section.getId());
-                    dto.setCourseId(section.getCourseId());
+                    dto.setCourseId(section.getCourse().getId());
 
-                    courseRepo.findById(section.getCourseId()).ifPresent(course -> {
+                    courseRepo.findById(section.getCourse().getId()).ifPresent(course -> {
                         dto.setCourseName(course.getTitle());
                         dto.setCredit(course.getCredit());
                     });
@@ -192,7 +195,7 @@ public class StudentService {
         Integer student_id = getStudentById(studentId).getId();
         return enrollRepo.findByStudentId(student_id)
                 .stream()
-                .map(e -> sectionRepo.findById(e.getSectionId())
+                .map(e -> sectionRepo.findById(e.getSection().getId())
                         .orElseThrow())
                 .toList();
     }

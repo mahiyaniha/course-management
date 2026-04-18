@@ -55,16 +55,21 @@ public class AdminController {
         return adminService.createUser(user);
     }
 
-    @GetMapping("/departments")
-    public List<Department> getDepartments() {
-        return adminService.getAllDepartments();
-    }
-
     @DeleteMapping("/users/{uniqueId}")
     public String deleteUser(@PathVariable String uniqueId) {
         adminService.deleteUser(uniqueId);
         return "User deleted";
     }
+
+    // -------------------------
+    // Departments
+    // -------------------------
+    @GetMapping("/departments")
+    public List<Department> getDepartments() {
+        return adminService.getAllDepartments();
+    }
+
+
 
     // -------------------------
     // COURSES

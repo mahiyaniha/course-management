@@ -1,10 +1,7 @@
 package com.course_management.project.api;
 
 import com.course_management.project.dto.*;
-import com.course_management.project.modal.CourseSection;
-import com.course_management.project.modal.EnrollmentRequest;
-import com.course_management.project.modal.RegistrationRequest;
-import com.course_management.project.modal.Student;
+import com.course_management.project.modal.*;
 import com.course_management.project.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -74,6 +71,11 @@ public class StudentController {
     @GetMapping("/my_courses/{id}")
     public List<MyCourseDTO> myCourses(@PathVariable String id) {
         return studentService.myCourses(id);
+    }
+
+    @GetMapping("/enrollments/{uniqueId}")
+    public List<Enrollment> getEnrollments(@PathVariable String uniqueId) {
+        return studentService.getEnrollments(uniqueId);
     }
 
     // 🆕 COMPLETED COURSES

@@ -33,6 +33,10 @@ public class Advisor {
     private String phone;
     private String level;
 
-    @Column(name = "unique_id", unique = true, nullable = false)
-    private String uniqueId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "unique_id",
+            referencedColumnName = "unique_id"   // IMPORTANT
+    )
+    private User user;
 }

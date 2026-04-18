@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "./Login.css";
+import useUserDetails from "../../hooks/useUserDetails";
 
 const Login = () => {
+  const {setUserDetails} = useUserDetails()
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -17,18 +20,6 @@ const Login = () => {
     } else if (role === "admin") {
       navigate("/admin-dashboard");
     }
-  };
-
-  const resolveUserId = (data) => {
-    const candidates = [
-      data?.uniqueId,
-    ];
-
-    const matchedValue = candidates.find(
-      (value) => value !== undefined && value !== null && String(value).trim() !== ""
-    );
-
-    return matchedValue ? String(matchedValue) : "";
   };
 
   const handleLogin = async () => {
@@ -54,17 +45,14 @@ const Login = () => {
         throw new Error(data.message || "Login failed");
       }
 
+      setUserDetails(data)
+
       toast.success(data.message || "Login successful");
 
-      localStorage.setItem("role", data.role || "");
-      localStorage.setItem("authEmail", email);
-
-      const uniqueId = resolveUserId(data);
-      if (uniqueId) {
-        localStorage.setItem("uniqueId", uniqueId);
-      } else {
-        localStorage.removeItem("uniqueId");
-      }
+      localStorage.setItem("role", data.role ?? "");
+      localStorage.setItem("name", data.name ?? "");
+      localStorage.setItem("picture", data.picture ?? "")
+      localStorage.setItem("uniqueId", data.uniqueId ?? "");
 
       redirectUser(data.role);
     } catch (err) {

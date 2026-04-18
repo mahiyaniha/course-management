@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./CourseModal.css";
-import axios from "axios";
 import toast from "react-hot-toast";
+import getCourses from "../api/getCourses";
 
 const CourseModal = ({
   isOpen,
@@ -16,22 +16,12 @@ const CourseModal = ({
 
   const fetchCourse = async () => {
     try {
-      console.log("getting courses...")
-      const coursesAPI = await fetch("http://localhost:8080/api/admin/courses", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-      });
-      const resp = await coursesAPI.json();
+      const resp = await getCourses()
       if (resp.error) {
-        console.error(resp)
         throw new Error(resp.error)
       }
-      console.info(resp)
       setAvailableCourses(resp)
     } catch (e) {
-      console.error(e.message)
       toast.error("Failed to load courses.")
     }
   }
@@ -51,29 +41,33 @@ const CourseModal = ({
 
   const handleRequest = async (curr_course) => {
     try {
-      console.log("curr course: ", curr_course)
       setLoadingId(curr_course.id);
+      let pmpt = prompt("Are you sure, you want to enroll in this course?", "No");
+      console.log(pmpt)
 
-      const resp = await fetch("http://localhost:8080/api/student/add_request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          "studentId": localStorage.getItem("uniqueId"),
-          "courseId": curr_course.id,
-          "advisorId": curr_course.advisor.uniqueId,
-          "status": "pending"
-        })
-      });
-      const respData = await resp.json();
+      if (pmpt !== null && pmpt.toLowerCase() === "yes") {
+        const resp = await fetch("http://localhost:8080/api/student/add_request", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "studentId": localStorage.getItem("uniqueId"),
+            "courseId": curr_course.id,
+            "advisorId": curr_course.advisor.uniqueId,
+            "status": "pending"
+          })
+        });
+        const respData = await resp.json();
 
-      // update UI instantly (important for UX)
-      setLocalRequests((prev) => [
-        ...prev,
-        { "sectionId": curr_course.id, status: "pending" },
-      ]);
-
+        // update UI instantly (important for UX)
+        setLocalRequests((prev) => [
+          ...prev,
+          { "sectionId": curr_course.id, status: "pending" },
+        ]);
+      } else {
+        console.log("User cancelled the prompt.");
+      }
     } catch (err) {
       console.log(err);
       alert("Request failed!");

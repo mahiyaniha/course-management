@@ -6,9 +6,10 @@ import lombok.Data;
 @Data
 @Builder
 public class AuthResponse {
+    private String name;
     private String message;
     private String role;
     private String redirect;
-    private Integer userId;
     private String uniqueId;
+    private byte[] picture;
 }

@@ -3,21 +3,69 @@ package com.course_management.project.service;
 import com.course_management.project.dto.AuthResponse;
 import com.course_management.project.dto.LoginRequest;
 import com.course_management.project.dto.RegisterRequest;
+import com.course_management.project.modal.Admin;
+import com.course_management.project.modal.Advisor;
+import com.course_management.project.modal.Student;
 import com.course_management.project.modal.User;
+import com.course_management.project.repository.AdminRepository;
+import com.course_management.project.repository.AdvisorRepository;
+import com.course_management.project.repository.StudentRepository;
 import com.course_management.project.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthService {
+    private final UserRepository userRepository;
+    private final StudentService studentService;
+    private final AdminService adminService;
+    private final AdvisorService advisorService;
 
-    @Autowired
-    private UserRepository userRepo;
+    public AuthService(
+            final UserRepository userRepository,
+            final StudentService studentService,
+            final AdminService adminService,
+            final AdvisorService advisorService
+    ) {
+        this.userRepository = userRepository;
+        this.adminService = adminService;
+        this.advisorService = advisorService;
+        this.studentService = studentService;
+    }
+
+    private Map<String, Object> getUserProfilePic(String byRole, String uniqueId) {
+        Map<String, Object> hashmap = new HashMap<>();
+        String role = byRole.toLowerCase();
+        return switch (role) {
+            case "admin" -> {
+                Admin adminDetails = adminService.getAdminDetails(uniqueId);
+                hashmap.put("name", adminDetails.getName());
+                hashmap.put("picture", adminDetails.getPicture());
+                yield hashmap;
+            }
+            case "advisor" -> {
+                Advisor advisorDetails = advisorService.getAdvisorDetails(uniqueId);
+                hashmap.put("name", advisorDetails.getName());
+                hashmap.put("picture", advisorDetails.getPicture());
+                yield hashmap;
+            }
+            case "student" -> {
+                Student studentById = studentService.getStudentById(uniqueId);
+                hashmap.put("name", studentById.getName());
+                hashmap.put("picture", studentById.getPicture());
+                yield hashmap;
+            }
+            default -> new HashMap<>();
+        };
+    }
 
     // 🔐 LOGIN
     public AuthResponse login(LoginRequest request) {
 
-        User user = userRepo.findByEmail(request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail());
 
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -27,10 +75,15 @@ public class AuthService {
             throw new RuntimeException("Invalid password");
         }
 
+        // Get profile pic by user role and unique id
+        Map<String, Object> userDetails = getUserProfilePic(user.getRole().name(), user.getUniqueId());
+
         return AuthResponse.builder()
                 .message("Login successful")
+                .name((String) userDetails.get("name"))
                 .role(user.getRole().name())
                 .uniqueId(user.getUniqueId())
+                .picture((byte[]) userDetails.get("picture"))
                 .redirect("/dashboard/" + user.getRole().name().toLowerCase())
                 .build();
     }
@@ -38,7 +91,7 @@ public class AuthService {
     // 🧑‍🎓 REGISTER
     public AuthResponse register(RegisterRequest request) {
 
-        if (userRepo.findByEmail(request.getEmail()) != null) {
+        if (userRepository.findByEmail(request.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
 
@@ -51,7 +104,7 @@ public class AuthService {
         user.setPassword(request.getPassword());
         user.setRole(User.Role.valueOf(request.getRole().toUpperCase()));
 
-        userRepo.save(user);
+        userRepository.save(user);
 
         return AuthResponse.builder()
                 .message("User registered successfully")

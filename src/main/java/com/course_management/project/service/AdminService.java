@@ -95,7 +95,7 @@ public class AdminService {
 
     public CourseSection createSection(CourseSectionDTO dto) {
         CourseSection section = new CourseSection();
-        section.setCourseId(dto.getCourseId());
+        section.getCourse().setId(dto.getCourseId());
         section.setInstructor(dto.getInstructor());
         section.setDay(dto.getDay());
         section.setStartTime(LocalTime.parse(dto.getStartTime()));
