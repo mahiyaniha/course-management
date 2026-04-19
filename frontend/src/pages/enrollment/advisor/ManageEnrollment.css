@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+.advisor-enrollment-page {
+  min-height: 100dvh;
+  padding: clamp(1rem, 2vw, 2rem);
+  background:
+    radial-gradient(circle at top left, rgba(119, 141, 169, 0.18), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  font-family: 'Outfit', sans-serif;
+}
+
+.advisor-enrollment-shell {
+  width: min(100%, 1480px);
+  margin: 0 auto;
+}
+
+.advisor-enrollment-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1.35rem, 2vw, 2rem);
+  border-radius: 28px;
+  background: linear-gradient(135deg, #1b263b 0%, #415a77 100%);
+  color: #ffffff;
+  box-shadow: 0 24px 60px rgba(27, 38, 59, 0.16);
+  margin-bottom: 1.5rem;
+}
+
+.advisor-enrollment-kicker {
+  display: inline-flex;
+  padding: 0.42rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.advisor-enrollment-hero h2 {
+  margin: 1rem 0 0.6rem;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  line-height: 1.08;
+}
+
+.advisor-enrollment-hero p {
+  margin: 0;
+  max-width: 60ch;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.7;
+}
+
+.advisor-enrollment-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(130px, 1fr));
+  gap: 0.9rem;
+  min-width: min(100%, 420px);
+}
+
+.advisor-enrollment-summary-card {
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+
+.advisor-enrollment-summary-card strong {
+  display: block;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.advisor-enrollment-summary-card span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.advisor-enrollment-card {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 18px 48px rgba(27, 38, 59, 0.08);
+  overflow: hidden;
+}
+
+.advisor-enrollment-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.25rem;
+  border-bottom: 1px solid #edf0f4;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.advisor-enrollment-card-header h3 {
+  margin: 0;
+  color: #1b263b;
+  font-size: 1.2rem;
+}
+
+.advisor-enrollment-card-header p {
+  margin: 0.3rem 0 0;
+  color: #748196;
+  font-size: 0.9rem;
+}
+
+.advisor-enrollment-count {
+  flex-shrink: 0;
+  min-width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(119, 141, 169, 0.16);
+  color: #415a77;
+  font-weight: 800;
+}
+
+.advisor-enrollment-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.advisor-enrollment-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+}
+
+.advisor-enrollment-table th,
+.advisor-enrollment-table td {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid #edf0f4;
+  text-align: left;
+  font-size: 0.92rem;
+}
+
+.advisor-enrollment-table th {
+  background: #f8fafc;
+  color: #5f6f83;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.advisor-enrollment-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.advisor-enrollment-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.advisor-enrollment-empty {
+  text-align: center;
+  color: #8591a3;
+  padding: 1.4rem;
+}
+
+@media (max-width: 1100px) {
+  .advisor-enrollment-hero {
+    flex-direction: column;
+  }
+
+  .advisor-enrollment-summary {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .advisor-enrollment-page {
+    padding: 1rem;
+  }
+
+  .advisor-enrollment-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .advisor-enrollment-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

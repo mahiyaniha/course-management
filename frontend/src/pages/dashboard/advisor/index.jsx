@@ -1,150 +1,180 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import useUserDetails from "../../../hooks/useUserDetails";
+import getEnrollmentRequests from "../../../api/enrollment-request/getEnrollmentRequests";
+import getEnrollments from "../../../api/getEnrollments";
 import "./style.css";
 
 const AdvisorDashboard = () => {
-  // =========================
-  // DUMMY DATA (NO BACKEND)
-  // =========================
+  const { userDetails } = useUserDetails();
   const [requests, setRequests] = useState([]);
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [comment, setComment] = useState("");
+  const [enrollments, setEnrollments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("ALL");
 
-  const [notifications, setNotifications] = useState([]);
+  useEffect(() => {
+    const loadDashboard = async () => {
+      if (!userDetails?.userId) return;
 
+      try {
+        setLoading(true);
+        const [requestResp, enrollmentResp] = await Promise.all([
+          getEnrollmentRequests(userDetails.userId),
+          getEnrollments(userDetails.userId),
+        ]);
 
-  // =========================
-  // FILTER LOGIC
-  // =========================
+        setRequests(Array.isArray(requestResp) ? requestResp : []);
+        setEnrollments(Array.isArray(enrollmentResp) ? enrollmentResp : []);
+      } catch (error) {
+        console.error(error);
+        setRequests([]);
+        setEnrollments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
+  }, [userDetails?.userId]);
+
   const filteredRequests =
-    filter === "ALL"
-      ? requests
-      : requests.filter((r) => r.status === filter);
+    filter === "ALL" ? requests : requests.filter((request) => request.status === filter);
+
+  const stats = useMemo(() => {
+    const pending = requests.filter((item) => item.status === "PENDING").length;
+    const approved = requests.filter((item) => item.status === "APPROVED").length;
+    const activeStudents = new Set(
+      enrollments.map((item) => item?.student?.id).filter(Boolean)
+    ).size;
+
+    return {
+      pending,
+      approved,
+      activeStudents,
+      totalEnrollments: enrollments.length,
+    };
+  }, [enrollments, requests]);
 
   return (
-    <div className="advisor-container">
-
-      {/* =========================
-          TOP BAR
-      ========================= */}
-      <div className="top-bar">
-        <h2>Advisor Dashboard</h2>
-
-        {/* NOTIFICATIONS */}
-        <div className="bell">
-          🔔
-          {notifications.length > 0 && (
-            <span className="badge">{notifications.length}</span>
-          )}
-
-          <div className="dropdown">
-            {notifications.map((n) => (
-              <div key={n.id} className="note">
-                {n.msg}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* =========================
-          FILTER BUTTONS
-      ========================= */}
-      <div className="filter-bar">
-        {["ALL", "PENDING", "APPROVED", "REJECTED"].map((f) => (
-          <button
-            key={f}
-            className={filter === f ? "active-filter" : ""}
-            onClick={() => setFilter(f)}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-
-      {/* =========================
-          REQUEST GRID
-      ========================= */}
-      <div className="grid">
-        {filteredRequests.map((req) => (
-          <div key={req.id} className="card">
-
-            <h3>{req.studentName}</h3>
-
-            <p><b>Course:</b> {req.courseName}</p>
-            <p><b>Code:</b> {req.courseCode}</p>
-
-            <p className={`status ${req.status}`}>
-              {req.status}
+    <div className="advisor-dashboard-page">
+      <div className="advisor-dashboard-shell">
+        <header className="advisor-dashboard-hero">
+          <div>
+            <span className="advisor-dashboard-kicker">Advisor workspace</span>
+            <h2>Advisor Dashboard</h2>
+            <p>
+              Monitor incoming enrollment activity, keep track of approvals, and review active
+              student enrollments from one overview.
             </p>
-
-            <button onClick={() => setSelectedStudent(req)}>
-              👤 Student Profile
-            </button>
-
-            <button onClick={() => setSelectedRequest(req)}>
-              📄 Open Request
-            </button>
           </div>
-        ))}
-      </div>
 
-      {/* =========================
-          STUDENT PROFILE MODAL
-      ========================= */}
-      {selectedStudent && (
-        <div className="modal">
-          <div className="modal-box">
-            <h3>👤 Student Profile</h3>
-
-            <p><b>Name:</b> {selectedStudent.studentName}</p>
-            <p><b>ID:</b> {selectedStudent.studentId}</p>
-
-            <button onClick={() => setSelectedStudent(null)}>
-              Close
-            </button>
+          <div className="advisor-dashboard-summary">
+            <div className="advisor-summary-card">
+              <strong>{stats.pending}</strong>
+              <span>Pending Requests</span>
+            </div>
+            <div className="advisor-summary-card">
+              <strong>{stats.approved}</strong>
+              <span>Approved Requests</span>
+            </div>
+            <div className="advisor-summary-card">
+              <strong>{stats.totalEnrollments}</strong>
+              <span>Total Enrollments</span>
+            </div>
+            <div className="advisor-summary-card">
+              <strong>{stats.activeStudents}</strong>
+              <span>Active Students</span>
+            </div>
           </div>
-        </div>
-      )}
+        </header>
 
-      {/* =========================
-          REQUEST MODAL
-      ========================= */}
-      {selectedRequest && (
-        <div className="modal">
-          <div className="modal-box">
+        <section className="advisor-filter-bar">
+          {["ALL", "PENDING", "APPROVED", "REJECTED"].map((item) => (
+            <button
+              key={item}
+              className={filter === item ? "advisor-filter-btn active" : "advisor-filter-btn"}
+              onClick={() => setFilter(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </section>
 
-            <h3>📄 Request Details</h3>
-
-            <p><b>Student:</b> {selectedRequest.studentName}</p>
-            <p><b>Course:</b> {selectedRequest.courseName}</p>
-            <p><b>Code:</b> {selectedRequest.courseCode}</p>
-
-            <textarea
-              placeholder="Write comment..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-
-            <div className="modal-actions">
-              <button className="approve">
-                Approve (UI only)
-              </button>
-
-              <button className="reject">
-                Reject (UI only)
-              </button>
-
-              <button onClick={() => setSelectedRequest(null)}>
-                Close
-              </button>
+        <div className="advisor-dashboard-grid">
+          <section className="advisor-panel">
+            <div className="advisor-panel-header">
+              <div>
+                <h3>Request Overview</h3>
+                <p>Filtered enrollment requests for your review.</p>
+              </div>
+              <span className="advisor-panel-count">{filteredRequests.length}</span>
             </div>
 
-          </div>
-        </div>
-      )}
+            <div className="advisor-request-list">
+              {loading ? (
+                <div className="advisor-empty">Loading dashboard data...</div>
+              ) : filteredRequests.length > 0 ? (
+                filteredRequests.map((request) => (
+                  <article key={request.id} className="advisor-request-card">
+                    <div className="advisor-request-main">
+                      <h4>
+                        {request?.student?.user?.firstName} {request?.student?.user?.lastName}
+                      </h4>
+                      <p>{request?.student?.user?.email}</p>
+                    </div>
+                    <div className="advisor-request-meta">
+                      <span className="advisor-course-chip">{request?.course?.code}</span>
+                      <strong>{request?.course?.title}</strong>
+                      <span className={`advisor-status-pill ${request?.status?.toLowerCase() || "pending"}`}>
+                        {request.status}
+                      </span>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="advisor-empty">No requests found for this filter.</div>
+              )}
+            </div>
+          </section>
 
+          <section className="advisor-panel">
+            <div className="advisor-panel-header">
+              <div>
+                <h3>Recent Enrollments</h3>
+                <p>Students currently placed into approved sections.</p>
+              </div>
+              <span className="advisor-panel-count">{enrollments.length}</span>
+            </div>
+
+            <div className="advisor-enrollment-list">
+              {loading ? (
+                <div className="advisor-empty">Loading enrollment data...</div>
+              ) : enrollments.length > 0 ? (
+                enrollments.slice(0, 6).map((item, index) => (
+                  <article
+                    key={`${item?.student?.id || "student"}-${item?.section?.id || index}`}
+                    className="advisor-enrollment-card"
+                  >
+                    <div>
+                      <h4>
+                        {item?.student?.user?.firstName} {item?.student?.user?.lastName}
+                      </h4>
+                      <p>{item?.section?.course?.title}</p>
+                    </div>
+                    <div className="advisor-enrollment-meta">
+                      <span>{item?.section?.course?.code}</span>
+                      <small>
+                        {item?.section?.day} · {item?.section?.startTime} - {item?.section?.endTime}
+                      </small>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="advisor-empty">No enrollments available yet.</div>
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   );
 };

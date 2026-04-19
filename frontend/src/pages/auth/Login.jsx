@@ -81,6 +81,10 @@ const Login = () => {
         />
 
         <button onClick={handleLogin}>Login</button>
+
+        <p className="register-link">
+         Don't have an account? <a href="/register">Register now</a>
+        </p>
       </div>
     </div>
   );

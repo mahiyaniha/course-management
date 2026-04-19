@@ -1,148 +1,287 @@
-.advisor-container {
-  padding: 25px;
-  min-height: 100vh;
-  background: #0d1b2a;
-  color: white;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+.advisor-dashboard-page {
+  min-height: 100dvh;
+  padding: clamp(1rem, 2vw, 2rem);
+  background:
+    radial-gradient(circle at top left, rgba(119, 141, 169, 0.18), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
   font-family: 'Outfit', sans-serif;
 }
 
-/* TOP BAR */
-.top-bar {
+.advisor-dashboard-shell {
+  width: min(100%, 1480px);
+  margin: 0 auto;
+}
+
+.advisor-dashboard-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1.35rem, 2vw, 2rem);
+  border-radius: 28px;
+  background: linear-gradient(135deg, #1b263b 0%, #415a77 100%);
+  color: #ffffff;
+  box-shadow: 0 24px 60px rgba(27, 38, 59, 0.16);
+  margin-bottom: 1.5rem;
+}
+
+.advisor-dashboard-kicker {
+  display: inline-flex;
+  padding: 0.42rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.advisor-dashboard-hero h2 {
+  margin: 1rem 0 0.6rem;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  line-height: 1.08;
+}
+
+.advisor-dashboard-hero p {
+  margin: 0;
+  max-width: 60ch;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.7;
+}
+
+.advisor-dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 0.9rem;
+  min-width: min(100%, 420px);
+}
+
+.advisor-summary-card {
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+
+.advisor-summary-card strong {
+  display: block;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.advisor-summary-card span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.advisor-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.advisor-filter-btn {
+  border: 1px solid #dbe1e8;
+  background: #ffffff;
+  color: #526173;
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.advisor-filter-btn.active,
+.advisor-filter-btn:hover {
+  background: linear-gradient(135deg, #415a77, #778da9);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.advisor-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1.25rem;
+}
+
+.advisor-panel {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 18px 48px rgba(27, 38, 59, 0.08);
+  overflow: hidden;
+}
+
+.advisor-panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.25rem;
+  border-bottom: 1px solid #edf0f4;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
 }
 
-.bell {
-  position: relative;
-  font-size: 22px;
-  cursor: pointer;
+.advisor-panel-header h3 {
+  margin: 0;
+  color: #1b263b;
+  font-size: 1.2rem;
 }
 
-.badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: red;
-  color: white;
-  border-radius: 50%;
-  font-size: 12px;
-  padding: 2px 6px;
+.advisor-panel-header p {
+  margin: 0.3rem 0 0;
+  color: #748196;
+  font-size: 0.9rem;
 }
 
-/* NOTIFICATION DROPDOWN */
-.dropdown {
-  position: absolute;
-  right: 0;
-  background: #1b263b;
-  width: 220px;
-  border-radius: 8px;
-  margin-top: 10px;
-  display: none;
-}
-
-.bell:hover .dropdown {
-  display: block;
-}
-
-.note {
-  padding: 8px;
-  border-bottom: 1px solid #333;
-}
-
-/* FILTER */
-.filter-bar {
-  margin: 15px 0;
-  display: flex;
-  gap: 10px;
-}
-
-.filter-bar button {
-  padding: 8px 12px;
-  border: none;
-  background: #1b263b;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.active-filter {
-  background: #415a77 !important;
-}
-
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 15px;
-}
-
-.card {
-  background: #1b263b;
-  padding: 15px;
-  border-radius: 12px;
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-}
-
-.status {
-  font-weight: bold;
-  margin-top: 8px;
-}
-
-.status.PENDING { color: orange; }
-.status.APPROVED { color: lightgreen; }
-.status.REJECTED { color: red; }
-
-/* MODAL */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  justify-content: center;
+.advisor-panel-count {
+  flex-shrink: 0;
+  min-width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  background: rgba(119, 141, 169, 0.16);
+  color: #415a77;
+  font-weight: 800;
 }
 
-.modal-box {
-  background: #1b263b;
-  padding: 20px;
-  width: 400px;
-  border-radius: 12px;
+.advisor-request-list,
+.advisor-enrollment-list {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
 }
 
-.modal-box textarea {
-  width: 100%;
-  height: 80px;
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.modal-actions {
+.advisor-request-card,
+.advisor-enrollment-card {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 20px;
+  border: 1px solid #e8edf3;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
 }
 
-.approve {
-  background: green;
-  color: white;
-  padding: 8px;
-  border: none;
-  flex: 1;
+.advisor-request-card h4,
+.advisor-enrollment-card h4 {
+  margin: 0;
+  color: #1b263b;
 }
 
-.reject {
-  background: red;
-  color: white;
-  padding: 8px;
-  border: none;
-  flex: 1;
+.advisor-request-card p,
+.advisor-enrollment-card p {
+  margin: 0.3rem 0 0;
+  color: #6e7c90;
+}
+
+.advisor-request-meta,
+.advisor-enrollment-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+
+.advisor-course-chip {
+  display: inline-flex;
+  padding: 0.35rem 0.6rem;
+  border-radius: 10px;
+  background: #eef2f6;
+  color: #415a77;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.advisor-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.42rem 0.72rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.advisor-status-pill.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.advisor-status-pill.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.advisor-status-pill.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.advisor-enrollment-meta span {
+  font-weight: 700;
+  color: #415a77;
+}
+
+.advisor-enrollment-meta small {
+  color: #6e7c90;
+  text-align: right;
+}
+
+.advisor-empty {
+  padding: 1.4rem;
+  color: #8591a3;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .advisor-dashboard-hero {
+    flex-direction: column;
+  }
+
+  .advisor-dashboard-summary {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .advisor-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .advisor-dashboard-page {
+    padding: 1rem;
+  }
+
+  .advisor-dashboard-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .advisor-panel-header,
+  .advisor-request-card,
+  .advisor-enrollment-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .advisor-request-meta,
+  .advisor-enrollment-meta {
+    align-items: flex-start;
+  }
+
+  .advisor-enrollment-meta small {
+    text-align: left;
+  }
 }

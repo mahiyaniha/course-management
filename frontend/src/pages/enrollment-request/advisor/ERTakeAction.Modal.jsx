@@ -2,19 +2,17 @@ import React, { useState, useCallback, useEffect } from "react";
 import getSectionsByCourseId from "../../../api/getSectionsByCourseId";
 import postEnrollmentRequestAction from "../../../api/enrollment-request/postEnrollmentRequestAction";
 import toast from "react-hot-toast";
+import "./ManageEnrollmentRequest.css";
 
 const ERTakeActionModal = ({
   selectedEnrollmentRequest,
   isOpen,
   onClose
 }) => {
-
-  console.log(selectedEnrollmentRequest)
-
   const { course, student } = selectedEnrollmentRequest;
   const [sections, setSections] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
-  const [actions, setActions] = useState({}); // { sectionId: "APPROVED" | "REJECT" }
+  const [actions, setActions] = useState({});
 
   const fetchSectionByCourse = useCallback(async () => {
     try {
@@ -29,7 +27,6 @@ const ERTakeActionModal = ({
   useEffect(() => {
     if (course?.id) fetchSectionByCourse();
   }, [fetchSectionByCourse, course]);
-
 
   const handleDropdownChange = (sectionId, value) => {
     setActions((prev) => ({
@@ -57,207 +54,123 @@ const ERTakeActionModal = ({
         sectionId: selectedSection?.id,
         status: action,
         studentId: student?.id
-      })
+      });
       if (resp?.error) throw new Error(resp.error);
-      console.log("Updated ER: ", resp)
-      onClose(true)
+      onClose(true);
       toast.success("Submitted successful");
-
     } catch (e) {
       console.error(e.message);
       toast.error("Failed to submit.");
     }
-
   };
 
   if (!isOpen) return null;
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <h2>Request Details</h2>
+    <div className="er-modal-overlay" onClick={() => onClose(false)}>
+      <div className="er-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="er-modal-header">
+          <div>
+            <h2>Request Details</h2>
+            <p>Review the student, compare sections, then approve or reject the request.</p>
+          </div>
+          <button className="er-modal-close" onClick={() => onClose(false)}>
+            Close
+          </button>
+        </div>
 
-        {/* Cards */}
-        <div style={styles.cardContainer}>
-          <div style={styles.card}>
+        <div className="er-modal-cards">
+          <div className="er-info-card">
             <h3>Student</h3>
-            <div>First Name: {student?.user?.firstName}</div>
-            <div>Last Name: {student?.user?.lastName}</div>
-            <div>Email: {student?.user?.email}</div>
-            <div>Department: {student?.department?.name}</div>
-            <div>Phone: {student?.phone}</div>
-            <div>Address: {student?.address}</div>
+            <div className="er-info-grid">
+              <div><span>First Name</span><strong>{student?.user?.firstName}</strong></div>
+              <div><span>Last Name</span><strong>{student?.user?.lastName}</strong></div>
+              <div><span>Email</span><strong>{student?.user?.email}</strong></div>
+              <div><span>Department</span><strong>{student?.department?.name}</strong></div>
+              <div><span>Phone</span><strong>{student?.phone}</strong></div>
+              <div><span>Address</span><strong>{student?.address}</strong></div>
+            </div>
           </div>
 
-          <div style={styles.card}>
+          <div className="er-info-card">
             <h3>Course</h3>
-            <div>Course Title: {course?.title}</div>
-            <div>Course Code: {course?.code}</div>
-            <div>Credit: {course?.credit}</div>
-            <div>Available Seat: {course?.availableSeat}</div>
-            <div>Total Seat: {course?.totalSeat}</div>
-            <div>Department: {course?.department?.name}</div>
+            <div className="er-info-grid">
+              <div><span>Course Title</span><strong>{course?.title}</strong></div>
+              <div><span>Course Code</span><strong>{course?.code}</strong></div>
+              <div><span>Credit</span><strong>{course?.credit}</strong></div>
+              <div><span>Available Seat</span><strong>{course?.availableSeat}</strong></div>
+              <div><span>Total Seat</span><strong>{course?.totalSeat}</strong></div>
+              <div><span>Department</span><strong>{course?.department?.name}</strong></div>
+            </div>
           </div>
         </div>
 
-        <br />
+        <div className="er-sections-block">
+          <div className="er-sections-head">
+            <h3>Available Sections</h3>
+            <span>{sections.length} options</span>
+          </div>
 
-        {/* Table */}
-        <h3>Available Sections</h3>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Select</th>
-              <th style={styles.th}>Day</th>
-              <th style={styles.th}>Start</th>
-              <th style={styles.th}>End</th>
-              <th style={styles.th}>Taken Seats</th>
-              <th style={styles.th}>Action</th>
-            </tr>
-          </thead>
+          <div className="er-table-wrap">
+            <table className="er-table er-table-modal">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Day</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Taken Seats</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
 
-          <tbody>
-            {sections.map((e) => (
-              <tr
-                key={e.id}
-                style={{
-                  backgroundColor:
-                    selectedSection?.id === e.id ? "#333" : "transparent"
-                }}
-              >
-                {/* RADIO */}
-                <td style={styles.td}>
-                  <input
-                    type="radio"
-                    name="section"
-                    checked={selectedSection?.id === e.id}
-                    onChange={() => setSelectedSection(e)}
-                  />
-                </td>
-
-                <td style={styles.td}>{e.day}</td>
-                <td style={styles.td}>{e.startTime}</td>
-                <td style={styles.td}>{e.endTime}</td>
-                <td style={styles.td}>
-                  {e.seatTaken}/{e.seatLimit}
-                </td>
-
-                {/* DROPDOWN */}
-                <td style={styles.td}>
-                  <select
-                    style={styles.select}
-                    value={actions[e.id] || ""}
-                    onChange={(ev) =>
-                      handleDropdownChange(e.id, ev.target.value)
-                    }
+              <tbody>
+                {sections.map((section) => (
+                  <tr
+                    key={section.id}
+                    className={selectedSection?.id === section.id ? "er-row-selected" : ""}
                   >
-                    <option value="">Select</option>
-                    <option value="APPROVED">Approve</option>
-                    <option value="REJECTED">Reject</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    <td>
+                      <input
+                        type="radio"
+                        name="section"
+                        checked={selectedSection?.id === section.id}
+                        onChange={() => setSelectedSection(section)}
+                      />
+                    </td>
+                    <td>{section.day}</td>
+                    <td>{section.startTime}</td>
+                    <td>{section.endTime}</td>
+                    <td>{section.seatTaken}/{section.seatLimit}</td>
+                    <td>
+                      <select
+                        className="er-select"
+                        value={actions[section.id] || ""}
+                        onChange={(ev) => handleDropdownChange(section.id, ev.target.value)}
+                      >
+                        <option value="">Select</option>
+                        <option value="APPROVED">Approve</option>
+                        <option value="REJECTED">Reject</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-        {/* Buttons */}
-        <div style={styles.actions}>
-          <button style={styles.cancel} onClick={() => onClose(false)}>
+        <div className="er-modal-actions">
+          <button className="er-btn er-btn-secondary" onClick={() => onClose(false)}>
             Cancel
           </button>
-
-          <button style={styles.submit} onClick={handleSubmit}>
+          <button className="er-btn er-btn-primary" onClick={handleSubmit}>
             Submit
           </button>
         </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    background: "rgba(0,0,0,0.6)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-
-  modal: {
-    background: "#1e1e1e",
-    color: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    width: "700px"
-  },
-
-  cardContainer: {
-    display: "flex",
-    gap: "10px"
-  },
-
-  card: {
-    flex: 1,
-    background: "#2a2a2a",
-    padding: "10px",
-    borderRadius: "8px"
-  },
-
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    border: "1px solid #444"
-  },
-
-  th: {
-    border: "1px solid #444",
-    padding: "8px",
-    background: "#333"
-  },
-
-  td: {
-    border: "1px solid #444",
-    padding: "8px",
-    textAlign: "center"
-  },
-
-  select: {
-    padding: "5px",
-    borderRadius: "4px",
-    background: "#333",
-    color: "white",
-    border: "1px solid #555"
-  },
-
-  actions: {
-    marginTop: "20px",
-    display: "flex",
-    justifyContent: "space-between"
-  },
-
-  submit: {
-    background: "#1971c2",
-    color: "white",
-    padding: "8px 15px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer"
-  },
-
-  cancel: {
-    background: "#555",
-    color: "white",
-    padding: "8px 15px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer"
-  }
 };
 
 export default ERTakeActionModal;

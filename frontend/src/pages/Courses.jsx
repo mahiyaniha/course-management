@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Courses.css";
 import "./CoursesMain.css";
-
-import CourseModal from "../components/CourseModal";
+import getCourses from "../api/getCourses";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChalkboardUser } from "@fortawesome/free-solid-svg-icons";
@@ -14,12 +13,11 @@ import {
   FaUsers,
 } from "react-icons/fa";
 
-
 const Courses = () => {
   const [courses, setCourses] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [sections, setSections] = useState([]);
 
-  const dummyCourses = [
+  const dummySections = [
     { id: 1, courseId: 1, courseName: "Software Engineering", day: "Mon", startTime: "09:00", endTime: "10:30", instructor: "Dr. Rahman", seatLimit: 40, seatTaken: 12 },
     { id: 2, courseId: 1, courseName: "Software Engineering", day: "Wed", startTime: "09:00", endTime: "10:30", instructor: "Dr. Rahman", seatLimit: 40, seatTaken: 20 },
 
@@ -33,12 +31,29 @@ const Courses = () => {
     { id: 8, courseId: 4, courseName: "AI Fundamentals", day: "Thu", startTime: "09:00", endTime: "10:30", instructor: "Dr. Saha", seatLimit: 50, seatTaken: 35 },
   ];
 
+  // Fetch available courses on mount
   useEffect(() => {
-    setCourses(dummyCourses);
+    const fetchCourses = async () => {
+      try {
+        const resp = await getCourses();
+        if (resp?.error) {
+          throw new Error(resp.error);
+        }
+        setCourses(Array.isArray(resp) ? resp : []);
+      } catch (e) {
+        console.error(e.message);
+        // Fallback to dummy for demo
+        setCourses([]);
+      }
+    };
+
+    fetchCourses();
+    // Always load sections for grouped display
+    setSections(dummySections);
   }, []);
 
   // SAFE GROUPING
-  const grouped = (courses || []).reduce((acc, item) => {
+  const grouped = (sections || []).reduce((acc, item) => {
     if (!acc[item.courseId]) {
       acc[item.courseId] = {
         courseName: item.courseName,
@@ -48,8 +63,6 @@ const Courses = () => {
     acc[item.courseId].sections.push(item);
     return acc;
   }, {});
-
-
 
   return (
     <div className="courses-main">
@@ -62,15 +75,48 @@ const Courses = () => {
           <p>Browse and explore all active course schedules</p>
         </div>
 
-        {/* BUTTON */}
-        <div className="action-area">
-          <button className="open-modal-btn" onClick={() => setOpen(true)}>
-            View & Request Courses
-          </button>
-        </div>
+        {/* AVAILABLE COURSES TABLE */}
+        {courses.length > 0 && (
+          <div className="courses-table-section">
+            <h2>Available Courses</h2>
+            <div className="table-container">
+              <table className="courses-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Code</th>
+                    <th>Advisor</th>
+                    <th>Department</th>
+                    <th>Available/Total Seats</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {courses.map((course) => (
+                    <tr key={course.id}>
+                      <td>{course.title}</td>
+                      <td>{course.code}</td>
+                      <td>{course.advisor?.user?.firstName} {course.advisor?.user?.lastName}</td>
+                      <td>{course.department?.name}</td>
+                      <td>{course.availableSeat}/{course.totalSeat}</td>
+                      <td>
+                        <button 
+                          className="request-btn" 
+                          onClick={() => alert(`Request course ${course.title} - Connect to enrollment logic`)}
+                        >
+                          Request
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-        {/* GRID */}
-        <div className="grid">
+        {/* GROUPED SECTIONS GRID */}
+        <div className="sections-grid">
           {Object.entries(grouped).map(([courseId, data]) => (
             <div className="card" key={courseId}>
 
@@ -117,17 +163,10 @@ const Courses = () => {
           ))}
         </div>
 
-        {/* MODAL */}
-        {open ? 
-        <CourseModal
-          isOpen={open}
-          onClose={() => setOpen(false)}
-          sections={courses}
-          studentId={8}
-        /> : null}
       </div>
     </div>
   );
 };
 
 export default Courses;
+

@@ -6,16 +6,18 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  padding: 16px;
 }
 
 .modal-box {
-  width: 75%;
-  max-height: 85vh;
+  width: min(960px, 100%);
+  max-height: calc(100vh - 32px);
   overflow-y: auto;
   background: #1b263b;
   border-radius: 14px;
   padding: 20px;
   color: #e0e1dd;
+  box-sizing: border-box;
 }
 
 /* HEADER */
@@ -24,10 +26,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 12px;
 }
 
 .modal-header h2 {
   margin: 0;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
 }
 
 .close-btn {
@@ -44,19 +48,21 @@
   padding: 15px;
   margin-bottom: 12px;
   border-radius: 12px;
-
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .modal-info h3 {
   margin: 0 0 8px 0;
+  word-break: break-word;
 }
 
 .modal-info p {
   margin: 4px 0;
   color: #778da9;
+  word-break: break-word;
 }
 
 /* BUTTON */
@@ -77,4 +83,25 @@
 .modal-btn:disabled {
   background: gray;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .modal-box {
+    max-height: calc(100vh - 24px);
+    padding: 16px;
+    margin-top: 0;
+  }
+
+  .modal-card {
+    flex-direction: column;
+  }
+
+  .modal-btn {
+    width: 100%;
+  }
 }

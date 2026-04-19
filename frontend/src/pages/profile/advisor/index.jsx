@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import useUserDetails from "../../../hooks/useUserDetails";
+import "../student/StudentProfile.css";
 
 const AdvisorProfile = () => {
   const { setUserDetails } = useUserDetails()
@@ -118,42 +119,91 @@ const AdvisorProfile = () => {
   }, [fetchAdvisor]);
 
   return (
-    <div>
-      <h2>Advisor Profile</h2>
-
-      {/* ---------------- IMAGE DISPLAY ---------------- */}
-      {photo && (
-        <div>
+    <div className="profile-page">
+      <div className="profile-left">
+        <div className="avatar-wrapper">
           <img
             src={getImageUrl(photo)}
-            alt="Student"
-            width="120"
-            height="120"
-            style={{
-              borderRadius: "50%",
-              objectFit: "cover"
-            }}
+            alt="Advisor"
+            className="profile-avatar"
           />
         </div>
-      )}
 
-      {/* ---------------- FILE UPLOAD ---------------- */}
-      <input type="file" onChange={handleFileChange} /><br />
+        <div className="upload-box">
+          <input type="file" onChange={handleFileChange} />
+        </div>
 
-      {/* ---------------- FORM FIELDS ---------------- */}
-      <input name="email" value={form.email} onChange={handleChange} placeholder="Email" /><br />
-      <input disabled readOnly name="firstName" value={form.firstName} onChange={handleChange} placeholder="First Name" /><br />
-      <input disabled readOnly name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last Name" /><br />
-      <input name="description" value={form.description} onChange={handleChange} placeholder="Description" /><br />
-      <input name="address" value={form.address} onChange={handleChange} placeholder="Address" /><br />
-      <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" /><br />
+        <div className="profile-identity">
+          <h2>{form.firstName} {form.lastName}</h2>
+          <p>{form.email}</p>
+          <span>{form.level || "Advisor"}</span>
+        </div>
+      </div>
 
-      <p>Level</p>
-      <input readOnly disabled name="title" value={form.level} onChange={handleChange} placeholder="Title" /><br /><br />
+      <div className="profile-right">
+        <div className="form-grid">
+          <div className="field">
+            <label>First Name</label>
+            <input
+              disabled
+              readOnly
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+            />
+          </div>
 
-      <button onClick={handleSubmit}>
-        Update Profile
-      </button>
+          <div className="field">
+            <label>Last Name</label>
+            <input
+              disabled
+              readOnly
+              name="lastName"
+              value={form.lastName}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="field">
+            <label>Email</label>
+            <input name="email" value={form.email} onChange={handleChange} />
+          </div>
+
+          <div className="field">
+            <label>Phone</label>
+            <input name="phone" value={form.phone} onChange={handleChange} />
+          </div>
+
+          <div className="field full">
+            <label>Address</label>
+            <input name="address" value={form.address} onChange={handleChange} />
+          </div>
+
+          <div className="field full">
+            <label>Description</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="field full">
+            <label>Level</label>
+            <input
+              readOnly
+              disabled
+              name="level"
+              value={form.level}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <button className="save-btn" onClick={handleSubmit}>
+          Update Profile
+        </button>
+      </div>
     </div>
   );
 };

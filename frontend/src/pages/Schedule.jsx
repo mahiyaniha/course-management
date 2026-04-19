@@ -1,130 +1,231 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  FaClock,
+  FaBook,
+  FaInfoCircle,
+  FaCalendarAlt,
+  FaUsers,
+} from "react-icons/fa";
+
 import "./Schedule.css";
-import "./ScheduleMain.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-  faCalendarCheck, 
-  faChevronDown, 
-  faChevronUp 
-} from "@fortawesome/free-solid-svg-icons";
+
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+const dummy = [
+  {
+    id: 1,
+    day: "Monday",
+    startTime: "09:00 AM",
+    endTime: "10:30 AM",
+    course: { title: "Data Structures", code: "CSE201", credit: 3 },
+    seatLimit: 30,
+    seatTaken: 28
+  },
+  {
+    id: 2,
+    day: "Monday",
+    startTime: "02:00 PM",
+    endTime: "03:30 PM",
+    course: { title: "Software Engineering", code: "CSE401", credit: 3 },
+    seatLimit: 25,
+    seatTaken: 24
+  },
+  {
+    id: 3,
+    day: "Tuesday",
+    startTime: "11:00 AM",
+    endTime: "12:30 PM",
+    course: { title: "Database Systems", code: "CSE301", credit: 3 },
+    seatLimit: 35,
+    seatTaken: 32
+  },
+  {
+    id: 4,
+    day: "Tuesday",
+    startTime: "03:00 PM",
+    endTime: "04:30 PM",
+    course: { title: "Computer Networks", code: "CSE303", credit: 3 },
+    seatLimit: 40,
+    seatTaken: 36
+  },
+  {
+    id: 5,
+    day: "Wednesday",
+    startTime: "10:00 AM",
+    endTime: "11:30 AM",
+    course: { title: "Algorithms", code: "CSE202", credit: 4 },
+    seatLimit: 30,
+    seatTaken: 29
+  },
+  {
+    id: 6,
+    day: "Thursday",
+    startTime: "09:00 AM",
+    endTime: "10:30 AM",
+    course: { title: "Operating Systems", code: "CSE302", credit: 3 },
+    seatLimit: 28,
+    seatTaken: 27
+  },
+  {
+    id: 7,
+    day: "Thursday",
+    startTime: "01:00 PM",
+    endTime: "02:30 PM",
+    course: { title: "Web Development", code: "CSE405", credit: 3 },
+    seatLimit: 45,
+    seatTaken: 41
+  },
+  {
+    id: 8,
+    day: "Friday",
+    startTime: "11:00 AM",
+    endTime: "12:30 PM",
+    course: { title: "Machine Learning", code: "CSE450", credit: 3 },
+    seatLimit: 25,
+    seatTaken: 23
+  }
+];
+
 
 const Schedule = () => {
-  const [showSchedule, setShowSchedule] = useState(false);
+  const [data, setData] = useState([]);
+  const [selected, setSelected] = useState(null);
 
-  // Dummy data (UI only)
-  const schedule = [
-    {
-      id: 1,
-      course: "Data Structures",
-      day: "Mon",
-      time: "09:00 - 10:30",
-      instructor: "Prof. C",
-    },
-    {
-      id: 2,
-      course: "Algorithms",
-      day: "Tue",
-      time: "11:00 - 12:30",
-      instructor: "Prof. E",
-    },
-    {
-      id: 3,
-      course: "Databases",
-      day: "Wed",
-      time: "13:00 - 14:30",
-      instructor: "Prof. K",
-    },
-    {
-      id: 4,
-      course: "Operating Systems",
-      day: "Thu",
-      time: "09:00 - 10:30",
-      instructor: "Prof. L",
-    },
-  ];
+  useEffect(() => {
+    const load = async () => {
+      const userId = localStorage.getItem("userId");
 
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-  const times = [
-    "09:00 - 10:30",
-    "11:00 - 12:30",
-    "13:00 - 14:30",
-    "15:00 - 16:30",
-  ];
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/student/schedule/${userId}`
+        );
+        const json = await res.json();
 
-  const getCourse = (day, time) => {
-    return schedule.find(
-      (c) => c.day === day && c.time === time
-    );
+        if (Array.isArray(json) && json.length > 0) {
+          setData(json);
+          setSelected(json[0]);
+        } else {
+          setData(dummy);
+          setSelected(dummy[0]);
+        }
+      } catch {
+        setData(dummy);
+        setSelected(dummy[0]);
+      }
+    };
+
+    load();
+  }, []);
+
+  const getTimeValue = (t) => {
+    if (!t) return 0;
+    const [time, mod] = t.split(" ");
+    let [h, m] = time.split(":").map(Number);
+    if (mod === "PM" && h !== 12) h += 12;
+    if (mod === "AM" && h === 12) h = 0;
+    return h * 60 + m;
   };
 
-  const toggleSchedule = () => {
-    setShowSchedule(!showSchedule);
-  };
+  const events = useMemo(() => {
+    return data.map((e, i) => {
+      const start = getTimeValue(e.startTime);
+      const end = getTimeValue(e.endTime);
+
+      return {
+        ...e,
+        key: i,
+        top: (start - 480) / 600 * 100,
+        height: Math.max(((end - start) / 600) * 100, 10),
+      };
+    });
+  }, [data]);
 
   return (
-    <div className="schedule-main">
-      <div className="schedule-container">
-        {/* 🔘 Compact Toggle Button */}
-        <button 
-          className="schedule-toggle-btn"
-          onClick={toggleSchedule}
-        >
-          <FontAwesomeIcon 
-            icon={faCalendarCheck} 
-            className="header-icon" 
-          />
-          <div className="btn-content">
-            <div className="header-title">My Schedule</div>
-            <div className="subtitle">Click to see your schedule for this week</div>
-          </div>
-          <FontAwesomeIcon 
-            icon={showSchedule ? faChevronUp : faChevronDown} 
-            className="toggle-icon" 
-          />
-        </button>
+    <div className="schPage">
 
-        {/* 📅 Timetable - Conditional */}
-        {showSchedule && (
-          <div className="timetable">
-            {/* Header Row */}
-            <div className="row header-row">
-              <div className="cell time-cell">Time</div>
-              {days.map((day) => (
-                <div key={day} className="cell">
-                  {day}
-                </div>
-              ))}
+      {/* HEADER */}
+      <div className="schHeader">
+        <FaCalendarAlt />
+        <div>
+          <h2>Weekly Schedule</h2>
+          <p>Smart Course Planner</p>
+        </div>
+      </div>
+
+      <div className="schLayout">
+
+        {/* LEFT TIMELINE */}
+        <div className="timeline">
+
+          {DAYS.map((day) => (
+            <div className="dayColumn" key={day}>
+
+              <div className="dayTitle">{day}</div>
+
+              {events
+                .filter((e) => e.day === day)
+                .map((e) => (
+                  <div
+                    key={e.key}
+                    className={`eventCard ${
+                      selected?.key === e.key ? "active" : ""
+                    }`}
+                    onClick={() => setSelected(e)}
+                    style={{
+                      top: `${e.top}%`,
+                      height: `${e.height}%`,
+                    }}
+                  >
+                    <div className="accentBar" />
+                    <div>
+                      <h4>{e.course.title}</h4>
+                      <span>{e.startTime} - {e.endTime}</span>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ))}
+        </div>
+
+        {/* RIGHT PANEL */}
+        <div className="sidePanel">
+
+            <div className="glassCard">
+            <h3>Class Details</h3>
+
+            <div className="infoRow">
+              <FaBook />
+              {selected?.course?.title || 'No course selected'}
             </div>
 
-            {/* Time Rows */}
-            {times.map((time) => (
-              <div className="row" key={time}>
-                <div className="cell time-cell">{time}</div>
+            <div className="infoRow">
+              <FaCalendarAlt />
+              {selected?.day || 'No day'}
+            </div>
 
-                {days.map((day) => {
-                  const course = getCourse(day, time);
+            <div className="infoRow">
+              <FaClock />
+              {selected?.startTime} - {selected?.endTime}
+            </div>
 
-                  return (
-                    <div className="cell" key={day}>
-                      {course ? (
-                        <div className="course-box">
-                          <div className="course-title">
-                            {course.course}
-                          </div>
-                          <div className="course-instructor">
-                            {course.instructor}
-                          </div>
-                        </div>
-                      ) : (
-                        <span className="empty">—</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
+            <div className="infoRow">
+              <FaInfoCircle />
+              {selected?.course?.code || 'N/A'}
+            </div>
+
+            <div className="infoRow">
+              <span role="img" aria-label="credits">📚</span>
+              {selected?.course?.credit || 'N/A'} Credits
+            </div>
+
+            <div className="infoRow">
+              <FaUsers />
+              {selected?.seatTaken || 0}/{selected?.seatLimit || 'N/A'} seats
+            </div>
           </div>
-        )}
+
+
+        </div>
       </div>
     </div>
   );

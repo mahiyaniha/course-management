@@ -1,44 +1,37 @@
 import { useEffect, useState, useCallback } from "react";
 import useUserDetails from "../../../hooks/useUserDetails";
+import "./StudentProfile.css";
 
 const StudentProfile = () => {
-  const { setUserDetails } = useUserDetails()
+  const { setUserDetails } = useUserDetails();
 
   const [form, setForm] = useState({
     id: 1,
     email: "",
     firstName: "",
     lastName: "",
-    name: "",
     description: "",
     address: "",
     phone: "",
     department: ""
   });
 
-  const [photo, setPhoto] = useState(null);   // ✅ ONLY for display
+  const [photo, setPhoto] = useState(null);
   const [file, setFile] = useState(null);
 
-  // ---------------- HANDLE TEXT CHANGE ----------------
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ---------------- HANDLE FILE SELECT ----------------
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  // ---------------- IMAGE CONVERTER ----------------
   const getImageUrl = (base64) => {
     if (!base64) return null;
     return `data:image/jpeg;base64,${base64}`;
   };
 
-  // ---------------- UPDATE API ----------------
   const handleSubmit = async () => {
     const formData = new FormData();
 
@@ -47,31 +40,21 @@ const StudentProfile = () => {
       new Blob([JSON.stringify(form)], { type: "application/json" })
     );
 
-    if (file) {
-      formData.append("photo", file);
-    }
+    if (file) formData.append("photo", file);
 
     try {
       const res = await fetch(
         "http://localhost:8080/api/student/update-profile",
-        {
-          method: "POST",
-          body: formData
-        }
+        { method: "POST", body: formData }
       );
 
       const data = await res.text();
-      if (data) {
-      console.log(data);
-        fetchStudent()
-      }
-
+      if (data) fetchStudent();
     } catch (err) {
       console.error(err);
     }
   };
 
-  // ---------------- FETCH STUDENT ----------------
   const fetchStudent = useCallback(async () => {
     try {
       const userId = localStorage.getItem("userId");
@@ -83,7 +66,6 @@ const StudentProfile = () => {
       const data = await resp.json();
 
       if (data) {
-        // ✅ ONLY TEXT FIELDS IN FORM
         setForm({
           id: data?.id || 1,
           email: data?.user?.email,
@@ -92,22 +74,23 @@ const StudentProfile = () => {
           description: data?.description,
           address: data?.address,
           phone: data?.phone,
-          department: data?.department?.name,
+          department: data?.department?.name
         });
 
-        const name = data?.user?.firstName + " " + data?.user?.lastName
+        const name =
+          data?.user?.firstName + " " + data?.user?.lastName;
 
-        setUserDetails(prev => ({
+        setUserDetails((prev) => ({
           ...prev,
           picture: data?.picture,
           name: name
-        }))
-        localStorage.setItem("picture", data?.picture)
-        localStorage.setItem("name", name)
-        // ✅ PHOTO STORED SEPARATELY
+        }));
+
+        localStorage.setItem("picture", data?.picture);
+        localStorage.setItem("name", name);
+
         setPhoto(data.picture || null);
       }
-
     } catch (e) {
       console.error(e.message);
     }
@@ -118,40 +101,81 @@ const StudentProfile = () => {
   }, [fetchStudent]);
 
   return (
-    <div>
-      <h2>Student Profile</h2>
+    <div className="profile-page">
 
-      {/* ---------------- IMAGE DISPLAY ---------------- */}
-      {photo && (
-        <div>
+      {/* LEFT */}
+      <div className="profile-left">
+
+        <div className="avatar-wrapper">
           <img
-            src={getImageUrl(photo)}
-            alt="Student"
-            width="120"
-            height="120"
-            style={{
-              borderRadius: "50%",
-              objectFit: "cover"
-            }}
+            src={
+              photo
+                ? getImageUrl(photo)
+                : "https://ui-avatars.com/api/?name=Student"
+            }
+            alt="profile"
+            className="profile-avatar"
           />
         </div>
-      )}
 
-      {/* ---------------- FILE UPLOAD ---------------- */}
-      <input type="file" onChange={handleFileChange} /><br />
+        <div className="upload-box">
+          <input type="file" onChange={handleFileChange} />
+        </div>
 
-      {/* ---------------- FORM FIELDS ---------------- */}
-      <input name="email" value={form.email} onChange={handleChange} placeholder="Email" /><br />
-      <input readOnly disabled name="firstName" value={form?.firstName} onChange={handleChange} placeholder="First Name" /><br />
-      <input readOnly disabled name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last Name" /><br />
-      <input name="description" value={form.description} onChange={handleChange} placeholder="Description" /><br />
-      <input name="address" value={form.address} onChange={handleChange} placeholder="Address" /><br />
-      <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" /><br />
-      <input readOnly disabled name="department" value={form.department} onChange={handleChange} placeholder="Department" /><br />
+        <div className="profile-identity">
+          <h2>{form.firstName} {form.lastName}</h2>
+          <p>{form.email}</p>
+          <span>{form.department}</span>
+        </div>
 
-      <button onClick={handleSubmit}>
-        Update Profile
-      </button>
+      </div>
+
+      {/* RIGHT */}
+      <div className="profile-right">
+
+        <div className="form-grid">
+
+          <div className="field">
+            <label>First Name</label>
+            <input name="firstName" value={form.firstName} onChange={handleChange} />
+          </div>
+
+          <div className="field">
+            <label>Last Name</label>
+            <input name="lastName" value={form.lastName} onChange={handleChange} />
+          </div>
+
+          <div className="field">
+            <label>Email</label>
+            <input name="email" value={form.email} onChange={handleChange} />
+          </div>
+
+          <div className="field">
+            <label>Phone</label>
+            <input name="phone" value={form.phone} onChange={handleChange} />
+          </div>
+
+          <div className="field full">
+            <label>Address</label>
+            <input name="address" value={form.address} onChange={handleChange} />
+          </div>
+
+          <div className="field full">
+            <label>Description</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+            />
+          </div>
+
+        </div>
+
+        <button className="save-btn" onClick={handleSubmit}>
+          Update Profile
+        </button>
+
+      </div>
     </div>
   );
 };
