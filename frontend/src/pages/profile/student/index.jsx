@@ -86,23 +86,24 @@ const StudentProfile = () => {
         // ✅ ONLY TEXT FIELDS IN FORM
         setForm({
           id: data?.id || 1,
-          email: data?.email,
-          firstName: data?.firstName,
-          lastName: data?.lastName,
-          name: data?.firstName + " " + data?.lastName,
+          email: data?.user?.email,
+          firstName: data?.user?.firstName,
+          lastName: data?.user?.lastName,
           description: data?.description,
           address: data?.address,
           phone: data?.phone,
-          department: data?.department,
+          department: data?.department?.name,
         });
+
+        const name = data?.user?.firstName + " " + data?.user?.lastName
 
         setUserDetails(prev => ({
           ...prev,
           picture: data?.picture,
-          name: data?.name
+          name: name
         }))
         localStorage.setItem("picture", data?.picture)
-        localStorage.setItem("name", data?.name)
+        localStorage.setItem("name", name)
         // ✅ PHOTO STORED SEPARATELY
         setPhoto(data.picture || null);
       }
@@ -141,13 +142,12 @@ const StudentProfile = () => {
 
       {/* ---------------- FORM FIELDS ---------------- */}
       <input name="email" value={form.email} onChange={handleChange} placeholder="Email" /><br />
-      <input name="name" value={form.name} readOnly disabled placeholder="Full Name" /><br />
-      <input name="firstName" value={form.firstName} onChange={handleChange} placeholder="First Name" /><br />
-      <input name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last Name" /><br />
+      <input readOnly disabled name="firstName" value={form?.firstName} onChange={handleChange} placeholder="First Name" /><br />
+      <input readOnly disabled name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last Name" /><br />
       <input name="description" value={form.description} onChange={handleChange} placeholder="Description" /><br />
       <input name="address" value={form.address} onChange={handleChange} placeholder="Address" /><br />
       <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" /><br />
-      <input name="department" value={form.department} onChange={handleChange} placeholder="Department" /><br />
+      <input readOnly disabled name="department" value={form.department} onChange={handleChange} placeholder="Department" /><br />
 
       <button onClick={handleSubmit}>
         Update Profile

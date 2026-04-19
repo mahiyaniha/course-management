@@ -97,7 +97,7 @@ const CourseModal = ({
               <div className="modal-info">
                 <h3>Title: {c.title}</h3>
 
-                <p>👨‍🏫 {c.advisor.name}</p>
+                <p>👨‍🏫 Advisor: {c?.advisor?.user?.firstName} {c?.advisor?.user?.lastName}</p>
                 <p>📅 {`Course Code: ${c.code}`}</p>
                 <p>⏰ {`Dept Name: ${c.department.name}`}</p>
                 <p>🪑 {c.availableSeat}/{c.totalSeat}</p>

@@ -36,7 +36,7 @@ public class StudentService {
     }
 
     public Student getStudentById(Integer id) {
-        return studentRepository.findById(id)
+        return studentRepository.findByUserId(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
