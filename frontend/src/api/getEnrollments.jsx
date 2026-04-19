@@ -2,7 +2,6 @@ import { GET_ENROLLMENTS_API } from "./apiUrls";
 
   const getEnrollments = async (userId) => {
     try {
-      console.log("getting courses...")
       const enrollmentsAPI= await fetch(GET_ENROLLMENTS_API + "/" + userId, {
         method: "GET",
         headers: {

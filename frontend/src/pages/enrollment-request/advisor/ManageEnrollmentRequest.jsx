@@ -38,7 +38,11 @@ const ManageEnrollmentRequest = () => {
     setIsOpen(true);
   };
 
-  const onClose = () => {
+  const onClose = (actionTaken) => {
+    if (actionTaken) {
+      fetchEnrollmentRequests()
+      console.log("Action taken")
+    }
     setIsOpen(false);
     setSelectedEnrollmentRequest(null);
   };

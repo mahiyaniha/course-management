@@ -2,7 +2,6 @@ import { GET_COURSES_API } from "./apiUrls";
 
   const getCourses = async () => {
     try {
-      console.log("getting courses...")
       const coursesAPI = await fetch(GET_COURSES_API, {
         method: "GET",
         headers: {

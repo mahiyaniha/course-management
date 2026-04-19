@@ -38,7 +38,6 @@ public class EnrollmentRequestService {
             throw new RuntimeException("Not enough seat available");
         }
 
-
         if (dto.getStatus().equalsIgnoreCase("APPROVED")) {
             Enrollment enrollment = new Enrollment();
             enrollment.setSection(sectionById);

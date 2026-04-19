@@ -1,12 +1,15 @@
 import React, { useState, useCallback, useEffect } from "react";
 import getSectionsByCourseId from "../../../api/getSectionsByCourseId";
 import postEnrollmentRequestAction from "../../../api/enrollment-request/postEnrollmentRequestAction";
+import toast from "react-hot-toast";
 
 const ERTakeActionModal = ({
   selectedEnrollmentRequest,
   isOpen,
   onClose
 }) => {
+
+  console.log(selectedEnrollmentRequest)
 
   const { course, student } = selectedEnrollmentRequest;
   const [sections, setSections] = useState([]);
@@ -26,8 +29,6 @@ const ERTakeActionModal = ({
   useEffect(() => {
     if (course?.id) fetchSectionByCourse();
   }, [fetchSectionByCourse, course]);
-
-
 
 
   const handleDropdownChange = (sectionId, value) => {
@@ -58,9 +59,13 @@ const ERTakeActionModal = ({
         studentId: student?.id
       })
       if (resp?.error) throw new Error(resp.error);
+      console.log("Updated ER: ", resp)
+      onClose(true)
+      toast.success("Submitted successful");
 
     } catch (e) {
       console.error(e.message);
+      toast.error("Failed to submit.");
     }
 
   };
@@ -158,7 +163,7 @@ const ERTakeActionModal = ({
 
         {/* Buttons */}
         <div style={styles.actions}>
-          <button style={styles.cancel} onClick={onClose}>
+          <button style={styles.cancel} onClick={() => onClose(false)}>
             Cancel
           </button>
 

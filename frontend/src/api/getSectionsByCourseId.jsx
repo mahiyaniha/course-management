@@ -2,7 +2,6 @@ import { GET_SECTIONS_API } from "./apiUrls";
 
   const getSectionsByCourseId = async (courseId) => {
     try {
-      console.log("getting courses...")
       const sectionsAPI = await fetch(GET_SECTIONS_API + "/" + courseId, {
         method: "GET",
         headers: {

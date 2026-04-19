@@ -1,7 +1,7 @@
 import { POST_ENROLLMENT_REQUESTS_ACTION_API } from "../apiUrls";
 
   const postEnrollmentRequestAction = async ({ 
-    enrollentRequestId, 
+    enrollmentRequestId, 
     courseId, 
     sectionId, 
     studentId, 
@@ -13,7 +13,7 @@ import { POST_ENROLLMENT_REQUESTS_ACTION_API } from "../apiUrls";
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          enrollentRequestId: enrollentRequestId,
+          enrollmentRequestId: enrollmentRequestId,
           courseId: courseId,
           sectionId: sectionId,
           studentId: studentId,
@@ -24,6 +24,8 @@ import { POST_ENROLLMENT_REQUESTS_ACTION_API } from "../apiUrls";
       if (respData.error) {
         return null;
       }
+
+      
       return respData;
     } catch (e) {
       console.error(e.message)
