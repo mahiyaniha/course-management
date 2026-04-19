@@ -17,20 +17,15 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true)
-    private String email;
-
-    private String firstName;
-    private String lastName;
-    private String name;
-    private String description;
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] picture;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
     private String address;
     private String phone;
+    private String description;
 
-    @Column(name = "unique_id", unique = true, nullable = false)
-    private String uniqueId;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] picture;
 }

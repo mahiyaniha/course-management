@@ -12,14 +12,10 @@ public class Enrollment {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", referencedColumnName = "unique_id", nullable = false)
+    @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id", nullable = false)
     private CourseSection section;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advisor_id", referencedColumnName = "unique_id", nullable = false)
-    private Advisor advisor;
 }

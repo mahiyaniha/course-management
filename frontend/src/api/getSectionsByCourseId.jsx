@@ -1,15 +1,15 @@
-import { GET_ENROLLMENTS_API } from "./apiUrls";
+import { GET_SECTIONS_API } from "./apiUrls";
 
-  const getEnrollments = async (userId) => {
+  const getSectionsByCourseId = async (courseId) => {
     try {
       console.log("getting courses...")
-      const enrollmentsAPI= await fetch(GET_ENROLLMENTS_API + "/" + userId, {
+      const sectionsAPI = await fetch(GET_SECTIONS_API + "/" + courseId, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
         },
       });
-      const respData = await enrollmentsAPI.json();
+      const respData = await sectionsAPI.json();
       if (respData.error) {
         return null;
       }
@@ -19,4 +19,4 @@ import { GET_ENROLLMENTS_API } from "./apiUrls";
     }
   }
 
-  export default getEnrollments;
+  export default getSectionsByCourseId;

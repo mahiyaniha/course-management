@@ -1,14 +1,11 @@
 package com.course_management.project.api;
 
-import com.course_management.project.dto.AdminDTO;
 import com.course_management.project.dto.AdvisorDTO;
-import com.course_management.project.dto.AdvisorDecisionDTO;
-import com.course_management.project.modal.Admin;
-import com.course_management.project.modal.Advisor;
-import com.course_management.project.modal.Enrollment;
-import com.course_management.project.modal.RegistrationRequest;
+import com.course_management.project.dto.EnrollmentRequestDTO;
+import com.course_management.project.modal.*;
 import com.course_management.project.service.AdvisorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.course_management.project.service.EnrollmentRequestService;
+import com.course_management.project.service.EnrollmentService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +17,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/advisor")
 public class AdvisorController {
+    private final EnrollmentService enrollmentService;
+    private final EnrollmentRequestService enrollmentRequestService;
+    private final  AdvisorService advisorService;
 
-    @Autowired
-    private AdvisorService advisorService;
+    public AdvisorController(EnrollmentService enrollmentService, EnrollmentRequestService enrollmentRequestService, AdvisorService advisorService) {
+        this.enrollmentService = enrollmentService;
+        this.enrollmentRequestService = enrollmentRequestService;
+        this.advisorService = advisorService;
+    }
 
     @GetMapping("/all")
     public List<Advisor> getAllAdvisors() {
         return advisorService.getAllAdvisors();
     }
 
-    @GetMapping("/{uniqueId}")
-    public Advisor getAdvisorById(@PathVariable String uniqueId) {
-        return advisorService.getAdvisorDetails(uniqueId);
+    @GetMapping("/{userId}")
+    public Advisor getAdvisorById(@PathVariable Integer userId) {
+        return advisorService.getAdvisorDetails(userId);
     }
 
     @PostMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -49,29 +52,23 @@ public class AdvisorController {
         }
     }
 
-    // View pending requests
-    @GetMapping("/requests")
-    public List<RegistrationRequest> pendingRequests() {
-        return advisorService.getPendingRequests();
-    }
-
-    // Approve request
-    @PostMapping("/approve")
-    public String approve(@RequestBody AdvisorDecisionDTO dto) {
-        return advisorService.approveRequest(dto);
-    }
-
-    // Reject request
-    @PostMapping("/reject")
-    public String reject(@RequestBody AdvisorDecisionDTO dto) {
-        return advisorService.rejectRequest(dto);
-    }
-
     // -------------------------
     // Enrollments
     // -------------------------
-    @GetMapping("/enrollments/{uniqueId}")
-    public List<Enrollment> getEnrollments(@PathVariable String uniqueId) {
-        return advisorService.getEnrollments(uniqueId);
+    @GetMapping("/enrollments/{userId}")
+    public List<Enrollment> getEnrollments(@PathVariable Integer userId) {
+        return enrollmentService.getEnrollments(userId);
+    }
+
+    // -------------------------
+    // Enrollments Requests
+    // -------------------------
+    @GetMapping("/enrollment-requests/{userId}")
+    public List<EnrollmentRequest> getEnrollmentRequests(@PathVariable Integer userId) {
+        return enrollmentRequestService.getEnrollmentRequests(userId);
+    }
+    @PostMapping("/enrollment-requests/action")
+    public EnrollmentRequest postEnrollmentRequestAction(@RequestBody EnrollmentRequestDTO enrollmentRequestDTO) {
+        return enrollmentRequestService.postEnrollmentRequestAction(enrollmentRequestDTO);
     }
 }

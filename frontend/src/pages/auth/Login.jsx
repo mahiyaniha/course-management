@@ -13,11 +13,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const redirectUser = (role) => {
-    if (role === "student") {
+    if (role === "STUDENT") {
       navigate("/dashboard");
-    } else if (role === "advisor") {
+    } else if (role === "ADVISOR") {
       navigate("/advisor-dashboard");
-    } else if (role === "admin") {
+    } else if (role === "ADMIN") {
       navigate("/admin-dashboard");
     }
   };
@@ -49,10 +49,11 @@ const Login = () => {
 
       toast.success(data.message || "Login successful");
 
+
       localStorage.setItem("role", data.role ?? "");
-      localStorage.setItem("name", data.name ?? "");
+      localStorage.setItem("name", data?.name ?? "");
       localStorage.setItem("picture", data.picture ?? "")
-      localStorage.setItem("uniqueId", data.uniqueId ?? "");
+      localStorage.setItem("userId", data.userId ?? "");
 
       redirectUser(data.role);
     } catch (err) {

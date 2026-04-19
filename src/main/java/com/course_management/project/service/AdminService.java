@@ -29,8 +29,8 @@ public class AdminService {
         return userRepo.findAll();
     }
 
-    public Admin getAdminDetails(String uniqueId) {
-        Admin admin = adminRepository.findByUniqueId(uniqueId).orElseThrow(() -> new RuntimeException("Admin not found"));
+    public Admin getAdminDetails(Integer userId) {
+        Admin admin = adminRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("Admin not found"));
         return admin;
     }
 
@@ -39,10 +39,9 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // update fields from DTO
-        admin.setEmail(dto.getEmail());
-        admin.setFirstName(dto.getFirstName());
-        admin.setLastName(dto.getLastName());
-        admin.setName(dto.getName());
+        admin.getUser().setEmail(dto.getEmail());
+        admin.getUser().setFirstName(dto.getFirstName());
+        admin.getUser().setLastName(dto.getLastName());
         admin.setDescription(dto.getDescription());
         admin.setAddress(dto.getAddress());
         admin.setPhone(dto.getPhone());
@@ -93,10 +92,13 @@ public class AdminService {
         return sectionRepo.findAll();
     }
 
+    public List<CourseSection> getSectionsByCourseId(final Integer courseId) {
+        return sectionRepo.findCourseSectionByCourse_Id(courseId);
+    }
+
     public CourseSection createSection(CourseSectionDTO dto) {
         CourseSection section = new CourseSection();
         section.getCourse().setId(dto.getCourseId());
-        section.setInstructor(dto.getInstructor());
         section.setDay(dto.getDay());
         section.setStartTime(LocalTime.parse(dto.getStartTime()));
         section.setEndTime(LocalTime.parse(dto.getEndTime()));

@@ -42,13 +42,13 @@ const ManageCourse = () => {
         <tbody>
           {courses.map(e =>
             <tr key={e.code}>
-              <td>{e.code}</td>
-              <td>{e.title}</td>
-              <td>{e.credit}</td>
-              <td>{e.department.name}</td>
-              <td>{e.advisor.name}</td>
-              <td>{e.availableSeat ?? "None"}</td>
-              <td>{e.totalSeat}</td>
+              <td>{e?.code}</td>
+              <td>{e?.title}</td>
+              <td>{e?.credit}</td>
+              <td>{e?.department?.name}</td>
+              <td>{e?.advisor?.user?.firstName} {e?.advisor?.user?.lastName}</td>
+              <td>{e?.availableSeat ?? "None"}</td>
+              <td>{e?.totalSeat}</td>
             </tr>
           )}
         </tbody>

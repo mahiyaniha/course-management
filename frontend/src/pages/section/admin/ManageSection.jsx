@@ -45,7 +45,7 @@ const ManageSection = () => {
           {sections.map(e =>
             <tr key={e?.course?.code}>
               <td>{e?.course?.title}</td>
-              <td>{e?.course?.advisor?.name}</td>
+              <td>{e?.course?.advisor?.user?.firstName} {e?.course?.advisor?.user?.lastName}</td>
               <td>{e?.course?.department?.name}</td>
               <td>{e?.day}</td>
               <td>{e?.startTime}</td>

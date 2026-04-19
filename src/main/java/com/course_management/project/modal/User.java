@@ -10,25 +10,35 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
+    @Column(name = "unique_id", unique = true, nullable = false, updatable = false)
+    private String uniqueId;
+
+    // 👇 ADD THESE
+    private String firstName;
+    private String lastName;
+
     public enum Role {
-        student,
-        advisor,
-        admin
+        STUDENT,
+        ADVISOR,
+        ADMIN
     }
 
-    @Column(name = "unique_id", nullable = false)
-    private String uniqueId;
+    @PrePersist
+    public void generateUniqueId() {
+        this.uniqueId = role.name().toLowerCase() + "_" + System.currentTimeMillis();
+    }
 }

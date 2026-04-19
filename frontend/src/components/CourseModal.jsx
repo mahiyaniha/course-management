@@ -52,9 +52,9 @@ const CourseModal = ({
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            "studentId": localStorage.getItem("uniqueId"),
+            "studentId": localStorage.getItem("userId"),
             "courseId": curr_course.id,
-            "advisorId": curr_course.advisor.uniqueId,
+            "advisorId": curr_course.advisor.id,
             "status": "pending"
           })
         });

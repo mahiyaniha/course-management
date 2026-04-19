@@ -11,7 +11,7 @@ const ManageEnrollment = () => {
 
   const fetchEnrollments = useCallback(async () => {
     try {
-      const resp = await getEnrollments(userDetails?.uniqueId)
+      const resp = await getEnrollments(userDetails?.userId)
       if (resp.error) {
         throw new Error(resp.error)
       }
@@ -19,11 +19,13 @@ const ManageEnrollment = () => {
     } catch (e) {
       console.error(e.message)
     }
-  }, [userDetails?.uniqueId])
+  }, [userDetails?.userId])
 
   useEffect(() => {
-    fetchEnrollments()
-  }, [fetchEnrollments])
+    if (userDetails) {
+      fetchEnrollments()
+    }
+  }, [fetchEnrollments, userDetails])
 
   return (
     <div>
@@ -33,7 +35,8 @@ const ManageEnrollment = () => {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Email</th>
             <th>Course Title</th>
             <th>Course Code</th>
@@ -46,8 +49,9 @@ const ManageEnrollment = () => {
         <tbody>
           {enrollments.map(e =>
             <tr key={e.code}>
-              <td>{e?.student?.name}</td>
-              <td>{e?.student?.email}</td>
+              <td>{e?.student?.user?.firstName}</td>
+              <td>{e?.student?.user?.lastName}</td>
+              <td>{e?.student?.user?.email}</td>
               <td>{e?.section?.course?.title}</td>
               <td>{e?.section?.course?.code}</td>
               <td>{e?.section?.course?.department?.name}</td>

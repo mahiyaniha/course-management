@@ -3,6 +3,7 @@ package com.course_management.project.service;
 import com.course_management.project.dto.AdminDTO;
 import com.course_management.project.dto.AdvisorDTO;
 import com.course_management.project.dto.AdvisorDecisionDTO;
+import com.course_management.project.dto.EnrollmentRequestDTO;
 import com.course_management.project.modal.*;
 import com.course_management.project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,40 +12,25 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdvisorService {
+    final private AdvisorRepository advisorRepository;
 
-    @Autowired
-    private RequestRepository requestRepo;
-
-    @Autowired
-    private RequestItemRepository itemRepo;
-
-    @Autowired
-    private EnrollmentRepository enrollRepo;
-
-    @Autowired
-    private CourseSectionRepository sectionRepo;
-
-    @Autowired
-    private NotificationRepository notificationRepo;
-
-    @Autowired
-    private AdvisorRepository advisorRepository;
+    public AdvisorService(
+            final AdvisorRepository advisorRepository) {
+        this.advisorRepository = advisorRepository;
+    }
 
     public List<Advisor> getAllAdvisors() {
         return advisorRepository.findAll();
     }
 
-    public  Advisor getAdvisorDetails(String uniqueId) {
+    public  Advisor getAdvisorDetails(Integer userId) {
         Advisor advisor = advisorRepository
-                .findByUserUniqueId(uniqueId).orElseThrow(() -> new RuntimeException("Advisor not found"));
+                .findByUserId(userId).orElseThrow(() -> new RuntimeException("Advisor not found"));
         return advisor;
-    }
-
-    public  List<Enrollment> getEnrollments(String uniqueId) {
-        return enrollRepo.findByAdvisor_User_UniqueId(uniqueId);
     }
 
     public String updateAdvisorProfile(AdvisorDTO dto, MultipartFile photo) throws IOException {
@@ -52,10 +38,9 @@ public class AdvisorService {
                 .orElseThrow(() -> new RuntimeException("Advisor not found"));
 
         // update fields from DTO
-        advisor.setEmail(dto.getEmail());
-        advisor.setFirstName(dto.getFirstName());
-        advisor.setLastName(dto.getLastName());
-        advisor.setName(dto.getName());
+        advisor.getUser().setEmail(dto.getEmail());
+        advisor.getUser().setFirstName(dto.getFirstName());
+        advisor.getUser().setLastName(dto.getLastName());
         advisor.setDescription(dto.getDescription());
         advisor.setAddress(dto.getAddress());
         advisor.setPhone(dto.getPhone());
@@ -66,65 +51,5 @@ public class AdvisorService {
         }
         advisorRepository.save(advisor);
         return "Profile updated successfully";
-    }
-
-
-    // Get all pending requests
-    public List<RegistrationRequest> getPendingRequests() {
-        return requestRepo.findByStatus("pending");
-    }
-
-    // Approve request
-    public String approveRequest(AdvisorDecisionDTO dto) {
-
-        RegistrationRequest req = requestRepo.findById(dto.getRequestId())
-                .orElseThrow(() -> new RuntimeException("Request not found"));
-
-        List<RegistrationRequestItem> items = itemRepo.findByRequestId(req.getId());
-
-        for (RegistrationRequestItem item : items) {
-
-            // Auto-enroll student
-            Enrollment e = new Enrollment();
-            e.getStudent().getUser().setUniqueId(req.getStudentId());
-            e.getSection().setId(item.getSectionId());
-            enrollRepo.save(e);
-
-            // Increment seat taken
-            CourseSection section = sectionRepo.findById(item.getSectionId()).orElseThrow();
-            section.setSeatTaken(section.getSeatTaken() + 1);
-            sectionRepo.save(section);
-        }
-
-        req.setStatus("approved");
-        req.setAdvisorComment(dto.getComment());
-        requestRepo.save(req);
-
-        // Notify student
-        Notification n = new Notification();
-        n.setUserId(req.getStudentId());
-        n.setMessage("Your course request #" + req.getId() + " has been approved.");
-        notificationRepo.save(n);
-
-        return "Request approved successfully";
-    }
-
-    // Reject request
-    public String rejectRequest(AdvisorDecisionDTO dto) {
-
-        RegistrationRequest req = requestRepo.findById(dto.getRequestId())
-                .orElseThrow(() -> new RuntimeException("Request not found"));
-
-        req.setStatus("rejected");
-        req.setAdvisorComment(dto.getComment());
-        requestRepo.save(req);
-
-        // Notify student
-        Notification n = new Notification();
-        n.setUserId(req.getStudentId());
-        n.setMessage("Your course request #" + req.getId() + " has been rejected. Comment: " + dto.getComment());
-        notificationRepo.save(n);
-
-        return "Request rejected successfully";
     }
 }

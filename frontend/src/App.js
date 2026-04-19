@@ -17,6 +17,7 @@ import AdminProfile from "./pages/profile/admin";
 import ManageCourse from "./pages/course/admin/ManageCourse"
 import ManageSection from "./pages/section/admin/ManageSection"
 import ManageEnrollment from "./pages/enrollment/advisor/ManageEnrollment"
+import ManageEnrollmentRequest from "./pages/enrollment-request/advisor/ManageEnrollmentRequest"
 
 import AdvisorLayout from "./pages/sidebar/advisor/Layout";
 import AdvisorProfile from "./pages/profile/advisor";
@@ -45,11 +46,11 @@ function AppContent() {
     const role = localStorage.getItem("role");
 
     if (window.location.pathname === "/") {
-      if (role === "student") {
+      if (role === "STUDENT") {
         navigate("/dashboard", { replace: true });
-      } else if (role === "advisor") {
+      } else if (role === "ADVISOR") {
         navigate("/advisor-dashboard", { replace: true });
-      } else if (role === "admin") {
+      } else if (role === "ADMIN") {
         navigate("/admin-dashboard", { replace: true });
       }
     }
@@ -65,7 +66,7 @@ function AppContent() {
       <Route
         path="/admin-dashboard"
         element={
-          <ProtectedRoute allowedRole="admin">
+          <ProtectedRoute allowedRole="ADMIN">
             <AdminLayout />
           </ProtectedRoute>
         }
@@ -81,7 +82,7 @@ function AppContent() {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute allowedRole="student">
+          <ProtectedRoute allowedRole="STUDENT">
             <StudentLayout />
           </ProtectedRoute>
         }
@@ -97,7 +98,7 @@ function AppContent() {
       <Route
         path="/advisor-dashboard"
         element={
-          <ProtectedRoute allowedRole="advisor">
+          <ProtectedRoute allowedRole="ADVISOR">
             <AdvisorLayout />
           </ProtectedRoute>
         }
@@ -105,6 +106,7 @@ function AppContent() {
         <Route index element={<AdvisorDashboard />} />
         <Route path="profile" element={<AdvisorProfile />} />
         <Route path="manage-enrollment" element={<ManageEnrollment />} />
+        <Route path="manage-enrollment-request" element={<ManageEnrollmentRequest />} />
 
       </Route>
 
@@ -124,7 +126,7 @@ function App() {
       name: localStorage.getItem("name") ?? "",
       role: localStorage.getItem("role") ?? "",
       picture: localStorage.getItem("picture") ?? "",
-      uniqueId: localStorage.getItem("uniqueId")
+      userId: localStorage.getItem("userId")
     })
 
   }, [setUserDetails])

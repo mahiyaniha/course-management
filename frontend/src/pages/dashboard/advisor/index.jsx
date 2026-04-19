@@ -13,45 +13,6 @@ const AdvisorDashboard = () => {
 
   const [notifications, setNotifications] = useState([]);
 
-  // =========================
-  // LOAD DUMMY DATA
-  // =========================
-  useEffect(() => {
-    const dummyData = [
-      {
-        id: 1,
-        studentId: 101,
-        studentName: "Mahiya Akter Niha",
-        courseName: "Object Oriented Programming",
-        courseCode: "CSE221",
-        status: "PENDING",
-      },
-      {
-        id: 2,
-        studentId: 102,
-        studentName: "Rahim Uddin",
-        courseName: "Database Management",
-        courseCode: "CSE311",
-        status: "APPROVED",
-      },
-      {
-        id: 3,
-        studentId: 103,
-        studentName: "Nusrat Jahan",
-        courseName: "Data Structures",
-        courseCode: "CSE210",
-        status: "REJECTED",
-      },
-    ];
-
-    setRequests(dummyData);
-
-    // fake notification
-    setNotifications([
-      { id: 1, msg: "New course request from Rahim" },
-      { id: 2, msg: "New request from Nusrat" },
-    ]);
-  }, []);
 
   // =========================
   // FILTER LOGIC

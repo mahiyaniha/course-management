@@ -17,27 +17,29 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true)
-    private String email;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
-    private String firstName;
-    private String lastName;
-    private String name;
-    private String description;
+    @OneToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] picture;
-    
     private String address;
     private String phone;
-    private String department;
+    private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "unique_id",
-            referencedColumnName = "unique_id"   // IMPORTANT
-    )
-    private User user;
+    private Integer maxCreditLimit;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public enum Status {
+        ACTIVE,
+        INACTIVE
+    }
+
+    @Lob
+    private byte[] picture;
 }
 

@@ -10,10 +10,11 @@ const Sidebar = () => {
     { label: 'Dashboard', path: '/advisor-dashboard' },
     { label: 'Profile', path: '/advisor-dashboard/profile' },
     { label: 'Manage Enrollment', path: '/advisor-dashboard/manage-enrollment' },
+    { label: 'Manage Enrollment Request', path: '/advisor-dashboard/manage-enrollment-request' },
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("uniqueId");
+    localStorage.removeItem("userId");
     localStorage.removeItem("authEmail");
     localStorage.removeItem("role");
     window.location.href = '/';

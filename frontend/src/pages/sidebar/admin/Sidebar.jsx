@@ -14,7 +14,7 @@ const Sidebar = () => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("uniqueId");
+    localStorage.removeItem("userId");
     localStorage.removeItem("authEmail");
     localStorage.removeItem("role");
     window.location.href = '/';

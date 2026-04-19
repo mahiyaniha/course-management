@@ -28,7 +28,7 @@ const AdminDashboard = () => {
       console.error(e.message)
     }
   }
-
+  
   useEffect(() => {
     fetchStudents()
     fetchAdvisors()
@@ -48,7 +48,6 @@ const AdminDashboard = () => {
         <thead>
           <tr>
             <th>Photo</th>
-            <th>Full Name</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
@@ -60,12 +59,11 @@ const AdminDashboard = () => {
         </thead>
         <tbody>
           {advisors.map(e =>
-            <tr key={e.email}>
+            <tr key={e?.id}>
               <td>{e.photo}</td>
-              <td>{e.name}</td>
-              <td>{e.firstName}</td>
-              <td>{e.lastName}</td>
-              <td>{e.email}</td>
+              <td>{e?.user?.firstName}</td>
+              <td>{e?.user?.lastName}</td>
+              <td>{e?.user?.email}</td>
               <td>{e.description ?? "None"}</td>
               <td>{e.address}</td>
               <td>{e.phone}</td>
@@ -83,7 +81,6 @@ const AdminDashboard = () => {
         <thead>
           <tr>
             <th>Photo</th>
-            <th>Full Name</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
@@ -95,16 +92,15 @@ const AdminDashboard = () => {
         </thead>
         <tbody>
           {students.map(e =>
-            <tr key={e.email}>
+            <tr key={e?.id}>
               <td>{e.photo}</td>
-              <td>{e.name}</td>
-              <td>{e.firstName}</td>
-              <td>{e.lastName}</td>
-              <td>{e.email}</td>
-              <td>{e.description ?? "None"}</td>
-              <td>{e.address}</td>
-              <td>{e.phone}</td>
-              <td>{e.department}</td>
+              <td>{e?.user?.firstName}</td>
+              <td>{e?.user?.lastName}</td>
+              <td>{e?.user?.email}</td>
+              <td>{e?.description ?? "None"}</td>
+              <td>{e?.address}</td>
+              <td>{e?.phone}</td>
+              <td>{e?.department?.name}</td>
             </tr>
           )}
         </tbody>

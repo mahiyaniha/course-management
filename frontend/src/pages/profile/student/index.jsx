@@ -74,10 +74,10 @@ const StudentProfile = () => {
   // ---------------- FETCH STUDENT ----------------
   const fetchStudent = useCallback(async () => {
     try {
-      const uniqueId = localStorage.getItem("uniqueId");
+      const userId = localStorage.getItem("userId");
 
       const resp = await fetch(
-        "http://localhost:8080/api/student/" + uniqueId
+        "http://localhost:8080/api/student/" + userId
       );
 
       const data = await resp.json();

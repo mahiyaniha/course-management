@@ -74,10 +74,10 @@ const AdvisorProfile = () => {
   // ---------------- FETCH STUDENT ----------------
   const fetchAdmin = useCallback(async () => {
     try {
-      const uniqueId = localStorage.getItem("uniqueId");
+      const userId = localStorage.getItem("userId");
 
       const resp = await fetch(
-        "http://localhost:8080/api/admin/" + uniqueId
+        "http://localhost:8080/api/admin/" + userId 
       );
 
       const data = await resp.json();
@@ -86,10 +86,9 @@ const AdvisorProfile = () => {
         // ✅ ONLY TEXT FIELDS IN FORM
         setForm({
           id: data.id || 1,
-          email: data.email || "",
-          firstName: data.firstName || "",
-          lastName: data.lastName || "",
-          name: data.name || "",
+          email: data?.user?.email || "",
+          firstName: data?.user?.firstName || "",
+          lastName: data?.user?.lastName || "",
           description: data.description || "",
           address: data.address || "",
           phone: data.phone || "",
@@ -141,9 +140,8 @@ const AdvisorProfile = () => {
 
       {/* ---------------- FORM FIELDS ---------------- */}
       <input name="email" value={form.email} onChange={handleChange} placeholder="Email" /><br />
-      <input readOnly disabled name="name" value={form.name} placeholder="Full Name" /><br />
-      <input name="firstName" value={form.firstName} onChange={handleChange} placeholder="First Name" /><br />
-      <input name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last Name" /><br />
+      <input readOnly disabled name="firstName" value={form.firstName} onChange={handleChange} placeholder="First Name" /><br />
+      <input readOnly disabled name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last Name" /><br />
       <input name="description" value={form.description} onChange={handleChange} placeholder="Description" /><br />
       <input name="address" value={form.address} onChange={handleChange} placeholder="Address" /><br />
       <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" /><br />

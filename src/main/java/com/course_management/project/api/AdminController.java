@@ -30,9 +30,9 @@ public class AdminController {
         return adminService.getAllUsers();
     }
 
-    @GetMapping("/{uniqueId}")
-    public Admin getAdminById(@PathVariable String uniqueId) {
-        return adminService.getAdminDetails(uniqueId);
+    @GetMapping("/{userId}")
+    public Admin getAdminById(@PathVariable Integer userId) {
+        return adminService.getAdminDetails(userId);
     }
 
     @PostMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -96,6 +96,11 @@ public class AdminController {
     @GetMapping("/sections")
     public List<CourseSection> getSections() {
         return adminService.getSections();
+    }
+
+    @GetMapping("/sections/{courseId}")
+    public List<CourseSection> getSectionsByCourseId(@PathVariable Integer courseId) {
+        return adminService.getSectionsByCourseId(courseId);
     }
 
     @PostMapping("/sections")

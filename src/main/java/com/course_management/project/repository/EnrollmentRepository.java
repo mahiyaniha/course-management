@@ -3,14 +3,15 @@ package com.course_management.project.repository;
 import com.course_management.project.modal.Enrollment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
+@Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
     List<Enrollment> findByStudentId(Integer studentId);
-
-    List<Enrollment> findByAdvisor_User_UniqueId(String uniqueId);
-    List<Enrollment> findByStudent_User_UniqueId(String uniqueId);
+    List<Enrollment> findBySection_Course_Advisor_User_Id(Integer userId);
 
     @Query("""
     SELECT COALESCE(SUM(e.section.course.credit), 0)

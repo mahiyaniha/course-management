@@ -16,13 +16,13 @@ public class Course {
     private Integer credit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id") // column in courses table
+    @JoinColumn(name = "department_id")
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advisor_id", referencedColumnName = "unique_id")
+    @JoinColumn(name = "advisor_id", nullable = false)
     private Advisor advisor;
 
-    private String availableSeat;
-    private String totalSeat;
+    private Integer availableSeat;
+    private Integer totalSeat;
 }

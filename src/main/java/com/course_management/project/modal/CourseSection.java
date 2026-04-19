@@ -18,8 +18,6 @@ public class CourseSection {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    private String instructor;
-
     private String day;
     private LocalTime startTime;
     private LocalTime endTime;

@@ -12,7 +12,33 @@ public class RegistrationRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String studentId;
-    private String status; // pending/approved/rejected
-    private String advisorComment;
+    private String firstName;
+    private String lastName;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @OneToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+    public enum Role {
+        STUDENT,
+        ADVISOR,
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public enum Status {
+        PENDING,
+        REJECTED,
+        APPROVED
+    }
 }

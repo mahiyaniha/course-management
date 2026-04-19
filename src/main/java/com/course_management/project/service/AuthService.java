@@ -36,25 +36,22 @@ public class AuthService {
         this.studentService = studentService;
     }
 
-    private Map<String, Object> getUserProfilePic(String byRole, String uniqueId) {
+    private Map<String, Object> getUserProfilePic(String byRole, Integer userId) {
         Map<String, Object> hashmap = new HashMap<>();
         String role = byRole.toLowerCase();
         return switch (role) {
             case "admin" -> {
-                Admin adminDetails = adminService.getAdminDetails(uniqueId);
-                hashmap.put("name", adminDetails.getName());
+                Admin adminDetails = adminService.getAdminDetails(userId);
                 hashmap.put("picture", adminDetails.getPicture());
                 yield hashmap;
             }
             case "advisor" -> {
-                Advisor advisorDetails = advisorService.getAdvisorDetails(uniqueId);
-                hashmap.put("name", advisorDetails.getName());
+                Advisor advisorDetails = advisorService.getAdvisorDetails(userId);
                 hashmap.put("picture", advisorDetails.getPicture());
                 yield hashmap;
             }
             case "student" -> {
-                Student studentById = studentService.getStudentById(uniqueId);
-                hashmap.put("name", studentById.getName());
+                Student studentById = studentService.getStudentById(userId);
                 hashmap.put("picture", studentById.getPicture());
                 yield hashmap;
             }
@@ -76,13 +73,14 @@ public class AuthService {
         }
 
         // Get profile pic by user role and unique id
-        Map<String, Object> userDetails = getUserProfilePic(user.getRole().name(), user.getUniqueId());
+        Map<String, Object> userDetails = getUserProfilePic(user.getRole().name(), user.getId());
+        String name = user.getFirstName() + " " + user.getLastName();
 
         return AuthResponse.builder()
                 .message("Login successful")
-                .name((String) userDetails.get("name"))
+                .name(name)
                 .role(user.getRole().name())
-                .uniqueId(user.getUniqueId())
+                .userId(user.getId())
                 .picture((byte[]) userDetails.get("picture"))
                 .redirect("/dashboard/" + user.getRole().name().toLowerCase())
                 .build();

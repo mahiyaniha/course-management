@@ -10,6 +10,6 @@ public class AuthResponse {
     private String message;
     private String role;
     private String redirect;
-    private String uniqueId;
+    private Integer userId;
     private byte[] picture;
 }

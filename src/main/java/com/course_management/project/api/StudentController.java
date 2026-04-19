@@ -26,9 +26,9 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
-    @GetMapping("/{uniqueId}")
-    public Student getStudentById(@PathVariable String uniqueId) {
-        return studentService.getStudentById(uniqueId);
+    @GetMapping("/{userId}")
+    public Student getStudentById(@PathVariable Integer userId) {
+        return studentService.getStudentById(userId);
     }
 
     @PostMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -47,18 +47,16 @@ public class StudentController {
     }
 
         // 📊 DASHBOARD
-    @GetMapping("/dashboard/{id}")
-    public DashboardDTO dashboard(@PathVariable String id) {
-        return studentService.getDashboard(id);
+    @GetMapping("/dashboard/{userId}")
+    public DashboardDTO dashboard(@PathVariable Integer userId) {
+        return studentService.getDashboard(userId);
     }
 
-    // 📚 AVAILABLE COURSES
     @GetMapping("/courses")
     public List<CourseSection> courses() {
         return studentService.getAvailableCourses();
     }
 
-    // 🔥 ADD COURSE REQUEST
     @PostMapping("/add_request")
     public ResponseEntity<?> add(@RequestBody EnrollmentRequestDTO dto) {
         String resp = studentService.addCourse(dto);
@@ -67,36 +65,32 @@ public class StudentController {
         return ResponseEntity.ok(respMap);
     }
 
-    // 📘 MY COURSES
-    @GetMapping("/my_courses/{id}")
-    public List<MyCourseDTO> myCourses(@PathVariable String id) {
-        return studentService.myCourses(id);
+    @GetMapping("/my_courses/{userId}")
+    public List<MyCourseDTO> myCourses(@PathVariable Integer userId) {
+        return studentService.myCourses(userId);
     }
 
-    @GetMapping("/enrollments/{uniqueId}")
-    public List<Enrollment> getEnrollments(@PathVariable String uniqueId) {
-        return studentService.getEnrollments(uniqueId);
+    @GetMapping("/enrollments/{userId}")
+    public List<Enrollment> getEnrollments(@PathVariable Integer userId) {
+        return studentService.getEnrollments(userId);
     }
 
-    // 🆕 COMPLETED COURSES
-    @GetMapping("/completed_courses/{id}")
-    public List<MyCourseDTO> completedCourses(@PathVariable String id) {
-        return studentService.getCompletedCourses(id);
+    @GetMapping("/completed_courses/{userId}")
+    public List<MyCourseDTO> completedCourses(@PathVariable Integer userId) {
+        return studentService.getCompletedCourses(userId);
     }
 
-    // 🗓️ SCHEDULE
-    @GetMapping("/schedule/{id}")
-    public List<CourseSection> schedule(@PathVariable String id) {
-        return studentService.getSchedule(id);
+    @GetMapping("/schedule/{userId}")
+    public List<CourseSection> schedule(@PathVariable Integer userId) {
+        return studentService.getSchedule(userId);
     }
 
-    // 📜 REQUEST HISTORY
-    @GetMapping("/requests/{id}")
-    public List<RegistrationRequest> requests(@PathVariable String id) {
-        return studentService.getRequests(id);
+    @GetMapping("/enrollment-requests/{userId}")
+    public List<EnrollmentRequest> enrollmentRequests(@PathVariable Integer userId) {
+        return studentService.getEnrollmentRequests(userId);
     }
-    @GetMapping("/grades/distribution/{id}")
-    public GradeDistributionDTO gradeDistribution(@PathVariable String id) {
-        return studentService.getGradeDistribution(id);
+    @GetMapping("/grades/distribution/{userId}")
+    public GradeDistributionDTO gradeDistribution(@PathVariable Integer userId) {
+        return studentService.getGradeDistribution(userId);
     }
 }

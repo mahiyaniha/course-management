@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AdvisorRepository extends JpaRepository<Advisor, Integer> {
-    Optional<Advisor> findByUserUniqueId(String uniqueId);
+    Optional<Advisor> findByUserId(Integer userId);
 }
