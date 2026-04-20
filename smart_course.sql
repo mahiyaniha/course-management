@@ -150,11 +150,11 @@ DROP TABLE IF EXISTS `course_sections`;
 CREATE TABLE `course_sections` (
   `id` int NOT NULL AUTO_INCREMENT,
   `course_id` int DEFAULT NULL,
-  `day` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `start_time` time DEFAULT NULL,
   `end_time` time DEFAULT NULL,
   `seat_limit` int DEFAULT NULL,
   `seat_taken` int DEFAULT '0',
+  `day` enum('FRIDAY','MONDAY','SATURDAY','SUNDAY','THURSDAY','TUESDAY','WEDNESDAY') COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `course_id` (`course_id`),
   CONSTRAINT `course_sections_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
@@ -167,7 +167,7 @@ CREATE TABLE `course_sections` (
 
 LOCK TABLES `course_sections` WRITE;
 /*!40000 ALTER TABLE `course_sections` DISABLE KEYS */;
-INSERT INTO `course_sections` VALUES (1,1,'Mon','09:00:00','10:30:00',30,0),(2,1,'Wed','09:00:00','10:30:00',30,1),(3,2,'Tue','11:00:00','12:30:00',30,0),(4,2,'Thu','11:00:00','12:30:00',30,0),(5,3,'Mon','13:00:00','14:30:00',30,0),(6,3,'Wed','13:00:00','14:30:00',30,0),(7,4,'Tue','09:00:00','10:30:00',30,0),(8,5,'Thu','14:00:00','15:30:00',30,0),(9,6,'Mon','11:00:00','12:30:00',30,0),(10,7,'Wed','11:00:00','12:30:00',30,0),(11,8,'Tue','13:00:00','14:30:00',30,0),(12,9,'Thu','09:00:00','10:30:00',30,0),(13,10,'Mon','15:00:00','16:30:00',30,0),(14,10,'Wed','15:00:00','16:30:00',30,0),(15,5,'Fri','10:00:00','11:30:00',30,0);
+INSERT INTO `course_sections` VALUES (1,1,'09:00:00','10:30:00',30,0,'MONDAY'),(2,1,'09:00:00','10:30:00',30,1,'WEDNESDAY'),(3,2,'11:00:00','12:30:00',30,0,'TUESDAY'),(4,2,'11:00:00','12:30:00',30,0,'THURSDAY'),(5,3,'13:00:00','14:30:00',30,0,'MONDAY'),(6,3,'13:00:00','14:30:00',30,0,'WEDNESDAY'),(7,4,'09:00:00','10:30:00',30,0,'TUESDAY'),(8,5,'14:00:00','15:30:00',30,0,'THURSDAY'),(9,6,'11:00:00','12:30:00',30,0,'MONDAY'),(10,7,'11:00:00','12:30:00',30,0,'WEDNESDAY'),(11,8,'13:00:00','14:30:00',30,0,'TUESDAY'),(12,9,'09:00:00','10:30:00',30,0,'THURSDAY'),(13,10,'15:00:00','16:30:00',30,0,'SUNDAY'),(14,10,'15:00:00','16:30:00',30,0,'FRIDAY'),(15,5,'10:00:00','11:30:00',30,0,'MONDAY');
 /*!40000 ALTER TABLE `course_sections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -451,4 +451,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-19 22:05:17
+-- Dump completed on 2026-04-19 22:52:24
