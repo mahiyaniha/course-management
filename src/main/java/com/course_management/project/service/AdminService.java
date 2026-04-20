@@ -3,6 +3,7 @@ package com.course_management.project.service;
 import com.course_management.project.dto.AdminDTO;
 import com.course_management.project.dto.CourseSectionDTO;
 import com.course_management.project.dto.StudentDTO;
+import com.course_management.project.enums.Day;
 import com.course_management.project.modal.*;
 import com.course_management.project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,9 @@ public class AdminService {
     public CourseSection createSection(CourseSectionDTO dto) {
         CourseSection section = new CourseSection();
         section.getCourse().setId(dto.getCourseId());
-        section.setDay(dto.getDay());
+
+        String dayUpper = dto.getDay().toUpperCase();
+        section.setDay(Day.valueOf(dayUpper));
         section.setStartTime(LocalTime.parse(dto.getStartTime()));
         section.setEndTime(LocalTime.parse(dto.getEndTime()));
         section.setSeatLimit(dto.getSeatLimit());

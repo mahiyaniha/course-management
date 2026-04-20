@@ -1,5 +1,6 @@
 package com.course_management.project.modal;
 
+import com.course_management.project.enums.Day;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,7 +19,9 @@ public class CourseSection {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    private String day;
+    @Enumerated(EnumType.STRING)
+    private Day day;
+
     private LocalTime startTime;
     private LocalTime endTime;
 
