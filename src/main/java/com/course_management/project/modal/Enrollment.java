@@ -18,4 +18,13 @@ public class Enrollment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id", nullable = false)
     private CourseSection section;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
+
+    public enum Status {
+        COMPLETED,
+        ACTIVE,
+        FAILED_TO_COMPLETE
+    }
 }

@@ -52,7 +52,7 @@ const CourseModal = ({
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            "studentId": localStorage.getItem("userId"),
+            "userId": localStorage.getItem("userId"),
             "courseId": curr_course.id,
             "advisorId": curr_course.advisor.id,
             "status": "pending"

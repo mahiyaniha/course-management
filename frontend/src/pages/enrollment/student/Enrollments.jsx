@@ -1,5 +1,5 @@
 import React from "react";
-import "./MyCourses.css";
+import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookOpenReader,
@@ -7,7 +7,7 @@ import {
   faClock,
 } from "@fortawesome/free-solid-svg-icons";
 
-const MyCourses = () => {
+const Enrollment = () => {
   const courses = [
     {
       id: 1,
@@ -125,4 +125,4 @@ const MyCourses = () => {
   );
 };
 
-export default MyCourses;
+export default Enrollment;

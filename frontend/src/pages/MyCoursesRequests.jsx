@@ -81,12 +81,13 @@ const MyCoursesRequests = () => {
       return Array.isArray(data) ? data : [];
     };
 
+
     const fetchData = async () => {
       try {
         setLoading(true);
 
         const [myRes, reqRes, compRes] = await Promise.all([
-          fetchJsonArray(`http://localhost:8080/api/student/my_courses/${userId}`),
+          fetchJsonArray(`http://localhost:8080/api/student/enrollments/${userId}`),
           fetchJsonArray(`http://localhost:8080/api/student/enrollment-requests/${userId}`),
           fetchJsonArray(`http://localhost:8080/api/student/completed_courses/${userId}`),
         ]);
@@ -108,7 +109,7 @@ const MyCoursesRequests = () => {
   }, []);
 
   const stats = useMemo(() => {
-    const totalCredits = myCourses.reduce((sum, course) => sum + (course.credit || 0), 0);
+    const totalCredits = myCourses.reduce((sum, ele) => sum + (ele.section.course.credit || 0), 0);
     const pendingRequests = requests.filter((item) => item.status === "PENDING").length;
     const completedCredits = completed.reduce((sum, course) => sum + (course.credit || 0), 0);
 
@@ -186,21 +187,21 @@ const MyCoursesRequests = () => {
             </div>
 
             <div className="column-content course-grid">
-              {myCourses.map((course) => (
-                <article key={`${course.courseId}-${course.sectionId}`} className="course-card">
+              {myCourses.map((ele) => (
+                <article key={`${ele.section.course.id}-${ele.section.course.code}`} className="course-card">
                   <div className="card-topline">
-                    <span className="card-chip chip-primary">Active</span>
-                    <span className="credit-pill">{course.credit} Credit{course.credit === 1 ? "" : "s"}</span>
+                    <span className="card-chip chip-primary">{ele.status}</span>
+                    <span className="credit-pill">{ele.section.course.credit} Credit{ele.section.course.credit === 1 ? "" : "s"}</span>
                   </div>
-                  <h3>{course.courseName}</h3>
+                  <h3>{ele.section.course.title}</h3>
                   <div className="course-meta">
                     <div className="meta-row">
                       <span className="meta-label">Section</span>
-                      <span className="meta-value">#{course.sectionId}</span>
+                      <span className="meta-value">#{ele.section.id}</span>
                     </div>
                     <div className="meta-row">
                       <span className="meta-label">Course ID</span>
-                      <span className="meta-value">{course.courseId}</span>
+                      <span className="meta-value">{ele.section.course.id}</span>
                     </div>
                   </div>
                 </article>

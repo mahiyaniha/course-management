@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudentService {
@@ -17,16 +19,14 @@ public class StudentService {
     final private CourseRepository courseRepository;
     final private CompletedCourseRepository completedCourseRepository;
     final private SemesterRepository semesterRepository;
-    final private EnrollmentRequestRepository enrollmentRequestRepository;
     final private StudentRepository studentRepository;
 
-    public StudentService(CourseSectionRepository sectionRepository, EnrollmentRepository enrollmentRepository, CourseRepository courseRepository, CompletedCourseRepository completedCourseRepository, SemesterRepository semesterRepository, EnrollmentRequestRepository enrollmentRequestRepository, StudentRepository studentRepository) {
+    public StudentService(CourseSectionRepository sectionRepository, EnrollmentRepository enrollmentRepository, CourseRepository courseRepository, CompletedCourseRepository completedCourseRepository, SemesterRepository semesterRepository, StudentRepository studentRepository) {
         this.sectionRepository = sectionRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.courseRepository = courseRepository;
         this.completedCourseRepository = completedCourseRepository;
         this.semesterRepository = semesterRepository;
-        this.enrollmentRequestRepository = enrollmentRequestRepository;
         this.studentRepository = studentRepository;
     }
 
@@ -36,9 +36,23 @@ public class StudentService {
     }
 
     public Student getStudentById(Integer id) {
-        return studentRepository.findByUserId(id)
+        return studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
+
+    public Student getStudentByUserId(Integer id) {
+        return studentRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("Student with userId not found"));
+    }
+
+    public Map<String, Integer> getStudentCredits(Integer id) {
+        Student studentByUserId = getStudentByUserId(id);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("creditCompleted", studentByUserId.getCreditCompleted());
+        map.put("maxCreditLimit", studentByUserId.getMaxCreditLimit());
+        return map;
+    }
+
 
     public String updateStudentProfile(StudentDTO dto, MultipartFile photo) throws IOException {
         Student student = studentRepository.findById(dto.getId())
@@ -61,14 +75,14 @@ public class StudentService {
     }
 
     // 📊 DASHBOARD (FINAL)
-    public DashboardDTO getDashboard(Integer studentId) {
-        int totalCourses = enrollmentRepository.findByStudentId(studentId).size();
+    public DashboardDTO getDashboard(Integer userId) {
+        int totalCourses = enrollmentRepository.findByStudent_User_Id(userId).size();
 
-        Integer totalCredits = enrollmentRepository.getTotalCredits(studentId);
+        Integer totalCredits = enrollmentRepository.getTotalCredits(userId);
         int safeCredits = (totalCredits == null) ? 0 : totalCredits;
 
         List<CompletedCourse> completedList =
-                completedCourseRepository.findByIdStudentId(studentId);
+                completedCourseRepository.findByIdStudentId(userId);
 
         int completedCourses = completedList.size();
 
@@ -84,7 +98,7 @@ public class StudentService {
 
         Semester activeSemester = semesterRepository.findByActive(1);
 
-        double cgpa = getCGPA(studentId);
+        double cgpa = getCGPA(userId);
 
         return DashboardDTO.builder()
                 .totalCourses(totalCourses)
@@ -100,48 +114,6 @@ public class StudentService {
     // 📚 AVAILABLE COURSES
     public List<CourseSection> getAvailableCourses() {
         return sectionRepository.findAll();
-    }
-
-    // 🔥 ADD COURSE REQUEST
-    public String addCourse(EnrollmentRequestDTO dto) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest();
-        enrollmentRequest.getStudent().setId(dto.getStudentId());
-        enrollmentRequest.getCourse().setId(dto.getCourseId());
-
-        enrollmentRequest.setStatus(EnrollmentRequest.Status.PENDING);
-        enrollmentRequestRepository.save(enrollmentRequest);
-
-        return "Request submitted";
-    }
-
-    public  List<Enrollment> getEnrollments(Integer userId) {
-        return enrollmentRepository.findByStudentId(userId);
-    }
-    public  List<EnrollmentRequest> getEnrollmentRequests(Integer userId) {
-        return enrollmentRequestRepository.findByStudent_Id(userId);
-    }
-
-
-    public List<MyCourseDTO> myCourses(Integer studentId) {
-        return enrollmentRepository.findByStudentId(studentId)
-                .stream()
-                .map(e -> {
-
-                    CourseSection section = sectionRepository.findById(e.getSection().getId())
-                            .orElseThrow();
-
-                    MyCourseDTO dto = new MyCourseDTO();
-
-                    dto.setSectionId(section.getId());
-                    dto.setCourseId(section.getCourse().getId());
-
-                    courseRepository.findById(section.getCourse().getId()).ifPresent(course -> {
-                        dto.setCourseName(course.getTitle());
-                        dto.setCredit(course.getCredit());
-                    });
-
-                    return dto;
-                }).toList();
     }
 
     // 🆕 COMPLETED COURSES
@@ -173,7 +145,7 @@ public class StudentService {
 
     // 🗓️ SCHEDULE
     public List<CourseSection> getSchedule(Integer studentId) {
-        return enrollmentRepository.findByStudentId(studentId)
+        return enrollmentRepository.findByStudent_User_Id(studentId)
                 .stream()
                 .map(e -> sectionRepository.findById(e.getSection().getId())
                         .orElseThrow())
@@ -181,8 +153,8 @@ public class StudentService {
     }
 
     // 📊 GRADE DISTRIBUTION
-    public GradeDistributionDTO getGradeDistribution(Integer studentId) {
-        Integer student_id = getStudentById(studentId).getId();
+    public GradeDistributionDTO getGradeDistribution(Integer userId) {
+        Integer student_id = getStudentByUserId(userId).getId();
         List<CompletedCourse> list =
                 completedCourseRepository.findByIdStudentId(student_id);
 

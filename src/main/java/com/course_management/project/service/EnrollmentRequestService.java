@@ -1,10 +1,7 @@
 package com.course_management.project.service;
 
 import com.course_management.project.dto.EnrollmentRequestDTO;
-import com.course_management.project.modal.CourseSection;
-import com.course_management.project.modal.Enrollment;
-import com.course_management.project.modal.EnrollmentRequest;
-import com.course_management.project.modal.Student;
+import com.course_management.project.modal.*;
 import com.course_management.project.repository.EnrollmentRequestRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +9,18 @@ import java.util.List;
 
 @Service
 public class EnrollmentRequestService {
+    private final UserService userService;
+    private final CourseService courseService;
     private final EnrollmentRequestRepository enrollmentRequestRepository;
     private final CourseSectionService courseSectionService;
     private final StudentService studentService;
     private final EnrollmentService enrollmentService;
 
     public EnrollmentRequestService(
-            final CourseSectionService courseSectionService,
+            UserService userService, CourseService courseService, final CourseSectionService courseSectionService,
             final EnrollmentRequestRepository enrollmentRequestRepository, StudentService studentService, EnrollmentService enrollmentService) {
+        this.userService = userService;
+        this.courseService = courseService;
         this.enrollmentRequestRepository = enrollmentRequestRepository;
         this.courseSectionService = courseSectionService;
         this.studentService = studentService;
@@ -27,27 +28,62 @@ public class EnrollmentRequestService {
     }
 
     public List<EnrollmentRequest> getEnrollmentRequests(Integer userId) {
-        return enrollmentRequestRepository.findByCourse_Advisor_User_Id(userId);
+        User userById = userService.getUserById(userId);
+
+        if (userById.getRole().name().equalsIgnoreCase("student")) {
+            return enrollmentRequestRepository.findByStudent_User_Id(userId);
+        } else {
+            return enrollmentRequestRepository.findByCourse_Advisor_User_Id(userId);
+        }
     }
 
     public EnrollmentRequest postEnrollmentRequestAction(EnrollmentRequestDTO dto) {
-        CourseSection sectionById = courseSectionService.getCourseSectionById(dto.getSectionId());
-        Student studentById = studentService.getStudentById(dto.getStudentId());
-
-        if (sectionById.getSeatLimit() - sectionById.getSeatTaken() < 1) {
-            throw new RuntimeException("Not enough seat available");
+        // Check where it is coming from advisor or student
+        // if userId present it is coming from student
+        // if studentId present it is coming from advisor
+        Student student = null;
+        if (dto.getUserId() != null) {  // true means student submitted the request
+            student = studentService.getStudentByUserId(dto.getUserId());
+        } else {
+            student = studentService.getStudentById(dto.getStudentId());
         }
 
-        if (dto.getStatus().equalsIgnoreCase("APPROVED")) {
-            Enrollment enrollment = new Enrollment();
-            enrollment.setSection(sectionById);
-            enrollment.setStudent(studentById);
-            enrollmentService.saveEnrollment(enrollment);
+        Course course = courseService.getCourseById(dto.getCourseId());
+        int remainingStudentCredit = student.getMaxCreditLimit() - student.getCreditCompleted();
+        if (remainingStudentCredit < course.getCredit()) {
+            throw new RuntimeException("Course credit is greater then Student remaining credit.");
+        }
+
+
+        if (dto.getSectionId() != null) { // true means student submitted the request
+
+            CourseSection section = courseSectionService.getCourseSectionById(dto.getSectionId());
+            if (section.getSeatLimit() - section.getSeatTaken() < 1) {
+                throw new RuntimeException("Not enough seat available");
+            }
+
+            if (dto.getStatus().equalsIgnoreCase("APPROVED")) {
+                Enrollment enrollment = new Enrollment();
+                enrollment.setSection(section);
+                enrollment.setStudent(student);
+                enrollment.setStatus(Enrollment.Status.ACTIVE);
+                enrollmentService.saveEnrollment(enrollment);
+            }
+        }
+
+        EnrollmentRequest er = null;
+
+        List<EnrollmentRequest> erList = enrollmentRequestRepository.findByStudent_IdAndCourse_Id(student.getId(), dto.getCourseId());
+        if (erList.isEmpty()) {
+            er = new EnrollmentRequest();
+        } else {
+            er = erList.getFirst();
         }
 
         EnrollmentRequest.Status status = EnrollmentRequest.Status.valueOf(dto.getStatus().toUpperCase());
-        EnrollmentRequest er = enrollmentRequestRepository.findById(dto.getEnrollmentRequestId()).orElseThrow(() -> new RuntimeException("No enrollment request found associate with the ID"));
         er.setStatus(status);
+        er.setCourse(course);
+        er.setStudent(student);
         enrollmentRequestRepository.save(er);
 
         return er;

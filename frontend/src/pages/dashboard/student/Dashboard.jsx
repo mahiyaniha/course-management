@@ -152,6 +152,7 @@ class DashboardErrorBoundary extends React.Component {
 }
 
 const Dashboard = () => {
+  const [studentCredits, setStudentCredits] = useState();
   const [overview, setOverview] = useState(defaultOverview);
   const [completedCourses, setCompletedCourses] = useState([]);
   const [gradeDistribution, setGradeDistribution] = useState(defaultDistribution);
@@ -179,6 +180,7 @@ const Dashboard = () => {
       }
 
       const results = await Promise.allSettled([
+        axios.get(`${API_BASE_URL}/api/student/credits/${studentId}`),
         axios.get(`${API_BASE_URL}/api/student/dashboard/${studentId}`),
         axios.get(`${API_BASE_URL}/api/student/completed_courses/${studentId}`),
         axios.get(`${API_BASE_URL}/api/student/grades/distribution/${studentId}`),
@@ -188,11 +190,16 @@ const Dashboard = () => {
         return;
       }
 
-      const [dashboardResult, completedResult, distributionResult] = results;
+      const [studentCreditsResp, dashboardResult, completedResult, distributionResult] = results;
 
+      const studentCreditsLoaded = studentCreditsResp.status === "fulfilled";
       const dashboardLoaded = dashboardResult.status === "fulfilled";
       const completedLoaded = completedResult.status === "fulfilled";
       const distributionLoaded = distributionResult.status === "fulfilled";
+
+      if (studentCreditsLoaded) {
+        setStudentCredits(studentCreditsResp?.value?.data)
+      }
 
       setOverview(
         dashboardLoaded
@@ -267,7 +274,7 @@ const Dashboard = () => {
     },
     {
       title: "Total Credits",
-      value: overview.totalCredits,
+      value: studentCredits?.creditCompleted + "/" + studentCredits?.maxCreditLimit, 
       subtitle: "Credits counted so far",
       icon: faBookOpen,
       tone: "steel",

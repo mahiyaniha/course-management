@@ -2,6 +2,8 @@ package com.course_management.project.api;
 
 import com.course_management.project.dto.*;
 import com.course_management.project.modal.*;
+import com.course_management.project.service.EnrollmentRequestService;
+import com.course_management.project.service.EnrollmentService;
 import com.course_management.project.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,8 +20,15 @@ import java.util.Map;
 @RequestMapping("/api/student")
 public class StudentController {
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
+    private final EnrollmentRequestService enrollmentRequestService;
+    private final EnrollmentService enrollmentService;
+
+    public StudentController(StudentService studentService, EnrollmentRequestService enrollmentRequestService, EnrollmentService enrollmentService) {
+        this.studentService = studentService;
+        this.enrollmentRequestService = enrollmentRequestService;
+        this.enrollmentService = enrollmentService;
+    }
 
     @GetMapping("/all")
     public List<Student> getAllStudents() {
@@ -28,7 +37,12 @@ public class StudentController {
 
     @GetMapping("/{userId}")
     public Student getStudentById(@PathVariable Integer userId) {
-        return studentService.getStudentById(userId);
+        return studentService.getStudentByUserId(userId);
+    }
+
+    @GetMapping("/credits/{userId}")
+    public Map<String, Integer> getStudentCreditsById(@PathVariable Integer userId) {
+        return studentService.getStudentCredits(userId);
     }
 
     @PostMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -57,22 +71,9 @@ public class StudentController {
         return studentService.getAvailableCourses();
     }
 
-    @PostMapping("/add_request")
-    public ResponseEntity<?> add(@RequestBody EnrollmentRequestDTO dto) {
-        String resp = studentService.addCourse(dto);
-        Map<String, String> respMap = new HashMap<>();
-        respMap.put("message", resp);
-        return ResponseEntity.ok(respMap);
-    }
-
-    @GetMapping("/my_courses/{userId}")
-    public List<MyCourseDTO> myCourses(@PathVariable Integer userId) {
-        return studentService.myCourses(userId);
-    }
-
     @GetMapping("/enrollments/{userId}")
     public List<Enrollment> getEnrollments(@PathVariable Integer userId) {
-        return studentService.getEnrollments(userId);
+        return enrollmentService.getEnrollments(userId);
     }
 
     @GetMapping("/completed_courses/{userId}")
@@ -85,10 +86,18 @@ public class StudentController {
         return studentService.getSchedule(userId);
     }
 
-    @GetMapping("/enrollment-requests/{userId}")
-    public List<EnrollmentRequest> enrollmentRequests(@PathVariable Integer userId) {
-        return studentService.getEnrollmentRequests(userId);
+    @GetMapping("/enrollment-requests/{studentId}")
+    public List<EnrollmentRequest> enrollmentRequests(@PathVariable Integer studentId) {
+        return enrollmentRequestService.getEnrollmentRequests(studentId);
     }
+    @PostMapping("/enrollment-requests/action")
+    public ResponseEntity<EnrollmentRequest> postEnrollmentRequest(@RequestBody EnrollmentRequestDTO dto) {
+        EnrollmentRequest resp = enrollmentRequestService.postEnrollmentRequestAction(dto);
+        return ResponseEntity.ok(resp);
+    }
+
+
+
     @GetMapping("/grades/distribution/{userId}")
     public GradeDistributionDTO gradeDistribution(@PathVariable Integer userId) {
         return studentService.getGradeDistribution(userId);

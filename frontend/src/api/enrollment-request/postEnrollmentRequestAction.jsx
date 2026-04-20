@@ -5,6 +5,7 @@ import { POST_ENROLLMENT_REQUESTS_ACTION_API } from "../apiUrls";
     courseId, 
     sectionId, 
     studentId, 
+    userId,
     status }) => {
     try {
       const enrollmentRequestAPI = await fetch(POST_ENROLLMENT_REQUESTS_ACTION_API, {
@@ -17,6 +18,7 @@ import { POST_ENROLLMENT_REQUESTS_ACTION_API } from "../apiUrls";
           courseId: courseId,
           sectionId: sectionId,
           studentId: studentId,
+          userId: userId,
           status: status
         })
       });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Courses.css";
 import "./CoursesMain.css";
 import getCourses from "../api/getCourses";
+import toast from "react-hot-toast"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChalkboardUser } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +13,7 @@ import {
   FaChalkboardTeacher,
   FaUsers,
 } from "react-icons/fa";
+import postEnrollmentRequestAction from "../api/enrollment-request/postEnrollmentRequestAction";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -30,6 +32,29 @@ const Courses = () => {
     { id: 7, courseId: 4, courseName: "AI Fundamentals", day: "Tue", startTime: "09:00", endTime: "10:30", instructor: "Dr. Saha", seatLimit: 50, seatTaken: 30 },
     { id: 8, courseId: 4, courseName: "AI Fundamentals", day: "Thu", startTime: "09:00", endTime: "10:30", instructor: "Dr. Saha", seatLimit: 50, seatTaken: 35 },
   ];
+
+  const handleRequest = async (curr_course) => {
+    try {
+      let pmpt = prompt("Are you sure, you want to enroll in this course?", "No");
+      if (pmpt !== null && pmpt.toLowerCase() === "yes") {
+        const resp = await postEnrollmentRequestAction({
+          userId: localStorage.getItem("userId"),
+          courseId: curr_course?.id,
+          status: "PENDING",
+        })
+        if (resp?.error) {
+          throw new Error(resp.error);
+        }
+        console.log(resp)
+        toast.success("Request submitted!");
+      } else {
+        console.log("User cancelled the prompt.");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Request failed!");
+    }
+  };
 
   // Fetch available courses on mount
   useEffect(() => {
@@ -100,9 +125,9 @@ const Courses = () => {
                       <td>{course.department?.name}</td>
                       <td>{course.availableSeat}/{course.totalSeat}</td>
                       <td>
-                        <button 
-                          className="request-btn" 
-                          onClick={() => alert(`Request course ${course.title} - Connect to enrollment logic`)}
+                        <button
+                          className="request-btn"
+                          onClick={() => handleRequest(course)}
                         >
                           Request
                         </button>

@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class EnrollmentRequestDTO {
     private Integer enrollmentRequestId;
+    private Integer userId;
     private Integer studentId;
     private Integer sectionId;
     private Integer courseId;

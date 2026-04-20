@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
-    List<Enrollment> findByStudentId(Integer studentId);
+    List<Enrollment> findByStudent_User_Id(Integer userId);
     List<Enrollment> findBySection_Course_Advisor_User_Id(Integer userId);
 
     @Query("""
