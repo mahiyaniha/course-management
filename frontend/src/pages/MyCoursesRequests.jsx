@@ -92,14 +92,14 @@ const MyCoursesRequests = () => {
           fetchJsonArray(`http://localhost:8080/api/student/completed_courses/${userId}`),
         ]);
 
-        setMyCourses(myRes.length ? myRes : DUMMY_MY_COURSES);
-        setRequests(reqRes.length ? reqRes : DUMMY_REQUESTS);
-        setCompleted(compRes.length ? compRes : DUMMY_COMPLETED);
+        setMyCourses(myRes && myRes.length > 0 ? myRes : []);
+        setRequests(reqRes && reqRes.length > 0 ? reqRes : []);
+        setCompleted(compRes && compRes.length > 0 ? compRes : []);
       } catch (error) {
         console.error("Using fallback data for My Courses & Requests:", error);
-        setMyCourses(DUMMY_MY_COURSES);
-        setRequests(DUMMY_REQUESTS);
-        setCompleted(DUMMY_COMPLETED);
+        setMyCourses([]);
+        setRequests([]);
+        setCompleted([]);
       } finally {
         setLoading(false);
       }

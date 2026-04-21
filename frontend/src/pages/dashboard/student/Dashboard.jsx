@@ -290,7 +290,7 @@ const Dashboard = () => {
     },
     {
       title: "CGPA",
-      value: studentAnalytics?.totalAvgCgpa,
+      value: isNaN(studentAnalytics?.totalAvgCgpa) ? "None" : studentAnalytics?.totalAvgCgpa,
       subtitle: "Current academic performance",
       icon: faArrowTrendUp,
       tone: "accent",
