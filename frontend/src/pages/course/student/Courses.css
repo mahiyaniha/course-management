@@ -1,3 +1,6 @@
+.courses-main {
+  min-height: 100vh;
+}
 .course-container {
   padding: clamp(2rem, 5vw, 3rem);
   min-height: 100vh;

@@ -16,6 +16,10 @@ public class CourseService {
         this.courseRepository = courseRepository;
     }
 
+    public List<Course> getAllCourses() {
+        return courseRepository.findAll();
+    }
+
     public int getCompletedCredit(List<CompletedCourse> completedList) {
         int sum = completedList.stream()
                 .mapToInt(c -> courseRepository.findById(c.getId().getCourseId())

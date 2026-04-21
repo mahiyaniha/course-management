@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -20,14 +20,18 @@ public class StudentService {
     final private CompletedCourseRepository completedCourseRepository;
     final private SemesterRepository semesterRepository;
     final private StudentRepository studentRepository;
+    private final EnrollmentService enrollmentService;
+    private final CourseService courseService;
 
-    public StudentService(CourseSectionRepository sectionRepository, EnrollmentRepository enrollmentRepository, CourseRepository courseRepository, CompletedCourseRepository completedCourseRepository, SemesterRepository semesterRepository, StudentRepository studentRepository) {
+    public StudentService(CourseSectionRepository sectionRepository, EnrollmentRepository enrollmentRepository, CourseRepository courseRepository, CompletedCourseRepository completedCourseRepository, SemesterRepository semesterRepository, StudentRepository studentRepository, EnrollmentService enrollmentService, CourseService courseService) {
         this.sectionRepository = sectionRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.courseRepository = courseRepository;
         this.completedCourseRepository = completedCourseRepository;
         this.semesterRepository = semesterRepository;
         this.studentRepository = studentRepository;
+        this.enrollmentService = enrollmentService;
+        this.courseService = courseService;
     }
 
 
@@ -39,7 +43,6 @@ public class StudentService {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
-
     public Student getStudentByUserId(Integer id) {
         return studentRepository.findByUserId(id)
                 .orElseThrow(() -> new RuntimeException("Student with userId not found"));
@@ -111,9 +114,43 @@ public class StudentService {
                 .build();
     }
 
-    // 📚 AVAILABLE COURSES
-    public List<CourseSection> getAvailableCourses() {
-        return sectionRepository.findAll();
+    // Available courses including which failed to complete
+    public List<CourseDTO> getAvailableCourses(Integer userId) {
+        List<Enrollment> enrollments = enrollmentService.getEnrollments(userId);
+
+        // Map courseId -> enrollment
+        Map<Integer, Enrollment> enrollmentMap = enrollments.stream()
+                .collect(Collectors.toMap(
+                        e -> e.getSection().getCourse().getId(),
+                        e -> e
+                ));
+
+        List<Course> allCourses = courseService.getAllCourses();
+
+        return allCourses.stream()
+                .map(course -> {
+                    CourseDTO dto = new CourseDTO();
+
+                    dto.setId(course.getId());
+                    dto.setCode(course.getCode());
+                    dto.setTitle(course.getTitle());
+                    dto.setCredit(course.getCredit());
+                    dto.setDepartment(course.getDepartment());
+                    dto.setAdvisor(course.getAdvisor());
+                    dto.setAvailableSeat(course.getAvailableSeat());
+                    dto.setTotalSeat(course.getTotalSeat());
+
+                    Enrollment enrollment = enrollmentMap.get(course.getId());
+
+                    if (enrollment == null) {
+                        dto.setStatus("NOT_ENROLLED");
+                    } else {
+                        dto.setStatus(enrollment.getStatus().name());
+                    }
+
+                    return dto;
+                })
+                .toList();
     }
 
     // 🆕 COMPLETED COURSES
@@ -145,7 +182,8 @@ public class StudentService {
 
     // 🗓️ SCHEDULE
     public List<CourseSection> getSchedule(Integer studentId) {
-        return enrollmentRepository.findByStudent_User_Id(studentId)
+        return enrollmentRepository
+                .findByStudent_User_IdAndStatus(studentId, Enrollment.Status.ACTIVE)
                 .stream()
                 .map(e -> sectionRepository.findById(e.getSection().getId())
                         .orElseThrow())
@@ -217,5 +255,40 @@ public class StudentService {
         }
 
         return totalPoints / list.size();
+    }
+
+    public StudentAnalyticsDTO getStudentAnalytics(Integer userId) {
+        Student student = getStudentByUserId(userId);
+        Integer totalDeptCredits = student.getMaxCreditLimit();
+
+        List<Enrollment> enrollments = enrollmentService.getEnrollments(userId);
+
+        int totalActiveCredits = enrollments.stream()
+                .filter(e -> e.getStatus() == Enrollment.Status.ACTIVE)
+                .mapToInt(e -> e.getSection().getCourse().getCredit())
+                .sum();
+
+
+        int totalCompletedCredits = enrollments.stream()
+                .filter(e -> e.getStatus() == Enrollment.Status.COMPLETED)
+                .mapToInt(e -> e.getSection().getCourse().getCredit())
+                .sum();
+
+        Integer totalActiveCourses = enrollments.stream().filter(ele -> ele.getStatus().equals(Enrollment.Status.ACTIVE)).toList().size();
+        Integer totalCompletedCourses = enrollments.stream().filter(ele -> ele.getStatus().equals(Enrollment.Status.COMPLETED)).toList().size();
+
+        List<CompletedCourse> completedCourses = completedCourseRepository.findByIdStudentId(student.getId());
+        double totalCompletedGrades = completedCourses.stream().mapToDouble(ele -> Double.parseDouble(ele.getGrade())).sum();
+        double totalAvgCgpa = totalCompletedGrades / completedCourses.size();
+
+        StudentAnalyticsDTO studentAnalyticsDTO = new StudentAnalyticsDTO();
+        studentAnalyticsDTO.setTotalDeptCredits(totalDeptCredits);
+        studentAnalyticsDTO.setTotalActiveCredits(totalActiveCredits);
+        studentAnalyticsDTO.setTotalCompletedCredits(totalCompletedCredits);
+        studentAnalyticsDTO.setTotalActiveCourses(totalActiveCourses);
+        studentAnalyticsDTO.setTotalCompletedCourses(totalCompletedCourses);
+        studentAnalyticsDTO.setTotalAvgCgpa(totalAvgCgpa);
+
+        return studentAnalyticsDTO;
     }
 }

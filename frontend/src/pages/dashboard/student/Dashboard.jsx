@@ -152,7 +152,7 @@ class DashboardErrorBoundary extends React.Component {
 }
 
 const Dashboard = () => {
-  const [studentCredits, setStudentCredits] = useState();
+  const [studentAnalytics, setStudentAnalytics] = useState();
   const [overview, setOverview] = useState(defaultOverview);
   const [completedCourses, setCompletedCourses] = useState([]);
   const [gradeDistribution, setGradeDistribution] = useState(defaultDistribution);
@@ -180,7 +180,7 @@ const Dashboard = () => {
       }
 
       const results = await Promise.allSettled([
-        axios.get(`${API_BASE_URL}/api/student/credits/${studentId}`),
+        axios.get(`${API_BASE_URL}/api/student/analytics/${studentId}`),
         axios.get(`${API_BASE_URL}/api/student/dashboard/${studentId}`),
         axios.get(`${API_BASE_URL}/api/student/completed_courses/${studentId}`),
         axios.get(`${API_BASE_URL}/api/student/grades/distribution/${studentId}`),
@@ -190,15 +190,15 @@ const Dashboard = () => {
         return;
       }
 
-      const [studentCreditsResp, dashboardResult, completedResult, distributionResult] = results;
+      const [studentAnalyticsResp, dashboardResult, completedResult, distributionResult] = results;
 
-      const studentCreditsLoaded = studentCreditsResp.status === "fulfilled";
+      const studentAnalyticsLoaded = studentAnalyticsResp.status === "fulfilled";
       const dashboardLoaded = dashboardResult.status === "fulfilled";
       const completedLoaded = completedResult.status === "fulfilled";
       const distributionLoaded = distributionResult.status === "fulfilled";
 
-      if (studentCreditsLoaded) {
-        setStudentCredits(studentCreditsResp?.value?.data)
+      if (studentAnalyticsLoaded) {
+        setStudentAnalytics(studentAnalyticsResp?.value?.data)
       }
 
       setOverview(
@@ -244,11 +244,6 @@ const Dashboard = () => {
     return Math.min(Math.max(Math.round(rate), 0), 100);
   }, [overview.completionRate]);
 
-  const cgpa = useMemo(() => {
-    const value = Number(overview.cgpa);
-    return Number.isFinite(value) ? value.toFixed(2) : "0.00";
-  }, [overview.cgpa]);
-
   const progressMessage = useMemo(() => {
     if (completionRate >= 80) {
       return "Excellent progress. You are moving steadily toward graduation.";
@@ -262,7 +257,7 @@ const Dashboard = () => {
   }, [completionRate]);
 
   const statusTone =
-    overview.pending > overview.approved ? "warning" : "success";
+    studentAnalytics?.totalPendingRequests > studentAnalytics?.totalApprovedRequests ? "warning" : "success";
 
   const statCards = [
     {
@@ -274,28 +269,28 @@ const Dashboard = () => {
     },
     {
       title: "Total Credits",
-      value: studentCredits?.creditCompleted + "/" + studentCredits?.maxCreditLimit, 
+      value: studentAnalytics?.totalCompletedCredits + "/" + studentAnalytics?.totalDeptCredits, 
       subtitle: "Credits counted so far",
       icon: faBookOpen,
       tone: "steel",
     },
     {
       title: "Completed Courses",
-      value: overview.completedCourses,
+      value: studentAnalytics?.totalCompletedCourses,
       subtitle: "Successfully finished",
       icon: faCircleCheck,
       tone: "success",
     },
     {
       title: "Completed Credits",
-      value: overview.completedCredits,
+      value: studentAnalytics?.totalCompletedCredits,
       subtitle: "Credits already secured",
       icon: faGraduationCap,
       tone: "success",
     },
     {
       title: "CGPA",
-      value: cgpa,
+      value: studentAnalytics?.totalAvgCgpa,
       subtitle: "Current academic performance",
       icon: faArrowTrendUp,
       tone: "accent",
@@ -381,8 +376,8 @@ const Dashboard = () => {
                   <strong>{completionRate}%</strong>
                 </div>
                 <div className="progress-card__meta">
-                  <span>{overview.completedCredits} credits earned</span>
-                  <span>{overview.totalCredits} total credits</span>
+                  <span>{studentAnalytics?.totalCompletedCredits} credits earned</span>
+                  <span>{studentAnalytics?.totalDeptCredits} total credits</span>
                 </div>
               </div>
 
@@ -400,13 +395,13 @@ const Dashboard = () => {
           <InsightPanel
             title="Request Status"
             icon={faClock}
-            badge={`${overview.pending + overview.approved} total requests`}
+            badge={`${studentAnalytics?.totalPendingRequests + studentAnalytics?.totalApprovedRequests} total requests`}
           >
             <div className="request-status">
               <div className={`request-status__card request-status__card--${statusTone}`}>
                 <div>
                   <span>Pending Requests</span>
-                  <strong>{overview.pending}</strong>
+                  <strong>{studentAnalytics?.totalPendingRequests}</strong>
                 </div>
                 <FontAwesomeIcon icon={faClock} />
               </div>
@@ -414,7 +409,7 @@ const Dashboard = () => {
               <div className="request-status__card request-status__card--success">
                 <div>
                   <span>Approved Requests</span>
-                  <strong>{overview.approved}</strong>
+                  <strong>{studentAnalytics?.totalApprovedRequests}</strong>
                 </div>
                 <FontAwesomeIcon icon={faCheckCircle} />
               </div>

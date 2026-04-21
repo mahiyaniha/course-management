@@ -4,7 +4,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/student/Dashboard";
 import StudentLayout from "./pages/sidebar/student/Layout";
-import Courses from "./pages/Courses";
+import Courses from "./pages/course/student/Courses";
 import MyCoursesRequests from "./pages/MyCoursesRequests";
 import Schedule from "./pages/Schedule";
 import AdvisorDashboard from "./pages/dashboard/advisor/index";

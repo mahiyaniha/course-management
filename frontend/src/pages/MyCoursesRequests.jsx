@@ -113,11 +113,14 @@ const MyCoursesRequests = () => {
     const pendingRequests = requests.filter((item) => item.status === "PENDING").length;
     const completedCredits = completed.reduce((sum, course) => sum + (course.credit || 0), 0);
 
+    const activeCourses = myCourses.filter(ele => ele.status === "ACTIVE")
+    const activeCoursesTotalCredits = activeCourses.reduce((sum, ele) => sum + (ele.section.course.credit || 0), 0);
+
     return [
       {
         label: "Active courses",
-        value: myCourses.length,
-        meta: `${totalCredits} credits in progress`,
+        value: activeCourses.length,
+        meta: `${activeCoursesTotalCredits}/${totalCredits} credits in progress`,
         icon: <FaBookOpen />,
       },
       {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Courses.css";
-import "./CoursesMain.css";
-import getCourses from "../api/getCourses";
+// import "./CoursesMain.css";
+import getAvailableCoursesForStudent from "../../../api/getAvailableCoursesForStudent";
 import toast from "react-hot-toast"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +13,7 @@ import {
   FaChalkboardTeacher,
   FaUsers,
 } from "react-icons/fa";
-import postEnrollmentRequestAction from "../api/enrollment-request/postEnrollmentRequestAction";
+import postEnrollmentRequestAction from "../../../api/enrollment-request/postEnrollmentRequestAction";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -60,7 +60,8 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const resp = await getCourses();
+        const userId = localStorage.getItem("userId")
+        const resp = await getAvailableCoursesForStudent(userId);
         if (resp?.error) {
           throw new Error(resp.error);
         }
@@ -125,15 +126,17 @@ const Courses = () => {
                       <td>{course.department?.name}</td>
                       <td>{course.availableSeat}/{course.totalSeat}</td>
                       <td>
+                        {(course.status === "ACTIVE" || course.status === "COMPLETED") ? 
+                        <div>{course.status}</div> :
                         <button
                           className="request-btn"
                           onClick={() => handleRequest(course)}
                         >
                           Request
-                        </button>
+                        </button>}
                       </td>
                     </tr>
-                  ))}
+                    ))}
                 </tbody>
               </table>
             </div>

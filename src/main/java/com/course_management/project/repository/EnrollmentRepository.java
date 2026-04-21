@@ -12,6 +12,7 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
     List<Enrollment> findByStudent_User_Id(Integer userId);
     List<Enrollment> findBySection_Course_Advisor_User_Id(Integer userId);
+    List<Enrollment> findByStudent_User_IdAndStatus(Integer studentId, Enrollment.Status status);
 
     @Query("""
     SELECT COALESCE(SUM(e.section.course.credit), 0)

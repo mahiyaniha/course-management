@@ -5,13 +5,11 @@ import com.course_management.project.modal.*;
 import com.course_management.project.service.EnrollmentRequestService;
 import com.course_management.project.service.EnrollmentService;
 import com.course_management.project.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,11 +64,6 @@ public class StudentController {
         return studentService.getDashboard(userId);
     }
 
-    @GetMapping("/courses")
-    public List<CourseSection> courses() {
-        return studentService.getAvailableCourses();
-    }
-
     @GetMapping("/enrollments/{userId}")
     public List<Enrollment> getEnrollments(@PathVariable Integer userId) {
         return enrollmentService.getEnrollments(userId);
@@ -101,5 +94,24 @@ public class StudentController {
     @GetMapping("/grades/distribution/{userId}")
     public GradeDistributionDTO gradeDistribution(@PathVariable Integer userId) {
         return studentService.getGradeDistribution(userId);
+    }
+
+    @GetMapping("/courses/{userId}")
+    public List<CourseDTO> getAvailableCoursesFor(@PathVariable Integer userId) {
+        return studentService.getAvailableCourses(userId);
+    }
+
+
+    @GetMapping("/analytics/{userId}")
+    public StudentAnalyticsDTO getStudentAnalytics(@PathVariable Integer userId) {
+        StudentAnalyticsDTO studentAnalytics = studentService.getStudentAnalytics(userId);
+        Map<String, Integer> map = enrollmentRequestService.getEnrollmentRequestsStatus(userId);
+
+        studentAnalytics.setTotalApprovedRequests(map.get("totalApprovedRequests"));
+        studentAnalytics.setTotalPendingRequests(map.get("totalPendingRequests"));
+        studentAnalytics.setTotalRejectedRequests(map.get("totalRejectedRequests"));
+        studentAnalytics.setTotalRequests(map.get("totalRequests"));
+
+        return studentAnalytics;
     }
 }

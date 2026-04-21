@@ -247,7 +247,7 @@ CREATE TABLE `enrollments` (
   KEY `FK8kf1u1857xgo56xbfmnif2c51` (`student_id`),
   CONSTRAINT `FK8kf1u1857xgo56xbfmnif2c51` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`),
   CONSTRAINT `FKggjm8m0rveac7g51eswnhj93m` FOREIGN KEY (`section_id`) REFERENCES `course_sections` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -256,7 +256,7 @@ CREATE TABLE `enrollments` (
 
 LOCK TABLES `enrollments` WRITE;
 /*!40000 ALTER TABLE `enrollments` DISABLE KEYS */;
-INSERT INTO `enrollments` VALUES (1,3,9,'ACTIVE'),(2,15,9,'ACTIVE');
+INSERT INTO `enrollments` VALUES (1,3,9,'ACTIVE'),(2,15,9,'ACTIVE'),(3,1,9,'COMPLETED');
 /*!40000 ALTER TABLE `enrollments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -451,4 +451,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-19 22:52:24
+-- Dump completed on 2026-04-20 21:32:32

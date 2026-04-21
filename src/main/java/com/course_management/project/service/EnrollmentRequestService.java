@@ -5,7 +5,9 @@ import com.course_management.project.modal.*;
 import com.course_management.project.repository.EnrollmentRequestRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EnrollmentRequestService {
@@ -87,6 +89,28 @@ public class EnrollmentRequestService {
         enrollmentRequestRepository.save(er);
 
         return er;
+    }
+
+
+    public Map<String, Integer> getEnrollmentRequestsStatus(Integer userId) {
+        List<EnrollmentRequest> enrollmentRequests = getEnrollmentRequests(userId);
+        int totalApprovedRequests = enrollmentRequests.stream()
+                .filter(e -> e.getStatus() == EnrollmentRequest.Status.APPROVED).toList().size();
+
+        int totalPendingRequests = enrollmentRequests.stream()
+                .filter(e -> e.getStatus() == EnrollmentRequest.Status.PENDING).toList().size();
+
+        int totalRejectedRequests = enrollmentRequests.stream()
+                .filter(e -> e.getStatus() == EnrollmentRequest.Status.REJECTED).toList().size();
+
+
+        Map<String, Integer> statusMap = new HashMap<>();
+        statusMap.put("totalApprovedRequests", totalApprovedRequests);
+        statusMap.put("totalPendingRequests", totalPendingRequests);
+        statusMap.put("totalRejectedRequests", totalRejectedRequests);
+        statusMap.put("totalRequests", totalApprovedRequests + totalPendingRequests + totalRejectedRequests);
+
+        return statusMap;
     }
 
 }
