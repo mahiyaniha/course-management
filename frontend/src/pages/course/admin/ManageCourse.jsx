@@ -1,9 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import getCourses from "../../../api/getCourses";
 import "../../dashboard/admin/style.css";
+import CreateCourseModal from "./CreateCourseModal";
 
 const ManageCourse = () => {
   const [courses, setCourses] = useState([]);
+  const [isOpen, setIsOpen] = useState(false)
+
+  const onClose = (val) => {
+    setIsOpen(val)
+  }
 
   const fetchCourses = async () => {
     try {
@@ -36,8 +42,7 @@ const ManageCourse = () => {
   }, [courses]);
 
   const handleCreateCourse = () => {
-    // Connect to CreateCourseModal here
-    alert('Open Create Course Modal');
+    setIsOpen(true)
   };
 
   return (
@@ -76,9 +81,6 @@ const ManageCourse = () => {
               className="admin-create-btn"
               onClick={handleCreateCourse}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 4v16m-8-8h16"/>
-              </svg>
               Create Course
             </button>
           </div>
@@ -139,6 +141,7 @@ const ManageCourse = () => {
           </div>
         </section>
       </div>
+      {isOpen ? <CreateCourseModal isOpen={isOpen} onClose={onClose} courses={courses} /> : null}
     </div>
   );
 };

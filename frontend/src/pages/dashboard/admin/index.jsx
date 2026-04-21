@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import "./style.css";
+import CreateCourseModal from "../../course/admin/CreateCourseModal";
 
 const AdminDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -170,6 +171,7 @@ const AdminDashboard = () => {
           </section>
         </div>
       </div>
+
     </div>
   );
 };

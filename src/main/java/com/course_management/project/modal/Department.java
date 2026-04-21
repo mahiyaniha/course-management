@@ -13,4 +13,5 @@ public class Department {
 
     private String name;
     private String fullName;
+    private Integer credits;
 }

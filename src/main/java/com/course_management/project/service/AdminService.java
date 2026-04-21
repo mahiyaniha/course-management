@@ -78,10 +78,6 @@ public class AdminService {
         return courseRepo.findAll();
     }
 
-    public Course createCourse(Course course) {
-        return courseRepo.save(course);
-    }
-
     public void deleteCourse(Integer courseId) {
         courseRepo.deleteById(courseId);
     }

@@ -2,86 +2,75 @@ import React, { useEffect, useState } from "react";
 import "./Register.css";
 import toast from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
+import postNewAccount from "../../api/postNewAccount";
+import getDepartments from "../../api/getDepartments";
 
 export default function Register() {
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([])
-  const [departmentID, setDepartmentID] = useState()
 
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     departmentId: "",
-    role: "student" // ✅ default role
+    role: "student"
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  };
+
+  const fetchDepartments = async () => {
+    try {
+      const resp = await getDepartments();
+      if (resp?.error) {
+        throw new Error(resp.error);
+      }
+      setDepartments(Array.isArray(resp) ? resp : []);
+    } catch (e) {
+      console.error(e.message);
+      setDepartments([]);
+    }
   };
 
 
-  const getDepartment = async () => {
-    try {
-      const loginAPI = await fetch("http://localhost:8080/api/admin/departments", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-      });
-      const resp = await loginAPI.json();
-      setDepartments(resp)
-      if (resp.error) {
-        console.error(resp)
-        throw new Error(resp.error)
-      }
-    } catch (e) {
-      console.error(e.message)
-    }
-
-  }
-
   useEffect(() => {
-    getDepartment()
+    fetchDepartments()
   }, [])
 
 
-  const handleDeptChange = (e) => {
-    setDepartmentID(e.target.value)
-  }
-
   const handleRegister = async (e) => {
+    console.log(formData)
     e.preventDefault();
 
+    if (formData.departmentID === "") {
+      toast.error("Invalid Department ID")
+      return;
+    }
+    // find department obj using dept id
+    const deptObj = departments.find(ele => ele.id === Number(formData.departmentId))
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(
-          {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            departmentId: Number(departmentID),
-            role: (formData.role).toLowerCase() // ✅ send role
-          })
+      const reqData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        department: deptObj,
+        role: (formData.role).toLowerCase()
       }
-      );
-      const resp = await response.json()
-      console.log(resp)
+      const resp = await postNewAccount({ data: reqData })
 
-      // ✅ store user info (auto login)
+      if (resp?.error) {
+        throw new Error(resp.error);
+      }
       toast.success("User registered successfully")
       navigate("/login")
 
-    } catch (error) {
-      toast.error("Failed to registered.")
+    } catch (e) {
+      console.error(e.message);
     }
   };
 
@@ -94,14 +83,27 @@ export default function Register() {
 
         <form onSubmit={handleRegister}>
 
-          {/* NAME */}
+          {/* First Name */}
           <div className="form-group">
-            <label>Name</label>
+            <label>First Name</label>
             <input
               type="text"
-              name="name"
-              placeholder="Enter your name"
-              value={formData.name}
+              name="firstName"
+              placeholder="Enter your first name"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* LAST NAME */}
+          <div className="form-group">
+            <label>Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Enter your last name"
+              value={formData.lastName}
               onChange={handleChange}
               required
             />
@@ -137,8 +139,8 @@ export default function Register() {
           <div className="form-group">
             <label>Department ID</label>
             {departments.length > 0 ?
-              <select onChange={handleDeptChange} id="1" name="Computer Science">
-                {departments.map(dept => <option key={dept.name} value={dept.id}>{dept.name}</option>)}
+              <select value={formData.departmentId} name="departmentId" onChange={handleChange}>
+                {departments.map(dept => <option key={dept.name} value={dept.id}>{dept.fullName}</option>)}
               </select>
               : null}
           </div>

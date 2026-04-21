@@ -52,4 +52,8 @@ public class AdvisorService {
         advisorRepository.save(advisor);
         return "Profile updated successfully";
     }
+
+    public void addNewAdvisor(Advisor advisor) {
+        advisorRepository.save(advisor);
+    }
 }

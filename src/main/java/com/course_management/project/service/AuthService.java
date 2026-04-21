@@ -98,11 +98,33 @@ public class AuthService {
         }
 
         User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
         user.setRole(User.Role.valueOf(request.getRole().toUpperCase()));
 
-        userRepository.save(user);
+        User createdUser = userRepository.save(user);
+
+        // Added to student table if role is student
+        if (user.getRole() == User.Role.STUDENT) {
+            Student student = new Student();
+            student.setUser(createdUser);
+            student.setDepartment(request.getDepartment());
+            student.setCreditCompleted(0);
+            student.setStatus(Student.Status.ACTIVE);
+            studentService.addNewStudent(student);
+        }
+
+        // Added to advisor table if role is advisor
+        if (user.getRole() == User.Role.ADVISOR) {
+            Advisor advisor = new Advisor();
+            advisor.setUser(createdUser);
+            advisor.setDepartment(request.getDepartment());
+            advisor.setLevel("None");
+            advisor.setStatus(Advisor.Status.ACTIVE);
+            advisorService.addNewAdvisor(advisor);
+        }
 
         return AuthResponse.builder()
                 .message("User registered successfully")

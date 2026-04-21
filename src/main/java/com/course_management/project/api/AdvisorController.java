@@ -1,9 +1,11 @@
 package com.course_management.project.api;
 
 import com.course_management.project.dto.AdvisorDTO;
+import com.course_management.project.dto.CourseDTO;
 import com.course_management.project.dto.EnrollmentRequestDTO;
 import com.course_management.project.modal.*;
 import com.course_management.project.service.AdvisorService;
+import com.course_management.project.service.CourseService;
 import com.course_management.project.service.EnrollmentRequestService;
 import com.course_management.project.service.EnrollmentService;
 import org.springframework.http.MediaType;
@@ -20,11 +22,13 @@ public class AdvisorController {
     private final EnrollmentService enrollmentService;
     private final EnrollmentRequestService enrollmentRequestService;
     private final  AdvisorService advisorService;
+    private final CourseService courseService;
 
-    public AdvisorController(EnrollmentService enrollmentService, EnrollmentRequestService enrollmentRequestService, AdvisorService advisorService) {
+    public AdvisorController(EnrollmentService enrollmentService, EnrollmentRequestService enrollmentRequestService, AdvisorService advisorService, CourseService courseService) {
         this.enrollmentService = enrollmentService;
         this.enrollmentRequestService = enrollmentRequestService;
         this.advisorService = advisorService;
+        this.courseService = courseService;
     }
 
     @GetMapping("/all")
@@ -71,4 +75,5 @@ public class AdvisorController {
     public EnrollmentRequest postEnrollmentRequestAction(@RequestBody EnrollmentRequestDTO enrollmentRequestDTO) {
         return enrollmentRequestService.postEnrollmentRequestAction(enrollmentRequestDTO);
     }
+
 }

@@ -1,10 +1,12 @@
 package com.course_management.project.api;
 
 import com.course_management.project.dto.AdminDTO;
+import com.course_management.project.dto.CourseDTO;
 import com.course_management.project.dto.CourseSectionDTO;
 import com.course_management.project.dto.StudentDTO;
 import com.course_management.project.modal.*;
 import com.course_management.project.service.AdminService;
+import com.course_management.project.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,13 @@ import java.util.Map;
 @CrossOrigin("*")
 public class AdminController {
 
-    @Autowired private AdminService adminService;
+    private final AdminService adminService;
+    private final CourseService courseService;
+
+    public AdminController(AdminService adminService, CourseService courseService) {
+        this.adminService = adminService;
+        this.courseService = courseService;
+    }
 
     // -------------------------
     // USERS
@@ -69,8 +77,6 @@ public class AdminController {
         return adminService.getAllDepartments();
     }
 
-
-
     // -------------------------
     // COURSES
     // -------------------------
@@ -79,9 +85,10 @@ public class AdminController {
         return adminService.getCourses();
     }
 
-    @PostMapping("/courses")
-    public Course createCourse(@RequestBody Course course) {
-        return adminService.createCourse(course);
+    @PostMapping("/course/create")
+    public ResponseEntity<String> postEnrollmentRequestAction(@RequestBody CourseDTO dto) {
+        courseService.createCourse(dto);
+        return ResponseEntity.ok("Course created successfully");
     }
 
     @DeleteMapping("/courses/{id}")

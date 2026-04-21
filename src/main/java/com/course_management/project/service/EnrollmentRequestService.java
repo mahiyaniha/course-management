@@ -51,7 +51,7 @@ public class EnrollmentRequestService {
         }
 
         Course course = courseService.getCourseById(dto.getCourseId());
-        int remainingStudentCredit = student.getMaxCreditLimit() - student.getCreditCompleted();
+        int remainingStudentCredit = student.getDepartment().getCredits() - student.getCreditCompleted();
         if (remainingStudentCredit < course.getCredit()) {
             throw new RuntimeException("Course credit is greater then Student remaining credit.");
         }

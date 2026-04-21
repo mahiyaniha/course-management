@@ -52,7 +52,7 @@ public class StudentService {
         Student studentByUserId = getStudentByUserId(id);
         Map<String, Integer> map = new HashMap<>();
         map.put("creditCompleted", studentByUserId.getCreditCompleted());
-        map.put("maxCreditLimit", studentByUserId.getMaxCreditLimit());
+        map.put("maxCreditLimit", studentByUserId.getDepartment().getCredits());
         return map;
     }
 
@@ -259,7 +259,7 @@ public class StudentService {
 
     public StudentAnalyticsDTO getStudentAnalytics(Integer userId) {
         Student student = getStudentByUserId(userId);
-        Integer totalDeptCredits = student.getMaxCreditLimit();
+        Integer totalDeptCredits = student.getDepartment().getCredits();
 
         List<Enrollment> enrollments = enrollmentService.getEnrollments(userId);
 
@@ -290,5 +290,9 @@ public class StudentService {
         studentAnalyticsDTO.setTotalAvgCgpa(totalAvgCgpa);
 
         return studentAnalyticsDTO;
+    }
+
+    public void addNewStudent(Student student) {
+        studentRepository.save(student);
     }
 }

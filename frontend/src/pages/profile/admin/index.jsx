@@ -95,13 +95,15 @@ const AdvisorProfile = () => {
           phone: data.phone || "",
         });
 
+        const name = data?.user?.firstName + " " + data?.user?.lastName
+
         setUserDetails(prev => ({
           ...prev,
           picture: data?.picture,
-          name: data?.name
+          name: name
         }))
         localStorage.setItem("picture", data?.picture)
-        localStorage.setItem("name", data?.name)
+        localStorage.setItem("name", name)
 
         // ✅ PHOTO STORED SEPARATELY
         setPhoto(data.picture || null);

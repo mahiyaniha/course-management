@@ -30,7 +30,6 @@ public class Student {
     private String description;
 
     private Integer creditCompleted;
-    private Integer maxCreditLimit;
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import getSections from "../../../api/getSections";
 import "../../dashboard/admin/style.css";
+import CreateSectionModal from "./CreateSectionModa";
 
 const ManageSection = () => {
   const [sections, setSections] = useState([]);
+  const [isOpen, setIsOpen] = useState(false)
 
   const fetchSections = async () => {
     try {
@@ -35,6 +37,15 @@ const ManageSection = () => {
     };
   }, [sections]);
 
+  const onClose = (val) => {
+    setIsOpen(val)
+  }
+
+  const handleCreateSection = () => {
+    setIsOpen(true)
+  };
+
+
   return (
     <div className="admin-page">
       <div className="admin-shell">
@@ -44,6 +55,8 @@ const ManageSection = () => {
             <h2>Manage Sections</h2>
             <p>Monitor section schedules, advisor assignments, and seat usage across the timetable.</p>
           </div>
+
+
 
           <div className="admin-summary">
             <div className="admin-summary-card">
@@ -60,6 +73,21 @@ const ManageSection = () => {
             </div>
           </div>
         </header>
+
+        <div className="admin-create-card">
+          <div className="admin-create-content">
+            <div>
+              <h3>Create New Section</h3>
+              <p>Add new section to the catalog with department and advisor assignment.</p>
+            </div>
+            <button
+              className="admin-create-btn"
+              onClick={handleCreateSection}
+            >
+              Create Section
+            </button>
+          </div>
+        </div>
 
         <section className="admin-card">
           <div className="admin-card-header">
@@ -108,6 +136,7 @@ const ManageSection = () => {
           </div>
         </section>
       </div>
+      <CreateSectionModal isOpen={isOpen} onClose={onClose} />
     </div>
   );
 };
