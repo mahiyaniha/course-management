@@ -7,6 +7,10 @@ const ManageEnrollment = () => {
   const { userDetails } = useUserDetails();
   const [enrollments, setEnrollments] = useState([]);
 
+  // 🔥 NEW STATES ONLY (ADDED)
+  const [rowState, setRowState] = useState({});
+  const [selectedRow, setSelectedRow] = useState(null);
+
   const fetchEnrollments = useCallback(async () => {
     try {
       const resp = await getEnrollments(userDetails?.userId);
@@ -42,6 +46,8 @@ const ManageEnrollment = () => {
   return (
     <div className="advisor-enrollment-page">
       <div className="advisor-enrollment-shell">
+
+        {/* HEADER (UNCHANGED) */}
         <header className="advisor-enrollment-hero">
           <div>
             <span className="advisor-enrollment-kicker">Advisor workspace</span>
@@ -65,7 +71,9 @@ const ManageEnrollment = () => {
           </div>
         </header>
 
+        {/* TABLE */}
         <section className="advisor-enrollment-card">
+
           <div className="advisor-enrollment-card-header">
             <div>
               <h3>Enrollment Table</h3>
@@ -76,6 +84,7 @@ const ManageEnrollment = () => {
 
           <div className="advisor-enrollment-table-wrap">
             <table className="advisor-enrollment-table">
+
               <thead>
                 <tr>
                   <th>First Name</th>
@@ -87,35 +96,133 @@ const ManageEnrollment = () => {
                   <th>Day</th>
                   <th>Start Time</th>
                   <th>End Time</th>
+                  <th>Result</th> {/* 🔥 NEW */}
                 </tr>
               </thead>
 
               <tbody>
                 {enrollments.length > 0 ? (
-                  enrollments.map((item, index) => (
-                    <tr key={`${item?.student?.id || "student"}-${item?.section?.id || index}`}>
-                      <td>{item?.student?.user?.firstName}</td>
-                      <td>{item?.student?.user?.lastName}</td>
-                      <td>{item?.student?.user?.email}</td>
-                      <td>{item?.section?.course?.title}</td>
-                      <td>{item?.section?.course?.code}</td>
-                      <td>{item?.section?.course?.department?.name}</td>
-                      <td>{item?.section?.day ?? "None"}</td>
-                      <td>{item?.section?.startTime}</td>
-                      <td>{item?.section?.endTime}</td>
-                    </tr>
-                  ))
+                  enrollments.map((item, index) => {
+                    const key = `${item?.student?.id}-${item?.section?.id}`;
+                    const data = rowState[key] || {};
+
+                    return (
+                      <tr key={key}>
+                        <td>{item?.student?.user?.firstName}</td>
+                        <td>{item?.student?.user?.lastName}</td>
+                        <td>{item?.student?.user?.email}</td>
+                        <td>{item?.section?.course?.title}</td>
+                        <td>{item?.section?.course?.code}</td>
+                        <td>{item?.section?.course?.department?.name}</td>
+                        <td>{item?.section?.day ?? "None"}</td>
+                        <td>{item?.section?.startTime}</td>
+                        <td>{item?.section?.endTime}</td>
+
+                        {/* 🔥 RESULT CELL */}
+                        <td>
+                          {data.submitted ? (
+                            <span style={{ color: "green", fontWeight: 600 }}>
+                              Submitted ✔
+                            </span>
+                          ) : (
+                            <button
+                              className="open-btn"
+                              onClick={() => setSelectedRow({ item, key })}
+                            >
+                              Set Result
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
-                    <td colSpan="9" className="advisor-enrollment-empty">
+                    <td colSpan="10" className="advisor-enrollment-empty">
                       No enrollments found
                     </td>
                   </tr>
                 )}
               </tbody>
+
             </table>
           </div>
         </section>
+
+        {/* 🔥 MODAL (NEW ADDITION) */}
+        {selectedRow && (
+          <div className="modal-overlay">
+            <div className="modal-card">
+
+              <h3>Course Result Entry</h3>
+
+              <p>
+                <strong>Student:</strong>{" "}
+                {selectedRow.item?.student?.user?.firstName}{" "}
+                {selectedRow.item?.student?.user?.lastName}
+              </p>
+
+              <p>
+                <strong>Department:</strong>{" "}
+                {selectedRow.item?.section?.course?.department?.name}
+              </p>
+
+              <p>
+                <strong>Course:</strong>{" "}
+                {selectedRow.item?.section?.course?.title}
+              </p>
+
+              <p className="modal-note">
+                Enter CGPA for this course completion
+              </p>
+
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Enter CGPA"
+                value={rowState[selectedRow.key]?.cgpa || ""}
+                onChange={(e) =>
+                  setRowState((prev) => ({
+                    ...prev,
+                    [selectedRow.key]: {
+                      ...prev[selectedRow.key],
+                      cgpa: e.target.value,
+                    },
+                  }))
+                }
+              />
+
+              <div className="modal-actions">
+
+                <button
+                  className="submit-btn"
+                  onClick={() => {
+                    setRowState((prev) => ({
+                      ...prev,
+                      [selectedRow.key]: {
+                        ...prev[selectedRow.key],
+                        submitted: true,
+                      },
+                    }));
+                    setSelectedRow(null);
+                  }}
+                >
+                  Submit
+                </button>
+
+                <button
+                  className="cancel-btn"
+                  onClick={() => setSelectedRow(null)}
+                >
+                  Cancel
+                </button>
+
+              </div>
+
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

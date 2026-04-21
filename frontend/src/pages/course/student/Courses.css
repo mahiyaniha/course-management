@@ -1,265 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 .courses-main {
   min-height: 100vh;
-}
-.course-container {
-  padding: clamp(2rem, 5vw, 3rem);
-  min-height: 100vh;
-  max-width: 1400px;
-  margin: 0 auto;
-  font-family: 'Outfit', sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(119, 141, 169, 0.14), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef3f8 100%);
 }
 
-/* HEADER */
+/* =========================
+   CONTAINER
+========================= */
+.course-container {
+  padding: clamp(1.2rem, 3vw, 2rem);
+  max-width: 1350px;
+  margin: 0 auto;
+  font-family: "Outfit", sans-serif;
+}
+
+/* =========================
+   HEADER (SMALL + CLEAN CARD)
+========================= */
 .header {
+  position: relative;
   text-align: center;
-  margin-bottom: 3rem;
+  padding: 18px 20px;
+  margin-bottom: 1.5rem;
+
+  border-radius: 18px;
+  border: 1px solid rgba(65, 90, 119, 0.14);
+
+  background: linear-gradient(135deg, #1b263b, #415a77);
+
+  color: #e0e1dd;
+
+  box-shadow: 0 12px 30px rgba(13, 27, 42, 0.14);
+  overflow: hidden;
+}
+
+/* subtle background glow only */
+.header::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(119, 141, 169, 0.25), transparent 70%);
 }
 
 .header-icon {
-  font-size: 44px !important;
-  background: linear-gradient(135deg, #1b263b, #415a77, #778da9) !important;
-  background-clip: text !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
-  margin-bottom: 1rem;
+  font-size: 36px !important;
+  background: linear-gradient(135deg, #778da9, #e0e1dd);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
 }
 
 .header-title {
-  font-size: clamp(2.4rem, 6vw, 3.4rem);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
   font-weight: 800;
-  color: #1b263b;
-  letter-spacing: -0.02em;
-  margin: 0 0 0.8rem 0;
-  line-height: 1.1;
+  margin: 0;
 }
 
 .header p {
-  color: #778da9;
-  font-size: 1.15rem;
-  max-width: 65ch;
-  margin: 0 auto;
-  line-height: 1.7;
+  margin: 6px auto 0;
+  max-width: 55ch;
+  font-size: 0.95rem;
+  color: rgba(224, 225, 221, 0.78);
+  line-height: 1.5;
 }
 
-/* COURSES TABLE SECTION */
+/* =========================
+   TABLE SECTION (SIMPLE + CLEAN)
+========================= */
 .courses-table-section {
-  margin-bottom: 4rem;
+  margin-bottom: 2.5rem;
 }
 
 .courses-table-section h2 {
-  font-size: 2.1rem;
+  font-size: 1.5rem;
   color: #1b263b;
   font-weight: 700;
-  margin-bottom: 1.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
+  margin-bottom: 1rem;
 }
 
-.courses-table-section h2::before {
-  content: "📚";
-  font-size: 1.9rem;
-}
-
+/* TABLE WRAPPER */
 .table-container {
   background: rgba(255, 255, 255, 0.92);
-  border-radius: 28px;
+  border-radius: 16px;
   border: 1px solid rgba(65, 90, 119, 0.12);
-  box-shadow: 0 25px 65px rgba(13, 27, 42, 0.12);
+  box-shadow: 0 10px 25px rgba(13, 27, 42, 0.08);
   overflow: hidden;
-  backdrop-filter: blur(20px);
 }
 
+/* TABLE */
 .courses-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.courses-table th {
-  background: linear-gradient(135deg, #1b263b 0%, #415a77 100%);
-  color: #e0e1dd;
-  padding: 1.5rem 1.8rem;
-  text-align: left;
-  font-weight: 700;
+  border-collapse: collapse;
   font-size: 0.92rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
+/* header row */
+.courses-table th {
+  background: #1b263b;
+  color: #e0e1dd;
+  padding: 0.9rem 0.8rem;
+  text-align: left;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* table cells */
 .courses-table td {
-  padding: 1.5rem 1.8rem;
-  border-bottom: 1px solid rgba(65, 90, 119, 0.18);
+  padding: 0.9rem 0.8rem;
+  border-bottom: 1px solid rgba(65, 90, 119, 0.12);
   color: #1b263b;
   font-weight: 500;
 }
 
-.courses-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
+/* hover subtle */
 .courses-table tbody tr {
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: background 0.2s ease;
 }
 
 .courses-table tbody tr:hover {
-  background: rgba(119, 141, 169, 0.08);
-  transform: translateY(-2px);
+  background: rgba(119, 141, 169, 0.06);
 }
 
+/* =========================
+   BUTTON (CLEANER)
+========================= */
 .request-btn {
-  padding: 0.85rem 1.8rem;
-  background: linear-gradient(135deg, #1b263b, #415a77);
-  color: #e0e1dd;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
   border: none;
-  border-radius: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-  box-shadow: 0 12px 30px rgba(27, 38, 59, 0.3);
-  font-size: 0.92rem;
-  position: relative;
-  overflow: hidden;
-}
 
-.request-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(224, 225, 221, 0.2), transparent);
-  transition: left 0.6s;
+  background: #415a77;
+  color: #e0e1dd;
+
+  font-weight: 600;
+  font-size: 0.85rem;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
 .request-btn:hover {
-  transform: translateY(-4px);
-  background: linear-gradient(135deg, #415a77, #778da9);
-  box-shadow: 0 20px 45px rgba(65, 90, 119, 0.4);
-}
-
-.request-btn:hover::before {
-  left: 100%;
-}
-
-.request-btn:active {
+  background: #1b263b;
   transform: translateY(-2px);
 }
 
-/* SECTIONS GRID */
+/* =========================
+   COURSE CARDS (LESS HEAVY)
+========================= */
 .sections-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 2.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
 }
 
 /* CARD */
 .card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
-  border: 1px solid rgba(65, 90, 119, 0.15);
-  border-radius: 28px;
-  padding: 2.5rem;
-  box-shadow: 0 25px 70px rgba(13, 27, 42, 0.14);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(65, 90, 119, 0.12);
+  border-radius: 18px;
+  padding: 1.6rem;
+
+  box-shadow: 0 12px 28px rgba(13, 27, 42, 0.08);
+  transition: all 0.25s ease;
 }
 
 .card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 40px 90px rgba(13, 27, 42, 0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(13, 27, 42, 0.12);
 }
 
+/* CARD HEADER */
 .card-header {
-  font-size: 1.45rem;
-  font-weight: 800;
-  margin-bottom: 2rem;
-  color: #1b263b;
-  background: linear-gradient(135deg, rgba(27, 38, 59, 0.85), rgba(65, 90, 119, 0.7));
-  padding: 1.4rem 1.8rem;
-  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+
+  background: #1b263b;
   color: #e0e1dd;
-  backdrop-filter: blur(16px);
+
+  margin-bottom: 1rem;
 }
 
 /* SECTION */
 .section {
-  border-top: 1px solid rgba(65, 90, 119, 0.25);
-  padding-top: 1.6rem;
-  margin-top: 1.6rem;
+  border-top: 1px solid rgba(65, 90, 119, 0.15);
+  padding-top: 1rem;
+  margin-top: 1rem;
 }
 
 /* ROW */
 .row {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: 1.1rem 0;
+  gap: 0.6rem;
+  margin: 0.6rem 0;
   color: #1b263b;
-  font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.92rem;
 }
 
 .row svg {
   color: #415a77;
-  font-size: 1.15rem;
 }
 
 /* PROGRESS BAR */
 .bar {
-  width: 100%;
-  height: 14px;
-  background: rgba(45, 55, 72, 0.3);
-  border-radius: 14px;
-  margin-top: 1.8rem;
-  border: 1px solid rgba(65, 90, 119, 0.35);
+  height: 10px;
+  margin-top: 0.8rem;
+  border-radius: 999px;
+  background: rgba(119, 141, 169, 0.18);
   overflow: hidden;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .fill {
   height: 100%;
-  background: linear-gradient(90deg, #1b263b, #415a77, #778da9);
-  border-radius: 14px;
-  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 25px rgba(119, 141, 169, 0.5);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1b263b, #415a77);
 }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .sections-grid {
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 1.8rem;
-  }
-
-  .table-container {
-    border-radius: 20px;
-  }
-}
-
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 768px) {
-  .course-container {
-    padding: 1.5rem 1.2rem;
-  }
-
-  .sections-grid {
-    grid-template-columns: 1fr;
-    gap: 1.6rem;
+  .header {
+    padding: 14px;
   }
 
   .courses-table th,
   .courses-table td {
-    padding: 1.2rem 1rem;
+    padding: 0.8rem;
   }
 
-  .courses-table {
-    font-size: 0.9rem;
-  }
-
-  .request-btn {
-    padding: 0.7rem 1.4rem;
-    font-size: 0.88rem;
+  .sections-grid {
+    grid-template-columns: 1fr;
   }
 }
-
