@@ -115,7 +115,7 @@ public class StudentService {
     }
 
     // Available courses including which failed to complete
-    public List<CourseDTO> getAvailableCourses(Integer userId) {
+    public List<CourseDTO> getAvailableCourses(Integer userId, Map<Integer, EnrollmentRequest> enrollmentRequests) {
         List<Enrollment> enrollments = enrollmentService.getEnrollments(userId);
 
         // Map courseId -> enrollment
@@ -141,11 +141,17 @@ public class StudentService {
                     dto.setTotalSeat(course.getTotalSeat());
 
                     Enrollment enrollment = enrollmentMap.get(course.getId());
+                    EnrollmentRequest request = enrollmentRequests.get(course.getId());
 
-                    if (enrollment == null) {
-                        dto.setStatus("NOT_ENROLLED");
-                    } else {
+                    if (enrollment != null) {
+                        // Enrollment takes priority
                         dto.setStatus(enrollment.getStatus().name());
+                    } else if (request != null) {
+                        // No enrollment, but request exists
+                        dto.setStatus("REQUEST_" + request.getStatus().name());
+                        // e.g. REQUEST_PENDING, REQUEST_APPROVED, REQUEST_REJECTED
+                    } else {
+                        dto.setStatus("NOT_ENROLLED");
                     }
 
                     return dto;

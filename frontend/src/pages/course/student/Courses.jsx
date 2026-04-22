@@ -126,7 +126,7 @@ const Courses = () => {
                       <td>{course.department?.name}</td>
                       <td>{course.availableSeat}/{course.totalSeat}</td>
                       <td>
-                        {(course.status === "ACTIVE" || course.status === "COMPLETED") ? 
+                        {(course.status === "ACTIVE" || course.status === "COMPLETED") || course.status === "REQUEST_PENDING" ? 
                         <div>{course.status}</div> :
                         <button
                           className="request-btn"

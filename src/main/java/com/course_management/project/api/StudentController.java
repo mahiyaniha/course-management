@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -98,7 +99,15 @@ public class StudentController {
 
     @GetMapping("/courses/{userId}")
     public List<CourseDTO> getAvailableCoursesFor(@PathVariable Integer userId) {
-        return studentService.getAvailableCourses(userId);
+        List<EnrollmentRequest> requests = enrollmentRequestService.getEnrollmentRequests(userId);
+
+        Map<Integer, EnrollmentRequest> requestMap = requests.stream()
+                .collect(Collectors.toMap(
+                        r -> r.getCourse().getId(),
+                        r -> r,
+                        (r1, r2) -> r2
+                ));
+        return studentService.getAvailableCourses(userId, requestMap);
     }
 
 
