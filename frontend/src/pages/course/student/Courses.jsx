@@ -42,7 +42,7 @@ const Courses = () => {
           courseId: curr_course?.id,
           status: "PENDING",
         })
-        if (resp?.error) {
+        if (resp == null || resp?.error) {
           throw new Error(resp.error);
         }
         console.log(resp)
@@ -52,8 +52,7 @@ const Courses = () => {
         console.log("User cancelled the prompt.");
       }
     } catch (err) {
-      console.log(err);
-      toast.error("Request failed!");
+      toast.error("Failed to submit!. Not enough seat");
     }
   };
 

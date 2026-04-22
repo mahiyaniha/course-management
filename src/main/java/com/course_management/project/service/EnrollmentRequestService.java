@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class EnrollmentRequestService {
@@ -51,6 +52,11 @@ public class EnrollmentRequestService {
         }
 
         Course course = courseService.getCourseById(dto.getCourseId());
+        if (Objects.equals(course.getAvailableSeat(), course.getTotalSeat())) {
+            throw new RuntimeException("Can't enroll in this course. Not enough seat available");
+        }
+
+
         int remainingStudentCredit = student.getDepartment().getCredits() - student.getCreditCompleted();
         if (remainingStudentCredit < course.getCredit()) {
             throw new RuntimeException("Course credit is greater then Student remaining credit.");
