@@ -9,9 +9,17 @@ import java.time.LocalDate;
 @Table(name = "completed_courses")
 @Data
 public class CompletedCourse {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @EmbeddedId
-    private CompletedCourseKey id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Student user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
     // ⭐ NEW FIELDS (STEP 4 UPGRADE)
     private String grade;

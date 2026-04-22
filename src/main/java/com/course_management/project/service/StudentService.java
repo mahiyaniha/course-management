@@ -85,12 +85,12 @@ public class StudentService {
         int safeCredits = (totalCredits == null) ? 0 : totalCredits;
 
         List<CompletedCourse> completedList =
-                completedCourseRepository.findByIdStudentId(userId);
+                completedCourseRepository.findByUserId(userId);
 
         int completedCourses = completedList.size();
 
         int completedCredits = completedList.stream()
-                .mapToInt(c -> courseRepository.findById(c.getId().getCourseId())
+                .mapToInt(c -> courseRepository.findById(c.getCourse().getId())
                         .orElseThrow()
                         .getCredit())
                 .sum();
@@ -156,13 +156,13 @@ public class StudentService {
     // 🆕 COMPLETED COURSES
     public List<MyCourseDTO> getCompletedCourses(Integer studentId) {
 
-        return completedCourseRepository.findByIdStudentId(studentId)
+        return completedCourseRepository.findByUserId(studentId)
                 .stream()
                 .map(c -> {
 
                     MyCourseDTO dto = new MyCourseDTO();
 
-                    Integer courseId = c.getId().getCourseId();
+                    Integer courseId = c.getCourse().getId();
                     dto.setCourseId(courseId);
 
                     courseRepository.findById(courseId).ifPresent(course -> {
@@ -194,7 +194,7 @@ public class StudentService {
     public GradeDistributionDTO getGradeDistribution(Integer userId) {
         Integer student_id = getStudentByUserId(userId).getId();
         List<CompletedCourse> list =
-                completedCourseRepository.findByIdStudentId(student_id);
+                completedCourseRepository.findByUserId(student_id);
 
         int aPlus = 0, a = 0, aMinus = 0, bPlus = 0, b = 0, c = 0, d = 0;
 
@@ -244,7 +244,7 @@ public class StudentService {
 
     public double getCGPA(Integer studentId) {
         List<CompletedCourse> list =
-                completedCourseRepository.findByIdStudentId(studentId);
+                completedCourseRepository.findByUserId(studentId);
 
         if (list.isEmpty()) return 0.0;
 
@@ -277,7 +277,7 @@ public class StudentService {
         Integer totalActiveCourses = enrollments.stream().filter(ele -> ele.getStatus().equals(Enrollment.Status.ACTIVE)).toList().size();
         Integer totalCompletedCourses = enrollments.stream().filter(ele -> ele.getStatus().equals(Enrollment.Status.COMPLETED)).toList().size();
 
-        List<CompletedCourse> completedCourses = completedCourseRepository.findByIdStudentId(student.getId());
+        List<CompletedCourse> completedCourses = completedCourseRepository.findByUserId(student.getId());
         double totalCompletedGrades = completedCourses.stream().mapToDouble(ele -> Double.parseDouble(ele.getGrade())).sum();
         double totalAvgCgpa = totalCompletedGrades / completedCourses.size();
 

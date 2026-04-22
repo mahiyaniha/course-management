@@ -24,7 +24,7 @@ public class CourseService {
 
     public int getCompletedCredit(List<CompletedCourse> completedList) {
         int sum = completedList.stream()
-                .mapToInt(c -> courseRepository.findById(c.getId().getCourseId())
+                .mapToInt(c -> courseRepository.findById(c.getCourse().getId())
                         .orElseThrow()
                         .getCredit())
                 .sum();

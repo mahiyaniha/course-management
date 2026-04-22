@@ -1,12 +1,11 @@
 package com.course_management.project.repository;
 
 import com.course_management.project.modal.CompletedCourse;
-import com.course_management.project.modal.CompletedCourseKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CompletedCourseRepository extends JpaRepository<CompletedCourse, CompletedCourseKey> {
+public interface CompletedCourseRepository extends JpaRepository<CompletedCourse, Integer> {
 
-    List<CompletedCourse> findByIdStudentId(Integer studentId);
+    List<CompletedCourse> findByUserId(Integer userId);
 }

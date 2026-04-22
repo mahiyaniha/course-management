@@ -51,7 +51,7 @@ public class AuthService {
                 yield hashmap;
             }
             case "student" -> {
-                Student studentById = studentService.getStudentById(userId);
+                Student studentById = studentService.getStudentByUserId(userId);
                 hashmap.put("picture", studentById.getPicture());
                 yield hashmap;
             }
