@@ -21,4 +21,8 @@ public class CourseSectionService {
     public CourseSection getCourseSectionById(int id) {
         return courseSectionRepository.findById(id).orElseThrow(() -> new RuntimeException("Section not found"));
     }
+
+    public void saveCourseSection(CourseSection courseSection) {
+        courseSectionRepository.save(courseSection);
+    }
 }

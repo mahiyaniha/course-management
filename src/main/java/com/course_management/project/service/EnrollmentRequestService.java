@@ -70,6 +70,13 @@ public class EnrollmentRequestService {
                 enrollment.setStudent(student);
                 enrollment.setStatus(Enrollment.Status.ACTIVE);
                 enrollmentService.saveEnrollment(enrollment);
+
+                int futureTaken = section.getSeatLimit() + 1;
+                if (futureTaken > section.getSeatLimit()) {
+                    throw new RuntimeException("Not enough seat available");
+                }
+                section.setSeatTaken(futureTaken);
+                courseSectionService.saveCourseSection(section);
             }
         }
 
