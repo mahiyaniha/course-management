@@ -71,10 +71,7 @@ public class EnrollmentRequestService {
                 enrollment.setStatus(Enrollment.Status.ACTIVE);
                 enrollmentService.saveEnrollment(enrollment);
 
-                int futureTaken = section.getSeatLimit() + 1;
-                if (futureTaken > section.getSeatLimit()) {
-                    throw new RuntimeException("Not enough seat available");
-                }
+                int futureTaken = section.getSeatTaken() + 1;
                 section.setSeatTaken(futureTaken);
                 courseSectionService.saveCourseSection(section);
             }
