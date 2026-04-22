@@ -47,6 +47,7 @@ const Courses = () => {
         }
         console.log(resp)
         toast.success("Request submitted!");
+        fetchCourses();
       } else {
         console.log("User cancelled the prompt.");
       }
@@ -56,23 +57,23 @@ const Courses = () => {
     }
   };
 
+  const fetchCourses = async () => {
+    try {
+      const userId = localStorage.getItem("userId")
+      const resp = await getAvailableCoursesForStudent(userId);
+      if (resp?.error) {
+        throw new Error(resp.error);
+      }
+      setCourses(Array.isArray(resp) ? resp : []);
+    } catch (e) {
+      console.error(e.message);
+      // Fallback to dummy for demo
+      setCourses([]);
+    }
+  };
+
   // Fetch available courses on mount
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const userId = localStorage.getItem("userId")
-        const resp = await getAvailableCoursesForStudent(userId);
-        if (resp?.error) {
-          throw new Error(resp.error);
-        }
-        setCourses(Array.isArray(resp) ? resp : []);
-      } catch (e) {
-        console.error(e.message);
-        // Fallback to dummy for demo
-        setCourses([]);
-      }
-    };
-
     fetchCourses();
     // Always load sections for grouped display
     setSections(dummySections);
@@ -126,17 +127,17 @@ const Courses = () => {
                       <td>{course.department?.name}</td>
                       <td>{course.availableSeat}/{course.totalSeat}</td>
                       <td>
-                        {(course.status === "ACTIVE" || course.status === "COMPLETED") || course.status === "REQUEST_PENDING" ? 
-                        <div>{course.status}</div> :
-                        <button
-                          className="request-btn"
-                          onClick={() => handleRequest(course)}
-                        >
-                          Request
-                        </button>}
+                        {(course.status === "ACTIVE" || course.status === "COMPLETED") || course.status === "REQUEST_PENDING" ?
+                          <div>{course.status}</div> :
+                          <button
+                            className="request-btn"
+                            onClick={() => handleRequest(course)}
+                          >
+                            Request
+                          </button>}
                       </td>
                     </tr>
-                    ))}
+                  ))}
                 </tbody>
               </table>
             </div>
