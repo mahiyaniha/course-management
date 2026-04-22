@@ -295,4 +295,10 @@ public class StudentService {
     public void addNewStudent(Student student) {
         studentRepository.save(student);
     }
+
+    public Student updateStatus(Integer userId, String status) {
+        Student student = getStudentByUserId(userId);
+        student.setStatus(Student.Status.valueOf(status.toUpperCase()));
+        return studentRepository.save(student);
+    }
 }

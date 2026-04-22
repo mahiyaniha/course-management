@@ -23,6 +23,10 @@ public class AdvisorService {
         this.advisorRepository = advisorRepository;
     }
 
+    public Advisor getAdvisorByUserId(Integer userId) {
+        return advisorRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("No advisor found"));
+    }
+
     public List<Advisor> getAllAdvisors() {
         return advisorRepository.findAll();
     }
@@ -55,5 +59,11 @@ public class AdvisorService {
 
     public void addNewAdvisor(Advisor advisor) {
         advisorRepository.save(advisor);
+    }
+
+    public Advisor updateStatus(Integer userId, String status) {
+        Advisor advisorByUserId = getAdvisorByUserId(userId);
+        advisorByUserId.setStatus(Advisor.Status.valueOf(status.toUpperCase()));
+        return advisorRepository.save(advisorByUserId);
     }
 }

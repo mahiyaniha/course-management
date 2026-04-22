@@ -76,4 +76,9 @@ public class AdvisorController {
         return enrollmentRequestService.postEnrollmentRequestAction(enrollmentRequestDTO);
     }
 
+    @PutMapping("/status/{userId}")
+    public Advisor postEnrollmentRequestAction(@PathVariable Integer userId, @RequestBody String status) {
+        return advisorService.updateStatus(userId, status);
+    }
+
 }

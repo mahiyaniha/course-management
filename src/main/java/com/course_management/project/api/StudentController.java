@@ -114,4 +114,9 @@ public class StudentController {
 
         return studentAnalytics;
     }
+
+    @PutMapping("/status/{userId}")
+    public Student postEnrollmentRequestAction(@PathVariable Integer userId, @RequestBody String status) {
+        return studentService.updateStatus(userId, status);
+    }
 }
